@@ -5,7 +5,10 @@
         <app-emoji-info-single [emojiInfo]="emojiInfo"></app-emoji-info-single>
     </div>
 
-    <div *ngIf="showCount < emojis.emojiInfos.length" (click)="showMoreClicked()" class="show-more">
-        <span><span class="gg-arrow-down"></span>&nbsp;Show more</span>
+    <div *ngIf="showCount < emojis.emojiInfos.length" (click)="showMoreClicked()" class="wrapper">
+        <div class="show-more">
+            <span><span class="gg-arrow-down"></span>&nbsp;Show more</span>
+        </div>
+        <div class="overlay"></div>
     </div>
 </div>

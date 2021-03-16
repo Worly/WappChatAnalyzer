@@ -3,6 +3,7 @@
     background-color: #FEE9E1;
     border-radius: 8px;
     margin-bottom: 10px;
+    padding-left: 10px;
 }
 
 .my-container>div {
@@ -23,4 +24,24 @@
 
 .bar-container {
     flex-grow: 100;
+}
+
+.wrapper {
+    position: relative;
+    cursor: pointer;
+}
+
+.overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 8px;
+}
+.overlay:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+.overlay:active {
+    background-color: rgba(0, 0, 0, 0.1);
 }

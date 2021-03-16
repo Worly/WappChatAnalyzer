@@ -1,5 +1,26 @@
-.show-more {
+.wrapper {
+    position: relative;
+    width: min-content;
     margin: auto;
+    cursor: pointer;
+}
+
+.overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 8px;
+}
+.overlay:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+.overlay:active {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.show-more {
     width: min-content;
     white-space: nowrap;
     height: 55px;
@@ -13,12 +34,6 @@
     border-radius: 8px;
     background-color: #FEE9E1;
     cursor: pointer;
-}
-.show-more:hover {
-    background-color: #ffddd0;
-}
-.show-more:active {
-    background-color: #dabdb2;
 }
 
 .gg-arrow-down {

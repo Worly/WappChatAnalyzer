@@ -11,9 +11,13 @@
     height: 100%;
     top: 0;
     left: 0;
+    border-radius: 8px;
 }
 .overlay:hover {
     background-color: rgba(255, 255, 255, 0.2);
+}
+.overlay:active {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .name {

@@ -1,11 +1,14 @@
-<div class="my-container">
-    <div class="emoji-container">
-        <app-emoji style="margin:auto" [codePoints]="_emojiInfo.emojiCodePoints"></app-emoji>
+<div class="wrapper">
+    <div class="my-container">
+        <div class="emoji-container">
+            <app-emoji style="margin:auto" [codePoints]="_emojiInfo.emojiCodePoints"></app-emoji>
+        </div>
+        <div class="total-container">
+            {{_emojiInfo.total | number}}
+        </div>
+        <div class="bar-container">
+            <app-ratio-bar [items]="_emojiInfo.bySenders" [height]="60"></app-ratio-bar>
+        </div>
     </div>
-    <div class="total-container">
-        {{_emojiInfo.total | number}}
-    </div>
-    <div class="bar-container">
-        <app-ratio-bar [items]="_emojiInfo.bySenders" [height]="60"></app-ratio-bar>
-    </div>
+    <div class="overlay"></div>
 </div>
