@@ -1,0 +1,33 @@
+.bar {
+    display: inline-block;
+}
+
+.bar-first {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.bar-last {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.bar-text-wrapper {
+    /* --- This works --- */
+    display: flex;
+    /* Align Vertically */
+    align-items: center;
+    /* Align Horizontally */
+    justify-content: center;
+    /* --- ---------- ----- */
+    width: 100%;
+    height: 100%;
+}
+
+.bar-text-inner {
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 5px;
+    font-size: 1.3em;
+}

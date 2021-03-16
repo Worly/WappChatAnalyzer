@@ -1,0 +1,14 @@
+@media (min-width: 1600px) {
+    .container, .container-sm, .container-md, .container-lg, .container-xl {
+        max-width: 1500px;
+    }
+}
+
+.my-navbar {
+    background-color: #D05353;
+}
+
+.navbar-brand {
+    
+    color: white;
+}

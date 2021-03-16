@@ -1,0 +1,26 @@
+.my-container {
+    display: flex;
+    background-color: #FEE9E1;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.my-container>div {
+    margin: 10px;
+}
+
+.emoji-container {
+    display: flex;
+}
+
+.total-container {
+    font-size: 2em;
+    flex-basis: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bar-container {
+    flex-grow: 100;
+}

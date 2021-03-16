@@ -1,0 +1,28 @@
+<div *ngIf="basicInfoTotal != null">
+    <div class="title"><b>Total number of</b></div>
+
+    <div>
+        <div class="single">
+            <app-basic-info-single [displayName]="'Messages'" [basicInfoTotal]="basicInfoTotal"
+                [statisticAccessor]="'totalNumberOfMessages'" [clickLink]="'/statistic-display/NumberOfMessages'">
+            </app-basic-info-single>
+        </div>
+        <div class="single">
+            <app-basic-info-single [displayName]="'Words'" [basicInfoTotal]="basicInfoTotal"
+                [statisticAccessor]="'totalNumberOfWords'" [clickLink]="'/statistic-display/NumberOfWords'"></app-basic-info-single>
+        </div>
+        <div class="single">
+            <app-basic-info-single [displayName]="'Characters'" [basicInfoTotal]="basicInfoTotal"
+                [statisticAccessor]="'totalNumberOfCharacters'" [clickLink]="'/statistic-display/NumberOfCharacters'">
+            </app-basic-info-single>
+        </div>
+        <div class="single">
+            <app-basic-info-single [displayName]="'Media'" [basicInfoTotal]="basicInfoTotal"
+                [statisticAccessor]="'totalNumberOfMedia'" [clickLink]="'/statistic-display/NumberOfMedia'"></app-basic-info-single>
+        </div>
+        <div class="single">
+            <app-basic-info-single [displayName]="'Emojis'" [basicInfoTotal]="basicInfoTotal"
+                [statisticAccessor]="'totalNumberOfEmojis'" [clickLink]="'/statistic-display/NumberOfEmojis'"></app-basic-info-single>
+        </div>
+    </div>
+</div>
