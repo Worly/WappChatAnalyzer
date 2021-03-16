@@ -1,9 +1,11 @@
 <app-statistic-display [statisticName]="'NumberOfEmojis'"></app-statistic-display>
-<hr/>
+<hr />
 <div *ngIf="emojis != null">
     <div *ngFor="let emojiInfo of emojis.emojiInfos | slice: 0 : showCount">
         <app-emoji-info-single [emojiInfo]="emojiInfo"></app-emoji-info-single>
     </div>
 
-    <div *ngIf="showCount < emojis.emojiInfos.length" (click)="showMoreClicked()">Show more</div>
+    <div *ngIf="showCount < emojis.emojiInfos.length" (click)="showMoreClicked()" class="show-more">
+        <span><span class="gg-arrow-down"></span>&nbsp;Show more</span>
+    </div>
 </div>
