@@ -9,7 +9,8 @@
         </div>
         <div class="single">
             <app-basic-info-single [displayName]="'Words'" [basicInfoTotal]="basicInfoTotal"
-                [statisticAccessor]="'totalNumberOfWords'" [clickLink]="'/statistic-display/NumberOfWords'"></app-basic-info-single>
+                [statisticAccessor]="'totalNumberOfWords'" [clickLink]="'/statistic-display/NumberOfWords'">
+            </app-basic-info-single>
         </div>
         <div class="single">
             <app-basic-info-single [displayName]="'Characters'" [basicInfoTotal]="basicInfoTotal"
@@ -18,11 +19,16 @@
         </div>
         <div class="single">
             <app-basic-info-single [displayName]="'Media'" [basicInfoTotal]="basicInfoTotal"
-                [statisticAccessor]="'totalNumberOfMedia'" [clickLink]="'/statistic-display/NumberOfMedia'"></app-basic-info-single>
+                [statisticAccessor]="'totalNumberOfMedia'" [clickLink]="'/statistic-display/NumberOfMedia'">
+            </app-basic-info-single>
         </div>
         <div class="single">
             <app-basic-info-single [displayName]="'Emojis'" [basicInfoTotal]="basicInfoTotal"
-                [statisticAccessor]="'totalNumberOfEmojis'" [clickLink]="'/statistic-display/NumberOfEmojis'"></app-basic-info-single>
+                [statisticAccessor]="'totalNumberOfEmojis'" [clickLink]="'/statistic-display/NumberOfEmojis'">
+            </app-basic-info-single>
         </div>
     </div>
+</div>
+<div *ngIf="isLoading" style="margin-top: 100px">
+    <app-loading></app-loading>
 </div>

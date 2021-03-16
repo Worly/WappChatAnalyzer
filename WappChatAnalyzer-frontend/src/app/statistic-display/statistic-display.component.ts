@@ -18,6 +18,8 @@ export class StatisticDisplayComponent implements OnInit {
     this.loadAndShowStatistic(value);
   }
 
+  isLoading: boolean;
+
   id: number;
 
   statistic: Statistic;
@@ -42,7 +44,10 @@ export class StatisticDisplayComponent implements OnInit {
   }
 
   loadAndShowStatistic(statisticName: string) {
+    this.statistic = null;
+    this.isLoading = true;
     this.dataService.getStatistic(statisticName).subscribe((r: Statistic) => {
+      this.isLoading = false;
       this.statistic = r;
       this.renderTotal(r);
       this.renderGraph(r);
@@ -77,7 +82,6 @@ export class StatisticDisplayComponent implements OnInit {
 
   renderGraph(statistic: Statistic) {
     let data = [];
-    let colorIndex = 0;
     for (let sender in statistic.valuesBySendersOnDates) {
       let dataSingle = {
         type: "stackedArea100",
@@ -98,8 +102,6 @@ export class StatisticDisplayComponent implements OnInit {
       }
       data.push(dataSingle);
     }
-
-    colorIndex = 0;
 
     let dataSingle = {
       type: "column",

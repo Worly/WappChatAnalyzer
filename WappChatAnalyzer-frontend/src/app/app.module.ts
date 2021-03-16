@@ -11,6 +11,7 @@ import { EmojiComponent } from './emoji/emoji.component';
 import { StatisticDisplayEmojisComponent } from './statistic-display-emojis/statistic-display-emojis.component';
 import { EmojiInfoSingleComponent } from './emoji-info-single/emoji-info-single.component';
 import { RatioBarComponent } from './ratio-bar/ratio-bar.component';
+import { LoadingComponent } from './loading/loading.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { RatioBarComponent } from './ratio-bar/ratio-bar.component';
     EmojiComponent,
     StatisticDisplayEmojisComponent,
     EmojiInfoSingleComponent,
-    RatioBarComponent
+    RatioBarComponent,
+    LoadingComponent
   ],
   imports: [
     BrowserModule,

@@ -11,10 +11,14 @@ export class HomeComponent implements OnInit {
 
   public basicInfoTotal: BasicInfoTotal;
 
+  public isLoading: boolean;
+
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.dataService.getBasicInfo().subscribe(r => {
+      this.isLoading = false;
       this.basicInfoTotal = r;
     });
   }

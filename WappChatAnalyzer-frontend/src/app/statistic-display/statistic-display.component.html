@@ -1,3 +1,7 @@
+<div *ngIf="isLoading" style="margin-top: 100px">
+    <app-loading></app-loading>
+</div>
+
 <div class="title" *ngIf="statistic != null">{{displayNames[statistic.statisticName]}}</div>
 <div class="total" *ngIf="statistic != null">Total: {{statistic.total | number}}</div>
 <div [id]="'chartContainerTotal' + id" style="height: 370px; width: 100%;"></div>
