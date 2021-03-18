@@ -1,3 +1,9 @@
+.title {
+    text-align: center;
+    font-size: 3em;
+    font-weight: bold;
+}
+
 .wrapper {
     position: relative;
     width: min-content;

@@ -16,11 +16,13 @@ namespace WappChatAnalyzer.Controllers
     {
         private IChat chat;
         private IChatAnalyzerService chatAnalyzerService;
+        private IStatisticService statisticService;
 
-        public BasicController(IChat chat, IChatAnalyzerService chatAnalyzerService)
+        public BasicController(IChat chat, IChatAnalyzerService chatAnalyzerService, IStatisticService statisticService)
         {
             this.chat = chat;
             this.chatAnalyzerService = chatAnalyzerService;
+            this.statisticService = statisticService;
         }
 
         [HttpGet("getBasicInfoTotal")]
@@ -33,46 +35,42 @@ namespace WappChatAnalyzer.Controllers
             };
         }
 
-        [HttpGet("getStatistic")]
-        public ActionResult<Statistic<int>> GetStatistic([FromQuery] string statisticName)
-        { 
-            Func<IEnumerable<Message>, int> statisticFunc = null;
-            switch (statisticName)
-            {
-                case "NumberOfMessages":
-                    statisticFunc = chatAnalyzerService.TotalNumberOfMessages;
-                    break;
-                case "NumberOfWords":
-                    statisticFunc = chatAnalyzerService.TotalNumberOfWords;
-                    break;
-                case "NumberOfCharacters":
-                    statisticFunc = chatAnalyzerService.TotalNumberOfCharacters;
-                    break;
-                case "NumberOfMedia":
-                    statisticFunc = chatAnalyzerService.TotalNumberOfMedia;
-                    break;
-                case "NumberOfEmojis":
-                    statisticFunc = chatAnalyzerService.TotalNumberOfEmojis;
-                    break;
-            }
+        [HttpGet("getStatistic/numberOfMessages")]
+        public ActionResult<Statistic<int>> GetStatisticNumberOfMessages()
+        {
+            var result = statisticService.GetStatistic(chat, chatAnalyzerService.TotalNumberOfMessages, "NumberOfMessages");
 
-            if (statisticFunc == null)
-                return NotFound();
+            return result;
+        }
 
-            var valuesBySendersOnDates = chat.Senders.ToDictionary(o => o, o =>
-                chat.Messages.Filter(o).GroupBy(i => i.SentDateNormalized).AsParallel().AsOrdered().Select(i => statisticFunc(i))
-                .ToList());
-            var totalBySenders = valuesBySendersOnDates.ToDictionary(o => o.Key, o => o.Value.Sum());
-            var total = totalBySenders.Values.Sum();
+        [HttpGet("getStatistic/numberOfWords")]
+        public ActionResult<Statistic<int>> GetStatisticNumberOfWords()
+        {
+            var result = statisticService.GetStatistic(chat, chatAnalyzerService.TotalNumberOfWords, "NumberOfWords");
 
-            var result = new Statistic<int>()
-            {
-                StatisticName = statisticName,
-                Total = total,
-                TotalBySenders = totalBySenders,
-                Dates = chat.Messages.Select(o => o.SentDateNormalized).Distinct().OrderBy(o => o).ToList(),
-                ValuesBySendersOnDates = valuesBySendersOnDates
-            };
+            return result;
+        }
+
+        [HttpGet("getStatistic/numberOfCharacters")]
+        public ActionResult<Statistic<int>> GetStatisticNumberOfCharacters()
+        {
+            var result = statisticService.GetStatistic(chat, chatAnalyzerService.TotalNumberOfCharacters, "NumberOfCharacters");
+
+            return result;
+        }
+
+        [HttpGet("getStatistic/numberOfMedia")]
+        public ActionResult<Statistic<int>> GetStatisticNumberOfMedia()
+        {
+            var result = statisticService.GetStatistic(chat, chatAnalyzerService.TotalNumberOfMedia, "NumberOfMedia");
+
+            return result;
+        }
+
+        [HttpGet("getStatistic/numberOfEmojis")]
+        public ActionResult<Statistic<int>> GetStatisticNumberOfEmojis()
+        {
+            var result = statisticService.GetStatistic(chat, chatAnalyzerService.TotalNumberOfEmojis, "NumberOfEmojis");
 
             return result;
         }

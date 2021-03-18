@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace WappChatAnalyzer.Services
         bool IsEmoji(string textElement);
         bool TryGetEmoji(string textElement, out Emoji emoji);
         Emoji GetEmojiByCodePoints(string codePoints);
+        int CountEmojiInMessages(IEnumerable<Message> messages, string codePoints);
     }
 
     public class EmojiService : IEmojiService
@@ -95,6 +97,26 @@ namespace WappChatAnalyzer.Services
         public Emoji GetEmojiByCodePoints(string codePoints)
         {
             return emojis[codePoints].FullyQualified;
+        }
+
+        public int CountEmojiInMessages(IEnumerable<Message> messages, string codePoints)
+        {
+            var emojis = this.emojis.Values.Where(o => o.CodePoints == codePoints || o.FullyQualified.CodePoints == codePoints).ToList();
+
+            var result = 0;
+            messages.ForEach(message =>
+            {
+                var enumerator = StringInfo.GetTextElementEnumerator(message.Text);
+                while (enumerator.MoveNext())
+                {
+                    var textElement = enumerator.GetTextElement();
+                    var currentCodePoints = textElement.EnumerateRunes().Select(o => o.Value.ToString("X")).Aggregate((f, s) => f + " " + s).Trim();
+                    if (emojis.Any(o => o.CodePoints == currentCodePoints))
+                        result++;
+                }
+            });
+
+            return result;
         }
     }
 

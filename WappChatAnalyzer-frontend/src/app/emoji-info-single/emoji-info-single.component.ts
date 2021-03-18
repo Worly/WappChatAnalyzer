@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { EmojiInfo } from '../dtos/emojiInfoTotal';
 
 @Component({
@@ -14,9 +15,13 @@ export class EmojiInfoSingleComponent implements OnInit {
     this.render();
   }
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
+  }
+
+  onClick() {
+    this.router.navigateByUrl("statistic-display/emoji/" + this._emojiInfo.emojiCodePoints);
   }
 
   render() {

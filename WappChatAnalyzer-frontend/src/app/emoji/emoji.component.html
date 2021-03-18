@@ -1,4 +1,4 @@
-<div (mouseenter)="mouseEnter()" (mouseleave)="mouseLeave()">
+<div class="wrapper" (mouseenter)="mouseEnter()" (mouseleave)="mouseLeave()">
     <img *ngIf="showWappEmoji" [src]="iconUrl" (error)="imgLoadingError()" height="50px" />
     <span *ngIf="!showWappEmoji" [innerHTML]="emojiUnicode" style="height: 50px;"></span>
     <div *ngIf="showName" class="name">{{emojiName}}</div>

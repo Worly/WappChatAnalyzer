@@ -19,8 +19,8 @@ export class DataService {
     return <Observable<BasicInfoTotal>>this.http.get(this.apiUrl + "basic/getBasicInfoTotal");
   }
 
-  getStatistic(statisticName: string): Observable<Statistic> {
-    return <Observable<Statistic>>this.http.get(this.apiUrl + "basic/getStatistic?statisticName=" + statisticName);
+  getStatistic(statisticUrl: string): Observable<Statistic> {
+    return <Observable<Statistic>>this.http.get(this.apiUrl + statisticUrl);
   }
 
   getEmojiInfoTotal(): Observable<EmojiInfoTotal> {

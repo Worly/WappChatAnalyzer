@@ -23,7 +23,7 @@ export class EmojiComponent implements OnInit {
   public emojiName: string;
   public showName: boolean;
 
-  constructor(private dataService: DataService) { 
+  constructor(private dataService: DataService) {
 
   }
 
@@ -32,20 +32,28 @@ export class EmojiComponent implements OnInit {
   }
 
   render() {
-    this.emojiUnicode = this._codePoints.split(' ').map(c => "&#x" + c + ";").join('');
-
-    this.dataService.getEmojiByCodePoints(this._codePoints).subscribe(r => {
-      let name = r.name.toLowerCase().split(' ').join("-");
-      let codePoints = r.codePoints.toLowerCase().split(' ').join('-');
-      
-      this.iconUrl = this.emojiIconApiPoint + name + "_" + codePoints + ".png";
-
-
-      this.emojiName = r.name;
-
-
+    if (this._codePoints == null) {
+      this.emojiUnicode = null;
+      this.iconUrl = null;
+      this.emojiName = null;
       this.showWappEmoji = true;
-    });
+    }
+    else {
+      this.emojiUnicode = this._codePoints.split(' ').map(c => "&#x" + c + ";").join('');
+
+      this.dataService.getEmojiByCodePoints(this._codePoints).subscribe(r => {
+        let name = r.name.toLowerCase().split(' ').join("-");
+        let codePoints = r.codePoints.toLowerCase().split(' ').join('-');
+
+        this.iconUrl = this.emojiIconApiPoint + name + "_" + codePoints + ".png";
+
+
+        this.emojiName = r.name;
+
+
+        this.showWappEmoji = true;
+      });
+    }
   }
 
   imgLoadingError() {

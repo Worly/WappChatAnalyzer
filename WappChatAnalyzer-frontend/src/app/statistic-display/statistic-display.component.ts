@@ -14,9 +14,11 @@ let id = 0;
 })
 export class StatisticDisplayComponent implements OnInit {
   @Input()
-  set statisticName(value: string) {
+  set statisticUrl(value: string) {
     this.loadAndShowStatistic(value);
   }
+  
+  displayName: string;
 
   isLoading: boolean;
 
@@ -24,29 +26,22 @@ export class StatisticDisplayComponent implements OnInit {
 
   statistic: Statistic;
 
-  displayNames = {
-    "NumberOfMessages": "Number of messages",
-    "NumberOfWords": "Number of words",
-    "NumberOfCharacters": "Number of characters",
-    "NumberOfMedia": "Number of media",
-    "NumberOfEmojis": "Number of emojis"
-  }
-
   constructor(private dataService: DataService, private route: ActivatedRoute) {
     this.id = id++;
   }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      if (params.has("statisticName"))
-        this.loadAndShowStatistic(params.get("statisticName"));
+    this.route.data.subscribe(data => {
+      if (data.statisticUrl != null)
+        this.loadAndShowStatistic(data.statisticUrl);
+      this.displayName = data.displayName;
     });
   }
 
-  loadAndShowStatistic(statisticName: string) {
+  loadAndShowStatistic(statisticUrl: string) {
     this.statistic = null;
     this.isLoading = true;
-    this.dataService.getStatistic(statisticName).subscribe((r: Statistic) => {
+    this.dataService.getStatistic(statisticUrl).subscribe((r: Statistic) => {
       this.isLoading = false;
       this.statistic = r;
       this.renderTotal(r);
@@ -56,7 +51,6 @@ export class StatisticDisplayComponent implements OnInit {
 
   renderTotal(statistic: Statistic) {
     let dataPoints = [];
-    let color = 0;
     for (let sender in statistic.totalBySenders) {
       dataPoints.push({
         name: sender,

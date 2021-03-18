@@ -19,11 +19,13 @@ namespace WappChatAnalyzer.Controllers
     {
         private IEmojiService emojiService;
         private IChat chat;
+        private IStatisticService statisticService;
 
-        public EmojiController(IEmojiService emojiService, IChat chat)
+        public EmojiController(IEmojiService emojiService, IChat chat, IStatisticService statisticService)
         {
             this.emojiService = emojiService;
             this.chat = chat;
+            this.statisticService = statisticService;
         }
 
         [HttpGet("getEmoji")]
@@ -96,7 +98,7 @@ namespace WappChatAnalyzer.Controllers
             };
         }
 
-        public Dictionary<string, Dictionary<string, int>> GetEmojiInfoTotal(IEnumerable<Message> inMessages)
+        private Dictionary<string, Dictionary<string, int>> GetEmojiInfoTotal(IEnumerable<Message> inMessages)
         {
             var result = new Dictionary<string, Dictionary<string, int>>();
 
@@ -122,6 +124,15 @@ namespace WappChatAnalyzer.Controllers
                 }
 
             }
+
+            return result;
+        }
+
+
+        [HttpGet("getStatistic/singleEmoji/{emojiCodePoints}")]
+        public Statistic<int> GetStatisticSingleEmoji(string emojiCodePoints)
+        {
+            var result = statisticService.GetStatistic(chat, messages => emojiService.CountEmojiInMessages(messages, emojiCodePoints), "SingleEmoji");
 
             return result;
         }
