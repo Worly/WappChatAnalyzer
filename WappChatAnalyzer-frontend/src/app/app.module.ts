@@ -13,6 +13,8 @@ import { EmojiInfoSingleComponent } from './emoji-info-single/emoji-info-single.
 import { RatioBarComponent } from './ratio-bar/ratio-bar.component';
 import { LoadingComponent } from './loading/loading.component';
 import { StatisticDisplaySingleEmojiComponent } from './statistic-display-single-emoji/statistic-display-single-emoji.component';
+import { RouteReuseStrategy } from '@angular/router';
+import { CustomReuseStrategy } from './services/route-reuse-strategy';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,9 @@ import { StatisticDisplaySingleEmojiComponent } from './statistic-display-single
     AppRoutingModule,
     HttpClientModule,
   ],
-  providers: [],
+  providers: [
+    { provide: RouteReuseStrategy, useClass: CustomReuseStrategy }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
