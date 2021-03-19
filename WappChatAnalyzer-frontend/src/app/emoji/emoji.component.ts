@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { DataService } from '../services/data.service';
+import { ToastComponent } from '../toast/toast.component';
 
 @Component({
   selector: 'app-emoji',
@@ -17,9 +18,11 @@ export class EmojiComponent implements OnInit {
     this.render();
   }
 
+  @ViewChild(ToastComponent) toast: ToastComponent;
+
   public iconUrl: string;
   public showWappEmoji: boolean;
-  public emojiUnicode: string;
+  public emojiHtml: string;
   public emojiName: string;
   public showName: boolean;
 
@@ -33,13 +36,13 @@ export class EmojiComponent implements OnInit {
 
   render() {
     if (this._codePoints == null) {
-      this.emojiUnicode = null;
+      this.emojiHtml = null;
       this.iconUrl = null;
       this.emojiName = null;
       this.showWappEmoji = true;
     }
     else {
-      this.emojiUnicode = this._codePoints.split(' ').map(c => "&#x" + c + ";").join('');
+      this.emojiHtml = this._codePoints.split(' ').map(c => "&#x" + c + ";").join('');
 
       this.dataService.getEmojiByCodePoints(this._codePoints).subscribe(r => {
         let name = r.name.toLowerCase().split(' ').join("-");
@@ -68,4 +71,10 @@ export class EmojiComponent implements OnInit {
     this.showName = false;
   }
 
+  click(event: Event) {
+    var emoji = String.fromCodePoint(...this._codePoints.split(' ').map(o => parseInt(o, 16)))
+    navigator.clipboard.writeText(emoji);
+    event.stopPropagation();
+    this.toast.show(emoji + " copied to clipboard");
+  }
 }

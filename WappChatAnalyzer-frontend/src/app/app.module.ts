@@ -15,6 +15,7 @@ import { LoadingComponent } from './loading/loading.component';
 import { StatisticDisplaySingleEmojiComponent } from './statistic-display-single-emoji/statistic-display-single-emoji.component';
 import { RouteReuseStrategy } from '@angular/router';
 import { CustomReuseStrategy } from './services/route-reuse-strategy';
+import { ToastComponent } from './toast/toast.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { CustomReuseStrategy } from './services/route-reuse-strategy';
     EmojiInfoSingleComponent,
     RatioBarComponent,
     LoadingComponent,
-    StatisticDisplaySingleEmojiComponent
+    StatisticDisplaySingleEmojiComponent,
+    ToastComponent
   ],
   imports: [
     BrowserModule,
