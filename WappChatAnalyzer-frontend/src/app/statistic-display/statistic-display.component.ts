@@ -155,6 +155,7 @@ export class StatisticDisplayComponent implements OnInit {
       },
       axisX: {
         labelFontFamily: "Raleway",
+        valueFormatString: "DD/MM/YY",
         labelFontSize: 16,
       },
       axisY2: {
@@ -227,12 +228,12 @@ export class StatisticDisplayComponent implements OnInit {
         continue;
 
       var percentage = (e.entries[i].dataPoint.y / total) * 100;
-      var str1 = "<span style= \"color:" + e.entries[i].dataSeries.color + "\"> " + e.entries[i].dataSeries.name + "</span>: <strong>" + e.entries[i].dataPoint.y + "</strong>(" + percentage.toPrecision(2) + "%)<br/>";
+      var str1 = "<span style= \"color:" + e.entries[i].dataSeries.color + "\"> " + e.entries[i].dataSeries.name + "</span>: <strong>" + e.entries[i].dataPoint.y.toLocaleString('en-US', {maximumFractionDigits:2}) + "</strong> (" + percentage.toFixed(0) + "%)<br/>";
 
       str = str.concat(str1);
     }
-    str = str.concat("<span style= \"color: #FC7536\">Total</span>: <strong>" + total + "</strong><br/>");
-    str = "<span>" + date.toDateString() + "</span><br/>".concat(str);
+    str = str.concat("<span style= \"color: #FC7536\">Total</span>: <strong>" + total.toLocaleString('en-US', {maximumFractionDigits:2}) + "</strong><br/>");
+    str = "<span>" + dateFormat(date, "dddd dd/mm/yyyy") + "</span><br/>".concat(str);
 
     var events = events[dateFormat(date, "isoDate")];
     if (events != null) {
