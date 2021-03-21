@@ -1,6 +1,7 @@
-<div class="wrapper" (mouseenter)="mouseEnter()" (mouseleave)="mouseLeave()" (click)="click($event)">
-    <img *ngIf="showWappEmoji" [src]="iconUrl" (error)="imgLoadingError()" height="50px" />
-    <span *ngIf="!showWappEmoji" [innerHTML]="emojiHtml" style="height: 50px;"></span>
-    <div *ngIf="showName" class="name">{{emojiName}}</div>
+<div class="wrapper" [ngClass]="{'not-clickable': !interactible}" (mouseenter)="mouseEnter()" (mouseleave)="mouseLeave()"
+    (click)="click($event)" [style.width]="size + 'px'">
+    <img *ngIf="showWappEmoji" [src]="iconUrl" (error)="imgLoadingError()" [height]="size" />
+    <span *ngIf="!showWappEmoji" class="no-select" [innerHTML]="emojiHtml" [style.height]="size + 'px'" [style.font-size]="size - 4 + 'px'"></span>
+    <div *ngIf="showName && interactible" class="name">{{emojiName}}</div>
 </div>
 <app-toast></app-toast>

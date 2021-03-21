@@ -1,3 +1,4 @@
+using WappChatAnalyzer.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,10 +29,13 @@ namespace WappChatAnalyzer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<MainDbContext>();
+
             services.AddSingleton<IStatisticService, StatisticService>();
             services.AddSingleton<IChat, Chat>();
             services.AddSingleton<IEmojiService, EmojiService>();
             services.AddSingleton<IChatAnalyzerService, ChatAnalyzerService>();
+            services.AddScoped<IEventService, EventService>();
 
             services.AddControllers();
         }

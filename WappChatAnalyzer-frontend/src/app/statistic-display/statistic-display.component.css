@@ -8,3 +8,11 @@
     text-align: center;
     font-size: 2em;
 }
+
+.event-emoji {
+    display: inline-block;
+    position: absolute;
+    pointer-events: none;
+    text-align: center;
+    font-size: 19px;
+}

@@ -18,6 +18,12 @@ export class EmojiComponent implements OnInit {
     this.render();
   }
 
+  @Input()
+  public size: number = 50;
+
+  @Input()
+  public interactible: boolean = true;
+
   @ViewChild(ToastComponent) toast: ToastComponent;
 
   public iconUrl: string;
@@ -72,6 +78,9 @@ export class EmojiComponent implements OnInit {
   }
 
   click(event: Event) {
+    if (!this.interactible)
+      return;
+
     var emoji = String.fromCodePoint(...this._codePoints.split(' ').map(o => parseInt(o, 16)))
     navigator.clipboard.writeText(emoji);
     event.stopPropagation();

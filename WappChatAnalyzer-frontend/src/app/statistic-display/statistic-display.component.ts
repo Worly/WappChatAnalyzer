@@ -4,6 +4,8 @@ import * as CanvasJS from '../../assets/canvasjs.min';
 import { appConfig } from '../app.config';
 import { Statistic } from "../dtos/statistic";
 import { DataService } from '../services/data.service';
+import { EventService } from '../services/event.service';
+import * as dateFormat from "dateformat";
 
 let id = 0;
 
@@ -17,7 +19,7 @@ export class StatisticDisplayComponent implements OnInit {
   set statisticUrl(value: string) {
     this.loadAndShowStatistic(value);
   }
-  
+
   displayName: string;
 
   isLoading: boolean;
@@ -26,7 +28,13 @@ export class StatisticDisplayComponent implements OnInit {
 
   statistic: Statistic;
 
-  constructor(private dataService: DataService, private route: ActivatedRoute) {
+  events = {};
+  eventElements = [];
+  eventEmojiSize = 24;
+
+  private chart;
+
+  constructor(private dataService: DataService, private eventService: EventService, private route: ActivatedRoute) {
     this.id = id++;
   }
 
@@ -36,6 +44,18 @@ export class StatisticDisplayComponent implements OnInit {
         this.loadAndShowStatistic(data.statisticUrl);
       this.displayName = data.displayName;
     });
+    this.loadAndShowEvents();
+  }
+
+  loadAndShowEvents() {
+    this.eventService.getEvents().subscribe((r: Event[]) => {
+      let key = "date";
+      this.events = r.reduce((rv, x) => {
+        (rv[x[key]] = rv[x[key]] || []).push(x);
+        return rv;
+      }, {});
+      this.renderEvents();
+    })
   }
 
   loadAndShowStatistic(statisticUrl: string) {
@@ -46,6 +66,7 @@ export class StatisticDisplayComponent implements OnInit {
       this.statistic = r;
       this.renderTotal(r);
       this.renderGraph(r);
+      this.renderEvents();
     });
   }
 
@@ -116,7 +137,7 @@ export class StatisticDisplayComponent implements OnInit {
     }
     data.push(dataSingle);
 
-    new CanvasJS.Chart("chartContainerGraph" + this.id, {
+    this.chart = new CanvasJS.Chart("chartContainerGraph" + this.id, {
       animationEnabled: true,
       exportEnabled: false,
       backgroundColor: "rgba(0,0,0,0)",
@@ -126,7 +147,7 @@ export class StatisticDisplayComponent implements OnInit {
       toolTip: {
         shared: true,
         reversed: true,
-        content: this.toolTipContent
+        content: e => this.toolTipContent(e, this.events)
       },
       axisY: {
         labelFontFamily: "Raleway",
@@ -137,9 +158,7 @@ export class StatisticDisplayComponent implements OnInit {
         labelFontSize: 16,
       },
       axisY2: {
-        labelFormatter: function () {
-          return " ";
-        },
+        labelFormatter: () => " ",
         gridThickness: 0,
         tickLength: 0,
         lineThickness: 0,
@@ -155,11 +174,46 @@ export class StatisticDisplayComponent implements OnInit {
         }]
       },
       data: data
-    }).render();
+    });
+    this.chart.render();
   }
 
-  toolTipContent(e) {
+  renderEvents() {
+    if (this.chart == null)
+      return;
+
+    this.eventElements = [];
+
+    for (let key in this.events) {
+      var date = new Date(key);
+
+      for (let i = 0; i < this.events[key].length; i++) {
+        let event = this.events[key][i];
+        var x = this.chart.axisX[0].convertValueToPixel(date)
+        var chartDataPoint = this.chart.data[2].dataPoints.find(e => this.compareDatesWithoutTime(e.x, date));
+        if (chartDataPoint == null)
+          continue;
+        var y = this.chart.axisY[0].convertValueToPixel(chartDataPoint.y);
+
+        this.eventElements.push({
+          emoji: event.emoji,
+          x: x,
+          y: y - i * (this.eventEmojiSize)
+        });
+      }
+    }
+  }
+
+  compareDatesWithoutTime(first: Date, second: Date): boolean {
+    return first.getDate() == second.getDate() &&
+      first.getMonth() == second.getMonth() &&
+      first.getFullYear() == second.getFullYear();
+  }
+
+  toolTipContent(e, events) {
     var str = "";
+
+    var date = <Date>e.entries[0].dataPoint.x
 
     var total = 0;
     for (var i = e.entries.length - 1; i >= 0; i--) {
@@ -178,7 +232,16 @@ export class StatisticDisplayComponent implements OnInit {
       str = str.concat(str1);
     }
     str = str.concat("<span style= \"color: #FC7536\">Total</span>: <strong>" + total + "</strong><br/>");
-    str = "<span>" + (e.entries[0].dataPoint.x).toDateString() + "</span><br/>".concat(str);
+    str = "<span>" + date.toDateString() + "</span><br/>".concat(str);
+
+    var events = events[dateFormat(date, "isoDate")];
+    if (events != null) {
+      str = str.concat("<br/>")
+      for (let event of events) {
+        str = str.concat("<span>" + event.groupName + " " + event.emoji + " " + (event.name != null ? event.name : "") + "</span><br/>");
+      }
+    }
+
     return str;
   }
 }

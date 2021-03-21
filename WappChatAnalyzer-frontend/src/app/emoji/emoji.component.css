@@ -1,6 +1,12 @@
 .wrapper {
     width: min-content;
     cursor: pointer;
+    text-align: center;
+}
+
+.not-clickable {
+    cursor: inherit;
+    pointer-events: none;
 }
 
 .name {
