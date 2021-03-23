@@ -9,6 +9,13 @@
 }
 
 .navbar-brand {
-    
     color: white;
+}
+
+.nav-link {
+    color: white;
+}
+
+.active {
+    font-weight: bold;
 }

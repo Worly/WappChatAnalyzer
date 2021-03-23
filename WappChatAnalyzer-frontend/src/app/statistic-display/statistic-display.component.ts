@@ -6,6 +6,8 @@ import { Statistic } from "../dtos/statistic";
 import { DataService } from '../services/data.service';
 import { EventService } from '../services/event.service';
 import * as dateFormat from "dateformat";
+import { groupBy } from "../utils";
+import { Event } from "../dtos/event";
 
 let id = 0;
 
@@ -50,10 +52,7 @@ export class StatisticDisplayComponent implements OnInit {
   loadAndShowEvents() {
     this.eventService.getEvents().subscribe((r: Event[]) => {
       let key = "date";
-      this.events = r.reduce((rv, x) => {
-        (rv[x[key]] = rv[x[key]] || []).push(x);
-        return rv;
-      }, {});
+      this.events = groupBy(r, "date");
       this.renderEvents();
     })
   }

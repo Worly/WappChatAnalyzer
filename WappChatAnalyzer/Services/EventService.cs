@@ -10,7 +10,7 @@ namespace WappChatAnalyzer.Services
 {
     public interface IEventService
     {
-        List<EventDTO> GetEvents();
+        List<EventDTO> GetEvents(int? skip, int? take);
     }
 
     public class EventService : IEventService
@@ -22,9 +22,16 @@ namespace WappChatAnalyzer.Services
             this.mainDbContext = mainDbContext;
         }
 
-        public List<EventDTO> GetEvents()
+        public List<EventDTO> GetEvents(int? skip, int? take)
         {
-            return mainDbContext.Events.Include(o => o.EventGroup).Select(o => new EventDTO()
+            IQueryable<Event> query = mainDbContext.Events.Include(o => o.EventGroup).OrderByDescending(o => o.DateTime).ThenBy(o => o.Id);
+
+            if (skip != null)
+                query = query.Skip(skip.Value);
+            if (take != null)
+                query = query.Take(take.Value);
+
+            return query.Select(o => new EventDTO()
             {
                 Id = o.Id,
                 Name = o.Name,

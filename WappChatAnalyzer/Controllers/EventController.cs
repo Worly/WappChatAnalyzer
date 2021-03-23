@@ -19,9 +19,9 @@ namespace WappChatAnalyzer.Controllers
         }
 
         [HttpGet("getEvents")]
-        public List<EventDTO> GetEvents()
+        public List<EventDTO> GetEvents([FromQuery] int? skip, [FromQuery] int? take)
         {
-            return eventService.GetEvents();
+            return eventService.GetEvents(skip, take);
         }
     }
 }

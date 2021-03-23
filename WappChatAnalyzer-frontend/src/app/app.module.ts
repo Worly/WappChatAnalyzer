@@ -16,6 +16,8 @@ import { StatisticDisplaySingleEmojiComponent } from './statistic-display-single
 import { RouteReuseStrategy } from '@angular/router';
 import { CustomReuseStrategy } from './services/route-reuse-strategy';
 import { ToastComponent } from './toast/toast.component';
+import { EventListComponent } from './event-list/event-list.component';
+import { OrderModule } from 'ngx-order-pipe';
 
 @NgModule({
   declarations: [
@@ -29,12 +31,14 @@ import { ToastComponent } from './toast/toast.component';
     RatioBarComponent,
     LoadingComponent,
     StatisticDisplaySingleEmojiComponent,
-    ToastComponent
+    ToastComponent,
+    EventListComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    OrderModule
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: CustomReuseStrategy }

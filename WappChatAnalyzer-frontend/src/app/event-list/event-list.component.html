@@ -1,0 +1,12 @@
+<div>
+    <div class="title">Events</div>
+    <div *ngFor="let day of events | keyvalue | orderBy: 'key' : true">
+        <div class="date">{{formatDate(day.key, true)}}</div>
+        <div *ngFor="let item of day.value" class="item">
+            <div class="emoji">{{item.emoji}}</div>
+            <div class="groupName">{{item.groupName}}</div>
+            <div class="name">{{item.name}}</div>
+            <div class="eventDate">{{formatDate(item.date, false)}}</div>
+        </div>
+    </div>
+</div>
