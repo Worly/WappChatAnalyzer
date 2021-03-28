@@ -21,6 +21,8 @@ export class EventListComponent implements OnInit {
   editingEventInfo: EventInfo = null;
   addingNew: boolean = false;
 
+  count: number;
+
   constructor(private eventService: EventService, private filterService: FilterService) { }
 
   ngOnInit(): void {
@@ -34,6 +36,10 @@ export class EventListComponent implements OnInit {
     this.skip = 0;
     this.events = {};
     this.loadMore();
+
+    this.eventService.getEventCount().subscribe(count => {
+      this.count = count;
+    });
   }
 
   loadMore() {
@@ -116,6 +122,8 @@ export class EventListComponent implements OnInit {
         this.events[fromDate].splice(index, 1);
         if (this.events[fromDate].length == 0)
           delete this.events[fromDate];
+
+        this.count--;
       }
     }
   }
@@ -125,6 +133,8 @@ export class EventListComponent implements OnInit {
       this.events[eventInfo.date].push(eventInfo);
     else
       this.events[eventInfo.date] = [eventInfo];
+
+    this.count++;
   }
 
   onNewClick() {

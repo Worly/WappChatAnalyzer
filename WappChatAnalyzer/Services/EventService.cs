@@ -11,6 +11,7 @@ namespace WappChatAnalyzer.Services
     public interface IEventService
     {
         List<EventInfoDTO> GetEvents(int[] notSelectedGroups, int? skip, int? take);
+        int GetEventCount(int[] notSelectedGroups);
         List<EventGroupDTO> GetEventGroups();
         EventDTO GetEvent(int id);
         void SaveEvent(EventDTO eventDTO);
@@ -46,6 +47,11 @@ namespace WappChatAnalyzer.Services
                 Emoji = o.Emoji,
                 GroupName = o.EventGroup.Name
             }).ToList();
+        }
+
+        public int GetEventCount(int[] notSelectedGroups)
+        {
+            return mainDbContext.Events.Where(o => !notSelectedGroups.Contains(o.EventGroupId)).Count();
         }
 
         public List<EventGroupDTO> GetEventGroups()

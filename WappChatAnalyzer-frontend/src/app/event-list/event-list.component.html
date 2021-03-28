@@ -14,6 +14,9 @@
             <app-event-edit style="width: 100%;" [isNew]="true" (onDone)="onNewDone($event)"></app-event-edit>
         </div>
     </div>
+
+    <div class="result-count">Results: {{count}}</div>
+
     <div *ngFor="let day of events | keyvalue | orderBy: 'key' : true">
         <div class="date">{{formatDate(day.key, true)}}</div>
         <div *ngFor="let item of day.value" class="item-wrapper">

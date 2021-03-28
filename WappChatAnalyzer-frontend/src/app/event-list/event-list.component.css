@@ -12,6 +12,14 @@
     margin-bottom: 40px;
 }
 
+.result-count {
+    font-size: 1.2rem;
+    color: rgb(73, 73, 73);
+    text-align: right;
+    margin-bottom: -45px;
+    margin-top: 20px;
+}
+
 .date {
     margin-top: 15px;
     margin-bottom: 5px;

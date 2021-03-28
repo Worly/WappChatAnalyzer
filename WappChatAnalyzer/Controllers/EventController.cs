@@ -27,6 +27,14 @@ namespace WappChatAnalyzer.Controllers
             return eventService.GetEvents(notSelectedGroups, skip, take);
         }
 
+        [HttpGet("getEventCount")]
+        public int GetEventCount([FromQuery] string notSelectedGroupsJSON)
+        {
+            var notSelectedGroups = JsonConvert.DeserializeObject<int[]>(notSelectedGroupsJSON);
+
+            return eventService.GetEventCount(notSelectedGroups);
+        }
+
         [HttpGet("getEventGroups")]
         public List<EventGroupDTO> GetEventGroups()
         {

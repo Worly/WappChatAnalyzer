@@ -26,6 +26,14 @@ export class EventService {
     });
   }
 
+  getEventCount(): Observable<number> {
+    let params = {};
+    params["notSelectedGroupsJSON"] = JSON.stringify(this.filterService.eventGroupsNotSelected);
+    return <Observable<number>>this.http.get(appConfig.apiUrl + "event/getEventCount", {
+      params: params
+    });
+  }
+
   getEventGroups(): Observable<EventGroup[]> {
     return <Observable<EventGroup[]>>this.http.get(appConfig.apiUrl + "event/getEventGroups");
   }
