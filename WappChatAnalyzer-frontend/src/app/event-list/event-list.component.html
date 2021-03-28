@@ -1,5 +1,10 @@
 <div>
     <div class="title">Events</div>
+
+    <div class="eventGroupFilter">
+        <app-event-group-filter></app-event-group-filter>
+    </div>
+
     <div style="margin-bottom: 10px;">
         <div *ngIf="!addingNew" class="button-new" (click)="onNewClick()">＋ Add new</div>
     </div>

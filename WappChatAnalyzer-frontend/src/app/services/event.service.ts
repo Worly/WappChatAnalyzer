@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { appConfig } from '../app.config';
 import { EventInfo, Event, EventGroup } from "../dtos/event";
+import { FilterService } from './filter.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private filterService: FilterService) { }
 
   getEvents(skip?: number, take?: number): Observable<EventInfo[]> {
     let params = {};
@@ -17,6 +18,8 @@ export class EventService {
       params["skip"] = skip;
     if (take != null)
       params["take"] = take;
+
+    params["notSelectedGroupsJSON"] = JSON.stringify(this.filterService.eventGroupsNotSelected);
 
     return <Observable<EventInfo[]>>this.http.get(appConfig.apiUrl + "event/getEvents", {
       params: params

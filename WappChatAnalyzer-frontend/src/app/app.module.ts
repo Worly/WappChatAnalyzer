@@ -21,6 +21,7 @@ import { OrderModule } from 'ngx-order-pipe';
 import { EventEditComponent } from './event-list/event-edit/event-edit.component';
 import { DpDatePickerModule } from 'ng2-date-picker';
 import { EventGroupPickerComponent } from './event-list/event-group-picker/event-group-picker.component';
+import { EventGroupFilterComponent } from './event-group-filter/event-group-filter.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { EventGroupPickerComponent } from './event-list/event-group-picker/event
     ToastComponent,
     EventListComponent,
     EventEditComponent,
-    EventGroupPickerComponent
+    EventGroupPickerComponent,
+    EventGroupFilterComponent
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +20,11 @@ namespace WappChatAnalyzer.Controllers
         }
 
         [HttpGet("getEvents")]
-        public List<EventInfoDTO> GetEvents([FromQuery] int? skip, [FromQuery] int? take)
+        public List<EventInfoDTO> GetEvents([FromQuery] int? skip, [FromQuery] int? take, [FromQuery] string notSelectedGroupsJSON)
         {
-            return eventService.GetEvents(skip, take);
+            var notSelectedGroups = JsonConvert.DeserializeObject<int[]>(notSelectedGroupsJSON);
+
+            return eventService.GetEvents(notSelectedGroups, skip, take);
         }
 
         [HttpGet("getEventGroups")]

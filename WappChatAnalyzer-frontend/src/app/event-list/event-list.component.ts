@@ -4,6 +4,7 @@ import { EventInfo } from "../dtos/event";
 import { groupBy } from "../utils";
 import * as dateFormat from "dateformat";
 import { Router } from '@angular/router';
+import { FilterService } from '../services/filter.service';
 
 @Component({
   selector: 'app-event-list',
@@ -20,9 +21,17 @@ export class EventListComponent implements OnInit {
   editingEventInfo: EventInfo = null;
   addingNew: boolean = false;
 
-  constructor(private eventService: EventService, private router: Router) { }
+  constructor(private eventService: EventService, private filterService: FilterService) { }
 
   ngOnInit(): void {
+    this.filterService.eventGroupsChanged.subscribe(() => {
+      this.load();
+    });
+    this.load();
+  }
+
+  load() {
+    this.skip = 0;
     this.events = {};
     this.loadMore();
   }

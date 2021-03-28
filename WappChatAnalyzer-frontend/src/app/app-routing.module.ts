@@ -14,7 +14,7 @@ const routes: Routes = [
   { path: "statistic-display/characters", component: StatisticDisplayComponent, data: { statisticUrl: "basic/getStatistic/numberOfCharacters", displayName: "Number of characters" } },
   { path: "statistic-display/media", component: StatisticDisplayComponent, data: { statisticUrl: "basic/getStatistic/numberOfMedia", displayName: "Number of media" } },
   { path: "statistic-display/emojis", component: StatisticDisplayEmojisComponent, data: { shouldDetach: true } },
-  { path: "events", component: EventListComponent, data: { shouldDetach: true } },
+  { path: "events", component: EventListComponent },
   { path: "**", redirectTo: "/home" }
 ];
 

@@ -8,6 +8,7 @@ import { EventService } from '../services/event.service';
 import * as dateFormat from "dateformat";
 import { groupBy } from "../utils";
 import { EventInfo } from "../dtos/event";
+import { FilterService } from '../services/filter.service';
 
 let id = 0;
 
@@ -36,7 +37,7 @@ export class StatisticDisplayComponent implements OnInit {
 
   private chart;
 
-  constructor(private dataService: DataService, private eventService: EventService, private route: ActivatedRoute) {
+  constructor(private dataService: DataService, private eventService: EventService, private route: ActivatedRoute, private filterService: FilterService) {
     this.id = id++;
   }
 
@@ -47,11 +48,12 @@ export class StatisticDisplayComponent implements OnInit {
       this.displayName = data.displayName;
     });
     this.loadAndShowEvents();
+
+    this.filterService.eventGroupsChanged.subscribe(() => this.loadAndShowEvents());
   }
 
   loadAndShowEvents() {
     this.eventService.getEvents().subscribe((r: EventInfo[]) => {
-      let key = "date";
       this.events = groupBy(r, "date");
       this.renderEvents();
     })

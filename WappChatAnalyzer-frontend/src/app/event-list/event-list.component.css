@@ -5,6 +5,13 @@
     font-weight: bold;
 }
 
+.eventGroupFilter {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -60px;
+    margin-bottom: 40px;
+}
+
 .date {
     margin-top: 15px;
     margin-bottom: 5px;
