@@ -1,0 +1,25 @@
+<div *ngIf="event != null" class="item">
+    <div class="emoji" (click)="onEmojiClick($event)">
+        <div *ngIf="event.emoji != null">{{event.emoji}}</div>
+        <div class="empty" *ngIf="event.emoji == null"></div>
+    </div>
+    <div class="groupName">
+        <!-- <div contenteditable="true" (input)="onPropertyChange('eventGroup.name', $event.target.innerHTML)">
+            {{event.eventGroup.name}}</div> -->
+        <app-event-group-picker class="underlined" [value]="event.eventGroup" (valueChange)="groupChanged($event)"></app-event-group-picker>
+    </div>
+    <div class="name">
+        <div class="underlined" contenteditable="true" (input)="onPropertyChange('name', $event.target.innerHTML)">{{event.name}}</div>
+    </div>
+    <div class="eventDate">
+        <div [dpDayPicker]="dayPickerConfig" theme="dp-material" (onSelect)="onDateSelected($event)">
+            {{event.date | date: 'dd/MM/yyyy'}}
+        </div>
+    </div>
+</div>
+<hr />
+<div class="buttons">
+    <div class="button button-save" [ngClass]="{'disabled': !isDirty}" (click)="onSaveClick()">Save</div>
+    <div class="button button-cancel" (click)="onCancelClick()">Cancel</div>
+    <div *ngIf="!isNew" class="button button-cancel" style="float: right;" (click)="onDeleteClick()">Delete</div>
+</div>

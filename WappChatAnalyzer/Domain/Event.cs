@@ -11,6 +11,7 @@ namespace WappChatAnalyzer.Domain
         public DateTime DateTime { get; set; }
         public string Name { get; set; }
         public string Emoji { get; set; }
+        public int EventGroupId { get; set; }
         public EventGroup EventGroup { get; set; }
     }
 }

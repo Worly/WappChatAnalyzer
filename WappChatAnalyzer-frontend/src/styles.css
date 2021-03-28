@@ -1,15 +1,92 @@
 /* You can add global styles to this file, and also import other style files */
+
 @import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
 * {
-    font-family: 'Raleway', sans-serif !important;
+  font-family: 'Raleway', sans-serif !important;
 }
 
 .no-select {
-    -webkit-touch-callout: none; /* iOS Safari */
-      -webkit-user-select: none; /* Safari */
-       -khtml-user-select: none; /* Konqueror HTML */
-         -moz-user-select: none; /* Old versions of Firefox */
-          -ms-user-select: none; /* Internet Explorer/Edge */
-              user-select: none; /* Non-prefixed version, currently
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
                                     supported by Chrome, Edge, Opera and Firefox */
-  }
+}
+
+.emoji-picker__emoji, .emoji-picker__preview-emoji {
+  font-family: "Segoe UI Emoji", "Segoe UI Symbol", "Segoe UI", "Apple Color Emoji", "Twemoji Mozilla", "Noto Color Emoji", "EmojiOne Color", "Android Emoji" !important;
+}
+
+dp-day-calendar .dp-calendar-day {
+  height: 40px !important;
+  width: 40px !important;
+}
+
+dp-day-calendar.dp-material .dp-calendar-weekday {
+  width: 40px !important;
+}
+
+.dp-calendar-nav-container {
+  font-size: 13px;
+}
+
+.dp-day-calendar-container {
+  font-size: 1.4rem !important;
+}
+
+.dp-nav-header {
+  font-size: 1.3rem !important;
+}
+
+dp-calendar-nav.dp-material .dp-calendar-nav-container {
+  height: 50px !important;
+}
+
+dp-calendar-nav.dp-material .dp-nav-header-btn {
+  height: 40px !important;
+  width: 120px !important;
+}
+
+.dp-popup {
+  background: none !important;
+  border: none !important;
+  border-radius: 8px !important;
+}
+
+dp-day-calendar .dp-day-calendar-container {
+  border-radius: 8px !important;
+}
+
+dp-day-calendar.dp-material .dp-calendar-wrapper {
+  border-bottom-left-radius: 8px !important;
+  border-bottom-right-radius: 8px !important;
+}
+
+dp-calendar-nav.dp-material .dp-calendar-nav-container {
+  border-top-left-radius: 8px !important;
+  border-top-right-radius: 8px !important;
+}
+
+dp-day-calendar.dp-material .dp-selected {
+  background-color: #16BAC5 !important;
+}
+
+dp-day-calendar.dp-material .dp-current-day {
+  border-color: #16BAC5 !important;
+}
+
+dp-month-calendar.dp-material .dp-current-month {
+  border-color: #16BAC5 !important;
+}
+
+dp-date-picker {
+  display: inline !important;
+}

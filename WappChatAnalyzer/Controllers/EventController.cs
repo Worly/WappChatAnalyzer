@@ -19,9 +19,42 @@ namespace WappChatAnalyzer.Controllers
         }
 
         [HttpGet("getEvents")]
-        public List<EventDTO> GetEvents([FromQuery] int? skip, [FromQuery] int? take)
+        public List<EventInfoDTO> GetEvents([FromQuery] int? skip, [FromQuery] int? take)
         {
             return eventService.GetEvents(skip, take);
+        }
+
+        [HttpGet("getEventGroups")]
+        public List<EventGroupDTO> GetEventGroups()
+        {
+            return eventService.GetEventGroups();
+        }
+
+        [HttpGet("getEvent/{id}")]
+        public EventDTO GetEvent([FromRoute] int id)
+        {
+            return eventService.GetEvent(id);
+        }
+
+        [HttpPost("saveEvent/{id}")]
+        public EventDTO SaveEvent([FromBody] EventDTO eventDTO)
+        {
+            if (eventDTO.Id != 0)
+            {
+                eventService.SaveEvent(eventDTO);
+                return eventService.GetEvent(eventDTO.Id);
+            }
+            else
+            {
+                var id = eventService.AddEvent(eventDTO);
+                return eventService.GetEvent(id);
+            }
+        }
+
+        [HttpDelete("deleteEvent/{id}")]
+        public void DeleteEvent([FromRoute] int id)
+        {
+            eventService.DeleteEvent(id);
         }
     }
 }

@@ -1,12 +1,27 @@
 <div>
     <div class="title">Events</div>
+    <div style="margin-bottom: 10px;">
+        <div *ngIf="!addingNew" class="button-new" (click)="onNewClick()">＋ Add new</div>
+    </div>
+
+    <div *ngIf="addingNew" class="item-wrapper">
+        <div class="item">
+            <app-event-edit style="width: 100%;" [isNew]="true" (onDone)="onNewDone($event)"></app-event-edit>
+        </div>
+    </div>
     <div *ngFor="let day of events | keyvalue | orderBy: 'key' : true">
         <div class="date">{{formatDate(day.key, true)}}</div>
-        <div *ngFor="let item of day.value" class="item">
-            <div class="emoji">{{item.emoji}}</div>
-            <div class="groupName">{{item.groupName}}</div>
-            <div class="name">{{item.name}}</div>
-            <div class="eventDate">{{formatDate(item.date, false)}}</div>
+        <div *ngFor="let item of day.value" class="item-wrapper">
+            <div *ngIf="editingEventInfo != item" class="item">
+                <div class="emoji">{{item.emoji}}</div>
+                <div class="groupName">{{item.groupName}}</div>
+                <div class="name">{{item.name}}</div>
+                <div class="eventDate">{{formatDate(item.date, false)}}</div>
+                <div class="overlay" (click)="onClick(item)"></div>
+            </div>
+            <div *ngIf="editingEventInfo == item" class="item">
+                <app-event-edit [id]="item.id" style="width: 100%;" (onDone)="onEditDone($event)"></app-event-edit>
+            </div>
         </div>
     </div>
 </div>

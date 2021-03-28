@@ -1,0 +1,14 @@
+<div class="my-container">
+    <div class="clickable" (click)="togglePicker()">
+        <span *ngIf="value == null">Select...</span>
+        <span *ngIf="value != null">{{value.name}}</span>
+    </div>
+    <div *ngIf="pickerVisible" class="picker">
+        <div *ngIf="isLoading">Loading...</div>
+        <div *ngIf="!isLoading">
+            <div *ngFor="let item of eventGroups" class="item no-select" (click)="select(item)">
+                {{item.name}}
+            </div>
+        </div>
+    </div>
+</div>

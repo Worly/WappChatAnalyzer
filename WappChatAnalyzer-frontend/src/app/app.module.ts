@@ -18,6 +18,9 @@ import { CustomReuseStrategy } from './services/route-reuse-strategy';
 import { ToastComponent } from './toast/toast.component';
 import { EventListComponent } from './event-list/event-list.component';
 import { OrderModule } from 'ngx-order-pipe';
+import { EventEditComponent } from './event-list/event-edit/event-edit.component';
+import { DpDatePickerModule } from 'ng2-date-picker';
+import { EventGroupPickerComponent } from './event-list/event-group-picker/event-group-picker.component';
 
 @NgModule({
   declarations: [
@@ -32,13 +35,16 @@ import { OrderModule } from 'ngx-order-pipe';
     LoadingComponent,
     StatisticDisplaySingleEmojiComponent,
     ToastComponent,
-    EventListComponent
+    EventListComponent,
+    EventEditComponent,
+    EventGroupPickerComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    OrderModule
+    OrderModule,
+    DpDatePickerModule
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: CustomReuseStrategy }

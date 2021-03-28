@@ -7,7 +7,7 @@ import { DataService } from '../services/data.service';
 import { EventService } from '../services/event.service';
 import * as dateFormat from "dateformat";
 import { groupBy } from "../utils";
-import { Event } from "../dtos/event";
+import { EventInfo } from "../dtos/event";
 
 let id = 0;
 
@@ -30,7 +30,7 @@ export class StatisticDisplayComponent implements OnInit {
 
   statistic: Statistic;
 
-  events = {};
+  events: { [Key: string]: EventInfo[] } = {};
   eventElements = [];
   eventEmojiSize = 24;
 
@@ -50,7 +50,7 @@ export class StatisticDisplayComponent implements OnInit {
   }
 
   loadAndShowEvents() {
-    this.eventService.getEvents().subscribe((r: Event[]) => {
+    this.eventService.getEvents().subscribe((r: EventInfo[]) => {
       let key = "date";
       this.events = groupBy(r, "date");
       this.renderEvents();
@@ -227,11 +227,11 @@ export class StatisticDisplayComponent implements OnInit {
         continue;
 
       var percentage = (e.entries[i].dataPoint.y / total) * 100;
-      var str1 = "<span style= \"color:" + e.entries[i].dataSeries.color + "\"> " + e.entries[i].dataSeries.name + "</span>: <strong>" + e.entries[i].dataPoint.y.toLocaleString('en-US', {maximumFractionDigits:2}) + "</strong> (" + percentage.toFixed(0) + "%)<br/>";
+      var str1 = "<span style= \"color:" + e.entries[i].dataSeries.color + "\"> " + e.entries[i].dataSeries.name + "</span>: <strong>" + e.entries[i].dataPoint.y.toLocaleString('en-US', { maximumFractionDigits: 2 }) + "</strong> (" + percentage.toFixed(0) + "%)<br/>";
 
       str = str.concat(str1);
     }
-    str = str.concat("<span style= \"color: #FC7536\">Total</span>: <strong>" + total.toLocaleString('en-US', {maximumFractionDigits:2}) + "</strong><br/>");
+    str = str.concat("<span style= \"color: #FC7536\">Total</span>: <strong>" + total.toLocaleString('en-US', { maximumFractionDigits: 2 }) + "</strong><br/>");
     str = "<span>" + dateFormat(date, "dddd dd/mm/yyyy") + "</span><br/>".concat(str);
 
     var events = events[dateFormat(date, "isoDate")];

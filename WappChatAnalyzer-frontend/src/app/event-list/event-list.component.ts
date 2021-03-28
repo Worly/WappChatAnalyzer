@@ -1,8 +1,9 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { EventService } from '../services/event.service';
-import { Event } from "../dtos/event";
+import { EventInfo } from "../dtos/event";
 import { groupBy } from "../utils";
 import * as dateFormat from "dateformat";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-event-list',
@@ -11,12 +12,15 @@ import * as dateFormat from "dateformat";
 })
 export class EventListComponent implements OnInit {
 
-  events: { [Key: string]: Event[] };
+  events: { [Key: string]: EventInfo[] };
 
   skip = 0;
   take = 10;
 
-  constructor(private eventService: EventService) { }
+  editingEventInfo: EventInfo = null;
+  addingNew: boolean = false;
+
+  constructor(private eventService: EventService, private router: Router) { }
 
   ngOnInit(): void {
     this.events = {};
@@ -26,7 +30,7 @@ export class EventListComponent implements OnInit {
   loadMore() {
     this.eventService.getEvents(this.skip, this.take).subscribe(events => {
       var grouped = groupBy(events, "date");
-      for(let date in grouped) {
+      for (let date in grouped) {
         if (this.events.hasOwnProperty(date))
           this.events[date].push(...grouped[date]);
         else
@@ -51,4 +55,70 @@ export class EventListComponent implements OnInit {
     }
   }
 
+  onClick(event: EventInfo) {
+    this.editingEventInfo = event;
+  }
+
+  onNewDone(e: { saved: boolean, deleted: boolean, info: EventInfo }) {
+    this.addingNew = false;
+
+    if (!e.saved)
+      return;
+
+    this.addToList(e.info);
+  }
+
+  onEditDone(e: { saved: boolean, deleted: boolean, info: EventInfo }) {
+
+    let oldDate = this.editingEventInfo.date;
+    let newDate = e.info.date;
+    let temp = this.editingEventInfo;
+
+    if (!e.saved) {
+      if (e.deleted)
+        this.removeFromList(temp);
+
+      this.editingEventInfo = null;
+      return;
+    }
+
+    this.editingEventInfo.id = e.info.id;
+    this.editingEventInfo.name = e.info.name;
+    this.editingEventInfo.emoji = e.info.emoji;
+    this.editingEventInfo.groupName = e.info.groupName;
+    this.editingEventInfo.date = e.info.date;
+    this.editingEventInfo = null;
+
+    setTimeout(() => {
+      if (oldDate != newDate) {
+        this.removeFromList(temp, oldDate);
+        this.addToList(temp);
+      }
+    }, 500);
+  }
+
+  removeFromList(eventInfo: EventInfo, fromDate?: string) {
+    if (fromDate == null)
+      fromDate = eventInfo.date;
+
+    if (this.events.hasOwnProperty(fromDate)) {
+      var index = this.events[fromDate].indexOf(eventInfo);
+      if (index != -1) {
+        this.events[fromDate].splice(index, 1);
+        if (this.events[fromDate].length == 0)
+          delete this.events[fromDate];
+      }
+    }
+  }
+
+  addToList(eventInfo: EventInfo) {
+    if (this.events.hasOwnProperty(eventInfo.date))
+      this.events[eventInfo.date].push(eventInfo);
+    else
+      this.events[eventInfo.date] = [eventInfo];
+  }
+
+  onNewClick() {
+    this.addingNew = true;
+  }
 }
