@@ -8,15 +8,17 @@ namespace WappChatAnalyzer.Services
 {
     public interface IStatisticService
     {
-        public Statistic<int> GetStatistic(IChat chat, Func<IEnumerable<Message>, int> statisticFunc, string statisticName);
+        public Statistic<int> GetStatistic(IChat chat, Func<IEnumerable<Message>, int> statisticFunc, string statisticName, Filter filter);
     }
 
     public class StatisticService : IStatisticService
     {
-        public Statistic<int> GetStatistic(IChat chat, Func<IEnumerable<Message>, int> statisticFunc, string statisticName)
+        public Statistic<int> GetStatistic(IChat chat, Func<IEnumerable<Message>, int> statisticFunc, string statisticName, Filter filter)
         {
+            var filteredMessages = chat.Messages.FilterDateRange(filter.FromDate, filter.ToDate);
+
             var valuesBySendersOnDates = chat.Senders.ToDictionary(o => o, o =>
-                chat.Messages.Filter(o).GroupBy(i => i.SentDateNormalized).AsParallel().AsOrdered().Select(i => statisticFunc(i))
+                filteredMessages.Filter(o).GroupBy(i => i.SentDateNormalized).AsParallel().AsOrdered().Select(i => statisticFunc(i))
                 .ToList());
             var totalBySenders = valuesBySendersOnDates.ToDictionary(o => o.Key, o => o.Value.Sum());
             var total = totalBySenders.Values.Sum();
@@ -25,7 +27,7 @@ namespace WappChatAnalyzer.Services
             {
                 Total = total,
                 TotalBySenders = totalBySenders,
-                Dates = chat.Messages.Select(o => o.SentDateNormalized).Distinct().OrderBy(o => o).ToList(),
+                Dates = filteredMessages.Select(o => o.SentDateNormalized).Distinct().OrderBy(o => o).ToList(),
                 ValuesBySendersOnDates = valuesBySendersOnDates,
                 StatisticName = statisticName
             };

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { appConfig } from '../app.config';
 import { EventInfo, Event, EventGroup } from "../dtos/event";
 import { FilterService } from './filter.service';
+import * as dateFormat from "dateformat";
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,13 @@ export class EventService {
       params["take"] = take;
 
     params["notSelectedGroupsJSON"] = JSON.stringify(this.filterService.eventGroupsNotSelected);
+
+    var format = "yyyy-mm-dd";
+    var fromToDates = this.filterService.getFromToDates();
+    if (fromToDates.from != null)
+      params["fromDate"] = dateFormat(fromToDates.from, format);
+    if (fromToDates.to != null)
+      params["toDate"] = dateFormat(fromToDates.to, format);
 
     return <Observable<EventInfo[]>>this.http.get(appConfig.apiUrl + "event/getEvents", {
       params: params

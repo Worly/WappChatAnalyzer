@@ -9,6 +9,7 @@ import * as dateFormat from "dateformat";
 import { groupBy } from "../utils";
 import { EventInfo } from "../dtos/event";
 import { FilterService } from '../services/filter.service';
+import { AfterAttach } from '../services/attach-detach-hooks.service';
 
 let id = 0;
 
@@ -17,10 +18,12 @@ let id = 0;
   templateUrl: './statistic-display.component.html',
   styleUrls: ['./statistic-display.component.css']
 })
-export class StatisticDisplayComponent implements OnInit {
+export class StatisticDisplayComponent implements OnInit, AfterAttach  {
+  private _statisticUrl: string;
   @Input()
   set statisticUrl(value: string) {
-    this.loadAndShowStatistic(value);
+    this._statisticUrl = value;
+    this.loadAndShowStatistic();
   }
 
   displayName: string;
@@ -43,13 +46,20 @@ export class StatisticDisplayComponent implements OnInit {
 
   ngOnInit() {
     this.route.data.subscribe(data => {
-      if (data.statisticUrl != null)
-        this.loadAndShowStatistic(data.statisticUrl);
+      if (data.statisticUrl != null) {
+        this._statisticUrl = data.statisticUrl;
+        this.loadAndShowStatistic();
+      }
       this.displayName = data.displayName;
     });
     this.loadAndShowEvents();
 
     this.filterService.eventGroupsChanged.subscribe(() => this.loadAndShowEvents());
+    this.filterService.dateFilterChanged.subscribe(() => this.loadAndShowStatistic());
+  }
+
+  ngAfterAttach() {
+    this.loadAndShowStatistic(); 
   }
 
   loadAndShowEvents() {
@@ -59,10 +69,10 @@ export class StatisticDisplayComponent implements OnInit {
     })
   }
 
-  loadAndShowStatistic(statisticUrl: string) {
+  loadAndShowStatistic() {
     this.statistic = null;
     this.isLoading = true;
-    this.dataService.getStatistic(statisticUrl).subscribe((r: Statistic) => {
+    this.dataService.getStatistic(this._statisticUrl).subscribe((r: Statistic) => {
       this.isLoading = false;
       this.statistic = r;
       this.renderTotal(r);
@@ -82,7 +92,7 @@ export class StatisticDisplayComponent implements OnInit {
     }
 
     new CanvasJS.Chart("chartContainerTotal" + this.id, {
-      animationEnabled: true,
+      animationEnabled: false,
       exportEnabled: false,
       backgroundColor: "rgba(0,0,0,0)",
       data: [{
@@ -139,7 +149,7 @@ export class StatisticDisplayComponent implements OnInit {
     data.push(dataSingle);
 
     this.chart = new CanvasJS.Chart("chartContainerGraph" + this.id, {
-      animationEnabled: true,
+      animationEnabled: false,
       exportEnabled: false,
       backgroundColor: "rgba(0,0,0,0)",
       legend: {

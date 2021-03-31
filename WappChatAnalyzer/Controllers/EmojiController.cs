@@ -41,28 +41,30 @@ namespace WappChatAnalyzer.Controllers
         }
 
         [HttpGet("getEmojiInfoTotal")]
-        public EmojiInfoTotal GetEmojiInfoTotal()
+        public EmojiInfoTotal GetEmojiInfoTotal([FromQuery] Filter filter)
         {
+            var messages = chat.Messages.FilterDateRange(filter.FromDate, filter.ToDate).ToList();
+
             var result = new Dictionary<string, Dictionary<string, int>>();
 
             var tasks = new List<Task>();
             var taskResults = new ConcurrentBag<Dictionary<string, Dictionary<string, int>>>();
 
-            var batchSize = chat.Messages.Count / Environment.ProcessorCount;
+            var batchSize = messages.Count / Environment.ProcessorCount;
 
-            for (int i = 0; i < chat.Messages.Count; i += batchSize)
+            for (int i = 0; i < messages.Count; i += batchSize)
             {
                 var start = i;
                 var size = batchSize;
-                if (chat.Messages.Count - i - batchSize < batchSize / 2)
+                if (messages.Count - i - batchSize < batchSize / 2)
                 {
-                    size = chat.Messages.Count - i;
+                    size = messages.Count - i;
                     i += size - batchSize;
                 }
 
                 tasks.Add(new Task(() =>
                 {
-                    taskResults.Add(GetEmojiInfoTotal(chat.Messages.Skip(start).Take(size)));
+                    taskResults.Add(GetEmojiInfoTotal(messages.Skip(start).Take(size)));
                 }));
             }
 
@@ -130,9 +132,9 @@ namespace WappChatAnalyzer.Controllers
 
 
         [HttpGet("getStatistic/singleEmoji/{emojiCodePoints}")]
-        public Statistic<int> GetStatisticSingleEmoji(string emojiCodePoints)
+        public Statistic<int> GetStatisticSingleEmoji(string emojiCodePoints, [FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(chat, messages => emojiService.CountEmojiInMessages(messages, emojiCodePoints), "SingleEmoji");
+            var result = statisticService.GetStatistic(chat, messages => emojiService.CountEmojiInMessages(messages, emojiCodePoints), "SingleEmoji", filter);
 
             return result;
         }

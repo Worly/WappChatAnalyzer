@@ -1,6 +1,8 @@
-<div *ngIf="basicInfoTotal != null">
-    <div class="title"><b>Total number of</b></div>
-
+<div class="title"><b>Total number of</b></div>
+<div class="filter">
+    <app-date-range-filter></app-date-range-filter>
+</div>
+<div *ngIf="basicInfoTotal != null && !isLoading">
     <div>
         <div class="single">
             <app-basic-info-single [displayName]="'Messages'" [basicInfoTotal]="basicInfoTotal"

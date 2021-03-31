@@ -1,0 +1,199 @@
+.my-wrapper {
+    display: flex;
+    align-items: center;
+    margin: 0px 10px;
+    font-size: 1.4rem;
+}
+
+.type-last {
+    display: flex;
+}
+
+.type-last>div {
+    box-sizing: border-box;
+    border: 1px solid rgb(179, 179, 179);
+    width: 60px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-align: center;
+    margin-right: -1px;
+    background-color: white;
+    cursor: pointer;
+    position: relative;
+}
+
+.type-last>div:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.type-last>div:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.type-last>.selected {
+    border-width: 3px;
+    border-color: #D05353;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    z-index: 10;
+}
+
+.type-last>div:hover::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: .1;
+}
+
+.type-last>div:active::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: .2;
+}
+
+.type-last>div:first-child::before {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.type-last>div:last-child::before {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.type-period {
+    display: flex;
+    align-items: center;
+}
+
+.type-period>.button {
+    padding: 5px 15px;
+    border: 1px solid rgb(179, 179, 179);
+    background-color: white;
+    position: relative;
+    cursor: pointer;
+}
+
+.type-period>.button:hover::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: .1;
+}
+
+.type-period>.button:active::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: .2;
+}
+
+.type-period>.left {
+    flex-grow: 1;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.type-period>.right {
+    flex-grow: 1;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.type-period>.left::before {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.type-period>.right::before {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.type-period>.middle {
+    flex-grow: 8;
+    width: 250px;
+    text-align: center;
+}
+
+.popup {
+    position: absolute;
+    left: 0px;
+    top: 100%;
+    transform: translateY(2px);
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 2px 4px;
+    z-index: 5000;
+    width: 100%;
+}
+
+.item {
+    position: relative;
+    font-size: 1.3rem;
+    margin: 2px 0px;
+    padding: 5px 15px;
+    cursor: pointer;
+}
+
+.item:hover::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: .1;
+}
+
+.item:active::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: .2;
+}
+
+.type-range {
+    display: flex;
+    align-items: center;
+}
+
+.to {
+    font-size: 1.2rem;
+    margin: 0px 15px;
+}
+
+.date-input {
+    display: inline-block;
+    cursor: pointer;
+    color: black;
+    border: 1px solid gray;
+    border-radius: 8px;
+    background-color: white;
+    padding: 5px 10px;
+}

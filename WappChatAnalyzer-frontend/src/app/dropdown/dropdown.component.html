@@ -1,0 +1,17 @@
+<div class="my-container">
+    <div class="clickable" (click)="togglePicker()">
+        <span *ngIf="value == null">Select...</span>
+        <span *ngIf="value != null">{{display(value)}}</span>
+        <span style="font-size: 0.6em; margin-left: 8px;">⯆</span>
+    </div>
+    <div *ngIf="pickerVisible" class="picker">
+        <div>
+            <div *ngFor="let item of items" class="item no-select" (click)="select(item)">
+                {{display(item)}}
+            </div>
+        </div>
+        <div *ngIf="items == null || items.length == 0">
+            No items...
+        </div>
+    </div>
+</div>

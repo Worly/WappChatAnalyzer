@@ -98,5 +98,16 @@ namespace WappChatAnalyzer.Services
 
             return messages;
         }
+
+        public static IEnumerable<Message> FilterDateRange(this IEnumerable<Message> messages, DateTime? fromDate, DateTime? toDate)
+        {
+            if (fromDate != null)
+                messages = messages.Where(o => o.SentDateNormalized.Date >= fromDate.Value.Date);
+
+            if (toDate != null)
+                messages = messages.Where(o => o.SentDateNormalized.Date <= toDate.Value.Date);
+
+            return messages;
+        }
     }
 }

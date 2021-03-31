@@ -3,7 +3,6 @@ import { EventService } from 'src/app/services/event.service';
 import { Event, EventGroup, EventInfo } from "../../dtos/event";
 import { EmojiButton } from "@joeattardi/emoji-button";
 import * as dateFormat from "dateformat";
-import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-event-edit',

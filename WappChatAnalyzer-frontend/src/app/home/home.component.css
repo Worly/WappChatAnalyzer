@@ -7,3 +7,10 @@
 .single {
     padding-bottom: 15px;
 }
+
+.filter {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -70px;
+    margin-bottom: 40px;
+}
