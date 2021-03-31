@@ -10,8 +10,8 @@ namespace WappChatAnalyzer.Services
 {
     public interface IEventService
     {
-        List<EventInfoDTO> GetEvents(int[] notSelectedGroups, int? skip, int? take);
-        int GetEventCount(int[] notSelectedGroups);
+        List<EventInfoDTO> GetEvents(int[] notSelectedGroups, DateTime? fromDate, DateTime? toDate, int? skip, int? take);
+        int GetEventCount(int[] notSelectedGroups, DateTime? fromDate, DateTime? toDate);
         List<EventGroupDTO> GetEventGroups();
         EventDTO GetEvent(int id);
         void SaveEvent(EventDTO eventDTO);
@@ -28,11 +28,16 @@ namespace WappChatAnalyzer.Services
             this.mainDbContext = mainDbContext;
         }
 
-        public List<EventInfoDTO> GetEvents(int[] notSelectedGroups, int? skip, int? take)
+        public List<EventInfoDTO> GetEvents(int[] notSelectedGroups, DateTime? fromDate, DateTime? toDate, int? skip, int? take)
         {
             IQueryable<Event> query = mainDbContext.Events.Include(o => o.EventGroup).OrderByDescending(o => o.DateTime).ThenBy(o => o.Id);
 
             query = query.Where(o => !notSelectedGroups.Contains(o.EventGroupId));
+
+            if (fromDate != null)
+                query = query.Where(o => o.DateTime.Date >= fromDate.Value.Date);
+            if (toDate != null)
+                query = query.Where(o => o.DateTime.Date <= toDate.Value.Date);
 
             if (skip != null)
                 query = query.Skip(skip.Value);
@@ -49,9 +54,18 @@ namespace WappChatAnalyzer.Services
             }).ToList();
         }
 
-        public int GetEventCount(int[] notSelectedGroups)
+        public int GetEventCount(int[] notSelectedGroups, DateTime? fromDate, DateTime? toDate)
         {
-            return mainDbContext.Events.Where(o => !notSelectedGroups.Contains(o.EventGroupId)).Count();
+            IQueryable<Event> query = mainDbContext.Events;
+
+            query = query.Where(o => !notSelectedGroups.Contains(o.EventGroupId));
+
+            if (fromDate != null)
+                query = query.Where(o => o.DateTime.Date >= fromDate.Value.Date);
+            if (toDate != null)
+                query = query.Where(o => o.DateTime.Date <= toDate.Value.Date);
+
+            return query.Count();
         }
 
         public List<EventGroupDTO> GetEventGroups()

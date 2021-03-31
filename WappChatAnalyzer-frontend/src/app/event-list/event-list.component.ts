@@ -26,9 +26,8 @@ export class EventListComponent implements OnInit {
   constructor(private eventService: EventService, private filterService: FilterService) { }
 
   ngOnInit(): void {
-    this.filterService.eventGroupsChanged.subscribe(() => {
-      this.load();
-    });
+    this.filterService.eventGroupsChanged.subscribe(() => this.load());
+    this.filterService.dateFilterChanged.subscribe(() => this.load());
     this.load();
   }
 

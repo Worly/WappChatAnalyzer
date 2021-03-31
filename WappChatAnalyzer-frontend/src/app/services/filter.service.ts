@@ -82,12 +82,12 @@ export class FilterService {
       if (datePeriodType == PeriodType.WEEK) {
         var dayOfWeekFromMonday = (from.getDay() + 7 - 1) % 7;
         from.setDate(from.getDate() - dayOfWeekFromMonday);
+        to = new Date(from);
         to.setDate(from.getDate() + 6);
       }
       else if (datePeriodType == PeriodType.MONTH) {
         from.setDate(1);
-        to.setFullYear(from.getFullYear());
-        to.setDate(1);
+        to = new Date(from);
         to.setMonth(from.getMonth() + 1);
         to.setDate(0);
       }
@@ -108,8 +108,7 @@ export class FilterService {
       }
       else if (datePeriodType == PeriodType.MONTH) {
         from.setMonth(from.getMonth() - datePeriodBackwardsIndex);
-        to.setFullYear(from.getFullYear());
-        to.setDate(1);
+        to = new Date(from);
         to.setMonth(from.getMonth() + 1);
         to.setDate(0);
       }

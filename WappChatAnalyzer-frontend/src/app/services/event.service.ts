@@ -13,12 +13,8 @@ export class EventService {
 
   constructor(private http: HttpClient, private filterService: FilterService) { }
 
-  getEvents(skip?: number, take?: number): Observable<EventInfo[]> {
-    let params = {};
-    if (skip != null)
-      params["skip"] = skip;
-    if (take != null)
-      params["take"] = take;
+  getParams() {
+    var params = {};
 
     params["notSelectedGroupsJSON"] = JSON.stringify(this.filterService.eventGroupsNotSelected);
 
@@ -29,16 +25,24 @@ export class EventService {
     if (fromToDates.to != null)
       params["toDate"] = dateFormat(fromToDates.to, format);
 
+    return params;
+  }
+
+  getEvents(skip?: number, take?: number): Observable<EventInfo[]> {
+    let params = this.getParams();
+    if (skip != null)
+      params["skip"] = skip;
+    if (take != null)
+      params["take"] = take;
+
     return <Observable<EventInfo[]>>this.http.get(appConfig.apiUrl + "event/getEvents", {
       params: params
     });
   }
 
   getEventCount(): Observable<number> {
-    let params = {};
-    params["notSelectedGroupsJSON"] = JSON.stringify(this.filterService.eventGroupsNotSelected);
     return <Observable<number>>this.http.get(appConfig.apiUrl + "event/getEventCount", {
-      params: params
+      params: this.getParams()
     });
   }
 

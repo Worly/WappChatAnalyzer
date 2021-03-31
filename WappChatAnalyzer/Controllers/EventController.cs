@@ -20,19 +20,19 @@ namespace WappChatAnalyzer.Controllers
         }
 
         [HttpGet("getEvents")]
-        public List<EventInfoDTO> GetEvents([FromQuery] int? skip, [FromQuery] int? take, [FromQuery] string notSelectedGroupsJSON)
+        public List<EventInfoDTO> GetEvents([FromQuery] int? skip, [FromQuery] int? take, [FromQuery] string notSelectedGroupsJSON, [FromQuery] Filter filter)
         {
             var notSelectedGroups = JsonConvert.DeserializeObject<int[]>(notSelectedGroupsJSON);
 
-            return eventService.GetEvents(notSelectedGroups, skip, take);
+            return eventService.GetEvents(notSelectedGroups, filter.FromDate, filter.ToDate, skip, take);
         }
 
         [HttpGet("getEventCount")]
-        public int GetEventCount([FromQuery] string notSelectedGroupsJSON)
+        public int GetEventCount([FromQuery] string notSelectedGroupsJSON, [FromQuery] Filter filter)
         {
             var notSelectedGroups = JsonConvert.DeserializeObject<int[]>(notSelectedGroupsJSON);
 
-            return eventService.GetEventCount(notSelectedGroups);
+            return eventService.GetEventCount(notSelectedGroups, filter.FromDate, filter.ToDate);
         }
 
         [HttpGet("getEventGroups")]
