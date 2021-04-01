@@ -1,15 +1,13 @@
 .title {
     font-size: 3em;
     text-align: center;
-    margin-bottom: 30px;
     font-weight: bold;
 }
 
 .eventGroupFilter {
     display: flex;
     justify-content: flex-end;
-    margin-top: -60px;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 .result-count {

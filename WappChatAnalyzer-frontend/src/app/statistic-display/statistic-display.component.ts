@@ -18,7 +18,7 @@ let id = 0;
   templateUrl: './statistic-display.component.html',
   styleUrls: ['./statistic-display.component.css']
 })
-export class StatisticDisplayComponent implements OnInit, AfterAttach  {
+export class StatisticDisplayComponent implements OnInit, AfterAttach {
   private _statisticUrl: string;
   @Input()
   set statisticUrl(value: string) {
@@ -55,11 +55,14 @@ export class StatisticDisplayComponent implements OnInit, AfterAttach  {
     this.loadAndShowEvents();
 
     this.filterService.eventGroupsChanged.subscribe(() => this.loadAndShowEvents());
-    this.filterService.dateFilterChanged.subscribe(() => this.loadAndShowStatistic());
+    this.filterService.dateFilterChanged.subscribe(() => {
+      this.loadAndShowStatistic();
+      this.loadAndShowEvents();
+    });
   }
 
   ngAfterAttach() {
-    this.loadAndShowStatistic(); 
+    this.loadAndShowStatistic();
   }
 
   loadAndShowEvents() {
