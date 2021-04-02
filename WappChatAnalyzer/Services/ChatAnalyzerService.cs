@@ -26,17 +26,17 @@ namespace WappChatAnalyzer.Services
 
         public int TotalNumberOfMessages(IEnumerable<Message> messages)
         {
-            return messages.Count();
+            return messages.Count(o => !o.IsMedia);
         }
 
         public int TotalNumberOfWords(IEnumerable<Message> messages)
         {
-            return messages.Sum(o => o.Text.Count(c => c == ' ') + 1);
+            return messages.Where(o => !o.IsMedia).Sum(o => o.Text.Count(c => c == ' ') + 1);
         }
 
         public int TotalNumberOfCharacters(IEnumerable<Message> messages)
         {
-            return messages.Sum(o =>
+            return messages.Where(o => !o.IsMedia).Sum(o =>
             {
                 return new StringInfo(o.Text).LengthInTextElements;
             });
@@ -44,12 +44,12 @@ namespace WappChatAnalyzer.Services
 
         public int TotalNumberOfMedia(IEnumerable<Message> messages)
         {
-            return messages.Count(o => o.Text == "<Media omitted>");
+            return messages.Count(o => o.IsMedia);
         }
 
         public int TotalNumberOfEmojis(IEnumerable<Message> messages)
         {
-            return messages.Sum(o =>
+            return messages.Where(o => !o.IsMedia).Sum(o =>
             {
                 var emojiCount = 0;
                 var enumerator = StringInfo.GetTextElementEnumerator(o.Text);

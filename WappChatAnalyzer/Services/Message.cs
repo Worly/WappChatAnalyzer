@@ -11,6 +11,7 @@ namespace WappChatAnalyzer.Services
         public DateTime SentDateNormalized { get => SentDateTime.AddHours(-7).Date; }
         public string Sender { get; set; }
         public string Text { get; set; }
+        public bool IsMedia { get; set; }
 
         public static List<Message> ParseMessages(string[] lines)
         {
@@ -20,13 +21,14 @@ namespace WappChatAnalyzer.Services
 
             foreach (var line in lines)
             {
-                if (TryParseMessageStart(line, out DateTime sentDateTime, out string sender, out string message))
+                if (TryParseMessageStart(line, out DateTime sentDateTime, out string sender, out string message, out bool isMedia))
                 {
                     messages.Add(currentMessage = new Message()
                     {
                         SentDateTime = sentDateTime,
                         Sender = sender,
-                        Text = message
+                        Text = message,
+                        IsMedia = isMedia
                     });
                 }
                 else
@@ -36,11 +38,12 @@ namespace WappChatAnalyzer.Services
             return messages;
         }
 
-        private static bool TryParseMessageStart(string line, out DateTime sentDateTime, out string sender, out string message)
+        private static bool TryParseMessageStart(string line, out DateTime sentDateTime, out string sender, out string message, out bool isMedia)
         {
             sentDateTime = DateTime.UtcNow;
             sender = null;
             message = line;
+            isMedia = false;
 
             if (line.Length < 20)
                 return false;
@@ -81,6 +84,8 @@ namespace WappChatAnalyzer.Services
             sender = line.Substring(20, messageStart - 20 - 1);
 
             message = line.Substring(messageStart + 1);
+
+            isMedia = message == "<Media omitted>";
 
             return true;
         }
