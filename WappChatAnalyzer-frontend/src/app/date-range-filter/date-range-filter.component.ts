@@ -89,22 +89,22 @@ export class DateRangeFilterComponent implements OnInit {
 
   onDateRangeTypeChanged(value: { name: string, value: DateRangeType }) {
     this.dateRangeTypeObject = value;
-    this.startApplyTimeout();
+    this.startApplyTimeout(1200);
   }
 
   onDaysRangeSelected(days: number) {
     this.dateLastDaysRange = days;
-    this.startApplyTimeout();
+    this.startApplyTimeout(300);
   }
 
   onPeriodDecreaseIndex() {
     this.datePeriodBackwardsIndex++;
-    this.startApplyTimeout();
+    this.startApplyTimeout(300);
   }
 
   onPeriodIncreaseIndex() {
     this.datePeriodBackwardsIndex--;
-    this.startApplyTimeout();
+    this.startApplyTimeout(300);
   }
 
   onPeriodOpenPopup() {
@@ -115,7 +115,7 @@ export class DateRangeFilterComponent implements OnInit {
     event.stopImmediatePropagation();
     this.datePeriodType = periodType;
     this.datePeriodBackwardsIndex = 0;
-    this.startApplyTimeout();
+    this.startApplyTimeout(1200);
     this.popupVisible = false;
   }
 
@@ -147,21 +147,21 @@ export class DateRangeFilterComponent implements OnInit {
 
   onFromDateSelected(event) {
     this.dateRangeFrom = event.date.toDate();
-    this.startApplyTimeout();
+    this.startApplyTimeout(800);
   }
 
   onToDateSelected(event) {
     this.dateRangeTo = event.date.toDate();
-    this.startApplyTimeout();
+    this.startApplyTimeout(800);
   }
 
-  startApplyTimeout() {
+  startApplyTimeout(ms: number) {
     if (this.timeoutId != null)
       clearTimeout(this.timeoutId);
     this.timeoutId = <number><unknown>setTimeout(() => {
       this.timeoutId = null;
       this.apply();
-    }, 1200);
+    }, ms);
   }
 
   apply() {
