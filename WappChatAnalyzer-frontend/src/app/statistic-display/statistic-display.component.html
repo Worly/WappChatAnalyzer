@@ -12,7 +12,7 @@
     <div [id]="'chartContainerGraph' + id" style="height: 600px; width: 100%;"></div>
 
     <svg *ngFor="let item of eventElements" style="position: absolute; pointer-events: none;"
-        [style.left]="item.x - eventEmojiSize/2 + 'px'" [style.top]="item.y - eventEmojiSize - 3 + 'px'"
+        [style.left]="item.left + 'px'" [style.top]="item.top + 'px'"
         [style.width]="eventEmojiSize + 'px'" [style.height]="eventEmojiSize + 'px'" viewBox="0 0 18 20">
         <text x="9" y="15" style="text-align: center; font-size:unset; text-anchor: middle"
             [innerHTML]="item.emoji"></text>

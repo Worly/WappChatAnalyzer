@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as CanvasJS from '../../assets/canvasjs.min';
 import { appConfig } from '../app.config';
@@ -201,6 +201,7 @@ export class StatisticDisplayComponent implements OnInit, AfterAttach {
 
     for (let key in this.events) {
       var date = new Date(key);
+      date.setHours(0);
 
       for (let i = 0; i < this.events[key].length; i++) {
         let event = this.events[key][i];
@@ -212,8 +213,8 @@ export class StatisticDisplayComponent implements OnInit, AfterAttach {
 
         this.eventElements.push({
           emoji: event.emoji,
-          x: x,
-          y: y - i * (this.eventEmojiSize)
+          left: x - this.eventEmojiSize / 2, 
+          top: y - i * (this.eventEmojiSize) - this.eventEmojiSize - 3
         });
       }
     }
