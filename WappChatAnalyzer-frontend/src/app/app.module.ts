@@ -26,6 +26,7 @@ import { DateRangeFilterComponent } from './date-range-filter/date-range-filter.
 import { FormsModule } from '@angular/forms';
 import { DropdownComponent } from './dropdown/dropdown.component';
 import { AttachDetachHooksService } from './services/attach-detach-hooks.service';
+import { GroupingPeriodPickerComponent } from './grouping-period-picker/grouping-period-picker.component';
 
 
 
@@ -47,7 +48,8 @@ import { AttachDetachHooksService } from './services/attach-detach-hooks.service
     EventGroupPickerComponent,
     EventGroupFilterComponent,
     DateRangeFilterComponent,
-    DropdownComponent
+    DropdownComponent,
+    GroupingPeriodPickerComponent
   ],
   imports: [
     BrowserModule,

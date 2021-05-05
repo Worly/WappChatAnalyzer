@@ -25,6 +25,10 @@
   font-family: "Segoe UI Emoji", "Segoe UI Symbol", "Segoe UI", "Apple Color Emoji", "Twemoji Mozilla", "Noto Color Emoji", "EmojiOne Color", "Android Emoji" !important;
 }
 
+.emoji-picker__wrapper {
+  z-index: 1000;
+}
+
 dp-day-calendar .dp-calendar-day {
   height: 40px !important;
   width: 40px !important;

@@ -26,6 +26,8 @@ export class DataService {
     if (fromToDates.to != null)
       params["toDate"] = dateFormat(fromToDates.to, format);
 
+    params["groupingPeriod"] = this.filterService.groupingPeriod;
+
     return params;
   }
 

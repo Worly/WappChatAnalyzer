@@ -80,6 +80,7 @@ export class EventListComponent implements OnInit {
       return;
 
     this.addToList(e.info);
+    this.skip++;
   }
 
   onEditDone(e: { saved: boolean, deleted: boolean, info: EventInfo }) {
@@ -89,8 +90,10 @@ export class EventListComponent implements OnInit {
     let temp = this.editingEventInfo;
 
     if (!e.saved) {
-      if (e.deleted)
+      if (e.deleted) {
         this.removeFromList(temp);
+        this.skip--;
+      }
 
       this.editingEventInfo = null;
       return;

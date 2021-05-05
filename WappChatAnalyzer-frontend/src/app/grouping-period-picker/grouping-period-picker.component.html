@@ -1,0 +1,5 @@
+<div class="my-wrapper">
+    Group by: &nbsp;
+    <app-dropdown [items]="groupingPeriods" [value]="groupingPeriodObject" displayProperty="display"
+        (valueChange)="onGroupingPeriodChanged($event)"></app-dropdown>
+</div>

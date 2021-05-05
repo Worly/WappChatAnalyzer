@@ -6,10 +6,11 @@
 <div [id]="'chartContainerTotal' + id" style="height: 370px; width: 100%;"></div>
 <div class="event-group-filter">
     <app-date-range-filter></app-date-range-filter>
+    <app-grouping-period-picker></app-grouping-period-picker>
     <app-event-group-filter></app-event-group-filter>
 </div>
 <div style="position: relative;">
-    <div [id]="'chartContainerGraph' + id" style="height: 600px; width: 100%;"></div>
+    <div #chartContainerGraph [id]="'chartContainerGraph' + id" style="height: 600px; width: 100%;"></div>
 
     <svg *ngFor="let item of eventElements" style="position: absolute; pointer-events: none;"
         [style.left]="item.left + 'px'" [style.top]="item.top + 'px'"

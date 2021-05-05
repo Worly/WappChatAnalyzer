@@ -23,6 +23,7 @@ export class StatisticDisplayEmojisComponent implements OnInit, AfterAttach {
 
   ngOnInit(): void {
     this.filterService.dateFilterChanged.subscribe(() => this.load());
+    this.filterService.groupingPeriodChanged.subscribe(() => this.load());
     this.load();
   }
 

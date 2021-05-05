@@ -1,0 +1,6 @@
+.my-wrapper {
+    display: flex;
+    align-items: center;
+    margin: 0px 10px;
+    font-size: 1.4rem;
+}

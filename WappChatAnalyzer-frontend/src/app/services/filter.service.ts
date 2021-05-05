@@ -23,6 +23,9 @@ export class FilterService {
 
   dateFilterChanged: Subject<{ from: Date, to: Date }> = new Subject<{ from: Date, to: Date }>();
 
+  groupingPeriod: string = "date";
+  groupingPeriodChanged: Subject<string> = new Subject<string>();
+
   constructor() {
     this.dateRangeTo = new Date();
 
@@ -54,6 +57,11 @@ export class FilterService {
     this.dateRangeFrom = dateFrom;
     this.dateRangeTo = dateTo;
     this.dateFilterChanged.next(this.getFromToDates());
+  }
+  
+  applyGroupingPeriod(groupingPeriod: string) {
+    this.groupingPeriod = groupingPeriod;
+    this.groupingPeriodChanged.next(groupingPeriod);
   }
 
   getFromToDates() {

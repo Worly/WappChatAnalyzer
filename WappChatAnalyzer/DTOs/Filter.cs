@@ -9,5 +9,6 @@ namespace WappChatAnalyzer.DTOs
     {
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
+        public string GroupingPeriod { get; set; }
     }
 }

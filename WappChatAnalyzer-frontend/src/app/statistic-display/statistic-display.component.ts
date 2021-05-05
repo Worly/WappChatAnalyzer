@@ -26,6 +26,9 @@ export class StatisticDisplayComponent implements OnInit, AfterAttach {
     this.loadAndShowStatistic();
   }
 
+  @ViewChild("chartContainerGraph")
+  chartContainerGraph: ElementRef;
+
   displayName: string;
 
   isLoading: boolean;
@@ -59,6 +62,7 @@ export class StatisticDisplayComponent implements OnInit, AfterAttach {
       this.loadAndShowStatistic();
       this.loadAndShowEvents();
     });
+    this.filterService.groupingPeriodChanged.subscribe(() => this.loadAndShowStatistic());
   }
 
   ngAfterAttach() {
@@ -111,7 +115,7 @@ export class StatisticDisplayComponent implements OnInit, AfterAttach {
 
   renderGraph(statistic: Statistic) {
     let data = [];
-    for (let sender in statistic.valuesBySendersOnDates) {
+    for (let sender in statistic.valuesBySendersOnTimePeriods) {
       let dataSingle = {
         type: "stackedArea100",
         axisYType: "secondary",
@@ -123,14 +127,16 @@ export class StatisticDisplayComponent implements OnInit, AfterAttach {
         markerType: "none",
         dataPoints: []
       };
-      for (let i = 0; i < statistic.valuesBySendersOnDates[sender].length; i++) {
+      for (let i = 0; i < statistic.valuesBySendersOnTimePeriods[sender].length; i++) {
         dataSingle.dataPoints.push({
-          x: new Date(statistic.dates[i]),
-          y: statistic.valuesBySendersOnDates[sender][i]
+          x: new Date(statistic.timePeriods[i]),
+          y: statistic.valuesBySendersOnTimePeriods[sender][i]
         });
       }
       data.push(dataSingle);
     }
+
+    console.log(this.chartContainerGraph.nativeElement.offsetWidth);
 
     let dataSingle = {
       type: "column",
@@ -139,13 +145,34 @@ export class StatisticDisplayComponent implements OnInit, AfterAttach {
       fillOpacity: 0.8,
       dataPoints: []
     };
-    for (let i = 0; i < statistic.dates.length; i++) {
+    let stripLines = [];
+    let maxStripLines = 20;
+    let firstDate = new Date(statistic.timePeriods[0]);
+    let lastDate = new Date(statistic.timePeriods[statistic.timePeriods.length - 1]);
+    let numberOfPeriodsShowing = this.numberOfPeriodsBetween(firstDate, lastDate, statistic.filter.groupingPeriod);
+    let gap = Math.ceil(numberOfPeriodsShowing / maxStripLines);
+
+    for (let i = 0; i < numberOfPeriodsShowing; i += gap) {
+      let date = this.addPeriods(firstDate, i, statistic.filter.groupingPeriod)
+      stripLines.push({
+        value: date,
+        label: this.formatDateLabel(date),
+        labelPlacement: "outside",
+        labelFontColor: "black",
+        labelMaxWidth: this.chartContainerGraph.nativeElement.offsetWidth / maxStripLines,
+        color: "black",
+        labelBackgroundColor: "transparent",
+        thickness: 0
+      });
+    }
+
+    for (let i = 0; i < statistic.timePeriods.length; i++) {
       let total = 0;
-      for (let sender in statistic.valuesBySendersOnDates)
-        total += statistic.valuesBySendersOnDates[sender][i];
+      for (let sender in statistic.valuesBySendersOnTimePeriods)
+        total += statistic.valuesBySendersOnTimePeriods[sender][i];
 
       dataSingle.dataPoints.push({
-        x: new Date(statistic.dates[i]),
+        x: new Date(statistic.timePeriods[i]),
         y: total
       });
     }
@@ -169,8 +196,11 @@ export class StatisticDisplayComponent implements OnInit, AfterAttach {
       },
       axisX: {
         labelFontFamily: "Raleway",
-        valueFormatString: "DD/MM/YY",
+        labelFormatter: e => "",
         labelFontSize: 16,
+        stripLines: stripLines,
+        interval: 1,
+        intervalType: "day"
       },
       axisY2: {
         labelFormatter: () => " ",
@@ -194,27 +224,43 @@ export class StatisticDisplayComponent implements OnInit, AfterAttach {
   }
 
   renderEvents() {
+    this.eventElements = [];
+
     if (this.chart == null)
       return;
 
-    this.eventElements = [];
+    if (this.statistic.filter.groupingPeriod == "week" || this.statistic.filter.groupingPeriod == "month")
+      return;
+
+    let periodCounts = {};
 
     for (let key in this.events) {
-      var date = new Date(key);
-      date.setHours(0);
+      var date = this.dateToPeriodStart(new Date(key), this.statistic.filter.groupingPeriod);
+
+      if (this.statistic.filter.groupingPeriod == "hour")
+        date.setHours(12);
 
       for (let i = 0; i < this.events[key].length; i++) {
         let event = this.events[key][i];
-        var x = this.chart.axisX[0].convertValueToPixel(date)
-        var chartDataPoint = this.chart.data[2].dataPoints.find(e => this.compareDatesWithoutTime(e.x, date));
-        if (chartDataPoint == null)
-          continue;
-        var y = this.chart.axisY[0].convertValueToPixel(chartDataPoint.y);
+        var x = this.chart.axisX[0].convertValueToPixel(date);
+
+        let y = -10;
+        let yDir = 1;
+        if (this.statistic.filter.groupingPeriod != "hour") {
+          var chartDataPoint = this.chart.data[2].dataPoints.find(e => e.x.getTime() == date.getTime()) //this.compareDatesWithoutTime(e.x, date));
+          if (chartDataPoint == null)
+            continue;
+          y = this.chart.axisY[0].convertValueToPixel(chartDataPoint.y);
+          yDir = -1;
+        }
+
+        if (periodCounts[date.toISOString()] == undefined)
+          periodCounts[date.toISOString()] = 0;
 
         this.eventElements.push({
           emoji: event.emoji,
-          left: x - this.eventEmojiSize / 2, 
-          top: y - i * (this.eventEmojiSize) - this.eventEmojiSize - 3
+          left: x - this.eventEmojiSize / 2,
+          top: y + yDir * (periodCounts[date.toISOString()]++ * this.eventEmojiSize + this.eventEmojiSize + 3)
         });
       }
     }
@@ -229,7 +275,7 @@ export class StatisticDisplayComponent implements OnInit, AfterAttach {
   toolTipContent(e, events) {
     var str = "";
 
-    var date = <Date>e.entries[0].dataPoint.x
+    var date = <Date>e.entries[0].dataPoint.x;
 
     var total = 0;
     for (var i = e.entries.length - 1; i >= 0; i--) {
@@ -248,16 +294,144 @@ export class StatisticDisplayComponent implements OnInit, AfterAttach {
       str = str.concat(str1);
     }
     str = str.concat("<span style= \"color: #FC7536\">Total</span>: <strong>" + total.toLocaleString('en-US', { maximumFractionDigits: 2 }) + "</strong><br/>");
-    str = "<span>" + dateFormat(date, "dddd dd/mm/yyyy") + "</span><br/>".concat(str);
 
-    var events = events[dateFormat(date, "isoDate")];
-    if (events != null) {
-      str = str.concat("<br/>")
-      for (let event of events) {
-        str = str.concat("<span>" + event.groupName + " " + event.emoji + " " + (event.name != null ? event.name : "") + "</span><br/>");
+    let dateStr = "";
+    if (this.statistic.filter.groupingPeriod == "week") {
+      let weekEnd = new Date(date);
+      weekEnd.setDate(date.getDate() + 6);
+      dateStr = dateFormat(date, "dd/mm") + " - " + dateFormat(weekEnd, "dd/mm/yyyy");
+    }
+    else if (this.statistic.filter.groupingPeriod == "month") {
+      dateStr = dateFormat(date, "mmmm yyyy");
+    }
+    else {
+      let dateF = "dddd dd/mm/yyyy";
+      if (this.statistic.filter.groupingPeriod == "hour")
+        dateF += " HH:MM";
+      dateStr = dateFormat(date, dateF);
+    }
+
+    str = "<span>" + dateStr + "</span><br/>".concat(str);
+
+    let groups = {};
+
+    for (let key in this.events) {
+      var eventDate = this.dateToPeriodStart(new Date(key), this.statistic.filter.groupingPeriod);
+      if (this.compareDatesWithoutTime(eventDate, date)) {
+        for (let event of this.events[key]) {
+          if (this.statistic.filter.groupingPeriod != "month")
+            str = str.concat("<br/><span>" + event.groupName + " " + event.emoji + " " + (event.name != null ? event.name : "") + "</span>");
+          else {
+            if (groups[event.groupName] == undefined)
+              groups[event.groupName] = { emojis: {}, count: 0 };
+            groups[event.groupName].count++;
+            if (groups[event.groupName].emojis[event.emoji] == undefined)
+              groups[event.groupName].emojis[event.emoji] = 0;
+            groups[event.groupName].emojis[event.emoji]++;
+          }
+        }
+      }
+    }
+
+    if (this.statistic.filter.groupingPeriod == "month") {
+      for (let groupName in groups) {
+        let mostUsedEmoji;
+        for (let emoji in groups[groupName].emojis) {
+          if (mostUsedEmoji == undefined || groups[groupName].emojis[emoji] > groups[groupName].emojis[mostUsedEmoji])
+            mostUsedEmoji = emoji;
+        }
+
+        str = str.concat("<br/><span>" + groupName + " " + mostUsedEmoji + " " + groups[groupName].count + "</span>");
       }
     }
 
     return str;
+  }
+
+  formatDateLabel(e) {
+    let format = "";
+    let toDate = new Date(this.statistic.filter.toDate);
+    let fromDate = new Date(this.statistic.filter.fromDate);
+    let filterRangeInMs = <any>toDate - <any>fromDate;
+    let filterRangeInHours = filterRangeInMs / 1000 / 60 / 60 + 24;
+
+    let groupingPeriod = this.statistic.filter.groupingPeriod;
+
+    if (groupingPeriod == "date") {
+      format = "dd/mm";
+      if (toDate.getFullYear() - fromDate.getFullYear() > 0)
+        format += "/yyyy";
+    }
+    else if (groupingPeriod == "hour") {
+      format = "";
+      if (filterRangeInHours > 24) {
+        format += "dd/mm";
+        if (toDate.getFullYear() - fromDate.getFullYear() > 0)
+          format += "/yyyy";
+      }
+      format += " HH:MM";
+    }
+    else if (groupingPeriod == "week") {
+      format = "'Week' W";
+      if (toDate.getFullYear() - fromDate.getFullYear() > 0)
+        format += " yyyy";
+    }
+    else if (groupingPeriod == "month") {
+      format = "mmm";
+      if (toDate.getFullYear() - fromDate.getFullYear() > 0)
+        format += " yyyy";
+    }
+
+
+    return dateFormat(e, format);
+  }
+
+  numberOfPeriodsBetween(fromDate: Date, toDate: Date, groupingPeriod: string): number {
+    if (groupingPeriod == "hour")
+      return Math.round((<any>toDate - <any>fromDate) / 1000 / 60 / 60 + 1);
+    else if (groupingPeriod == "date")
+      return Math.round((<any>toDate - <any>fromDate) / 1000 / 60 / 60 / 24 + 1);
+    else if (groupingPeriod == "week")
+      return Math.round((<any>toDate - <any>fromDate) / 1000 / 60 / 60 / 24 / 7 + 1);
+    else if (groupingPeriod == "month")
+      return Math.round(toDate.getMonth() - fromDate.getMonth() + (toDate.getFullYear() - fromDate.getFullYear()) * 12 + 1);
+    else
+      throw "groupingPeriod: " + groupingPeriod + " is invalid";
+  }
+
+  addPeriods(fromDate: Date, numberOfPeriods: number, groupingPeriod: string): Date {
+    var copy = new Date(fromDate);
+    if (groupingPeriod == "hour")
+      copy.setHours(fromDate.getHours() + numberOfPeriods);
+    else if (groupingPeriod == "date")
+      copy.setDate(fromDate.getDate() + numberOfPeriods);
+    else if (groupingPeriod == "week")
+      copy.setDate(fromDate.getDate() + 7 * numberOfPeriods);
+    else if (groupingPeriod == "month")
+      copy.setMonth(fromDate.getMonth() + numberOfPeriods);
+    else
+      throw "groupingPeriod: " + groupingPeriod + " is invalid";
+
+    return copy;
+  }
+
+  dateToPeriodStart(date: Date, groupingPeriod: string): Date {
+    var copy = new Date(date);
+    copy.setHours(date.getHours(), 0, 0, 0);
+
+    if (groupingPeriod == "date") {
+      copy.setHours(0);
+    }
+    else if (groupingPeriod == "week") {
+      var dayOfWeek = (date.getDay() + 6) % 7
+      copy.setDate(date.getDate() - dayOfWeek);
+      copy.setHours(0);
+    }
+    else if (groupingPeriod == "month") {
+      copy.setDate(1);
+      copy.setHours(0);
+    }
+
+    return copy;
   }
 }
