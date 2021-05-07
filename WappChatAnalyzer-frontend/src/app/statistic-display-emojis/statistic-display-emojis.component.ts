@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { EmojiInfoTotal } from '../dtos/emojiInfoTotal';
-import { AfterAttach } from '../services/attach-detach-hooks.service';
+import { AfterAttach, BeforeDetach } from '../services/attach-detach-hooks.service';
 import { DataService } from '../services/data.service';
 import { FilterService } from '../services/filter.service';
 import { StatisticDisplayComponent } from '../statistic-display/statistic-display.component';
@@ -10,7 +11,7 @@ import { StatisticDisplayComponent } from '../statistic-display/statistic-displa
   templateUrl: './statistic-display-emojis.component.html',
   styleUrls: ['./statistic-display-emojis.component.css']
 })
-export class StatisticDisplayEmojisComponent implements OnInit, AfterAttach {
+export class StatisticDisplayEmojisComponent implements OnInit, AfterAttach, BeforeDetach {
 
   @ViewChild(StatisticDisplayComponent)
   statisticDisplay: StatisticDisplayComponent;
@@ -19,16 +20,34 @@ export class StatisticDisplayEmojisComponent implements OnInit, AfterAttach {
 
   public showCount: number = 10;
 
+  private subscriptions: Subscription[] = [];
+
   constructor(private dataService: DataService, private filterService: FilterService) { }
 
   ngOnInit(): void {
-    this.filterService.dateFilterChanged.subscribe(() => this.load());
-    this.filterService.groupingPeriodChanged.subscribe(() => this.load());
+    this.subscribeAll();
     this.load();
   }
 
   ngAfterAttach() {
+    this.subscribeAll();
+    this.load();
     this.statisticDisplay.ngAfterAttach();
+  }
+
+  ngBeforeDetach() {
+    this.unsubscribeAll();
+    this.statisticDisplay.ngBeforeDetach();
+  }
+
+  subscribeAll() {
+    this.subscriptions.push(this.filterService.dateFilterChanged.subscribe(() => this.load()));
+    this.subscriptions.push(this.filterService.groupingPeriodChanged.subscribe(() => this.load()));
+  }
+
+  unsubscribeAll() {
+    while(this.subscriptions.length > 0)
+      this.subscriptions.pop().unsubscribe();
   }
 
   load() {

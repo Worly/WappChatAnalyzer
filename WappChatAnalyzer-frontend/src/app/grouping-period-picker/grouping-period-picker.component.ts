@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { FilterService } from '../services/filter.service';
 
 @Component({
@@ -6,7 +7,7 @@ import { FilterService } from '../services/filter.service';
   templateUrl: './grouping-period-picker.component.html',
   styleUrls: ['./grouping-period-picker.component.css']
 })
-export class GroupingPeriodPickerComponent implements OnInit {
+export class GroupingPeriodPickerComponent implements OnInit, OnDestroy {
 
   groupingPeriods = [
     { value: "hour", display: "Hour" },
@@ -19,13 +20,20 @@ export class GroupingPeriodPickerComponent implements OnInit {
   
   timeoutId: number = null;
 
+  private subscriptions: Subscription[] = [];
+
   constructor(private filterService: FilterService) { }
 
   ngOnInit(): void {
     this.getValuesFromService();
-    this.filterService.groupingPeriodChanged.subscribe(() => {
+    this.subscriptions.push(this.filterService.groupingPeriodChanged.subscribe(() => {
       this.getValuesFromService();
-    });
+    }));
+  }
+
+  ngOnDestroy() {
+    while(this.subscriptions.length > 0)
+      this.subscriptions.pop().unsubscribe();
   }
 
   private getValuesFromService() {

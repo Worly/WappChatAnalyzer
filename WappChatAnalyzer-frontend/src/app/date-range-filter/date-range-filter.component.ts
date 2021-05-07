@@ -1,13 +1,14 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DateRangeType, FilterService, PeriodType } from '../services/filter.service';
 import * as dateFormat from "dateformat";
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-date-range-filter',
   templateUrl: './date-range-filter.component.html',
   styleUrls: ['./date-range-filter.component.css']
 })
-export class DateRangeFilterComponent implements OnInit {
+export class DateRangeFilterComponent implements OnInit, OnDestroy {
 
   @ViewChild("periodButton")
   periodButton: ElementRef;
@@ -69,13 +70,20 @@ export class DateRangeFilterComponent implements OnInit {
     },
   ];
 
+  private subscriptions: Subscription[] = [];
+
   constructor(private filterService: FilterService) { }
 
   ngOnInit(): void {
     this.getValuesFromService();
-    this.filterService.dateFilterChanged.subscribe(() => {
+    this.subscriptions.push(this.filterService.dateFilterChanged.subscribe(() => {
       this.getValuesFromService();
-    });
+    }));
+  }
+
+  ngOnDestroy() {
+    while(this.subscriptions.length > 0)
+      this.subscriptions.pop().unsubscribe();
   }
 
   private getValuesFromService() {

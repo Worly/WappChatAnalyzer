@@ -1,17 +1,18 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { EventService } from '../services/event.service';
 import { EventInfo } from "../dtos/event";
 import { groupBy } from "../utils";
 import * as dateFormat from "dateformat";
 import { Router } from '@angular/router';
 import { FilterService } from '../services/filter.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-event-list',
   templateUrl: './event-list.component.html',
   styleUrls: ['./event-list.component.css']
 })
-export class EventListComponent implements OnInit {
+export class EventListComponent implements OnInit, OnDestroy {
 
   events: { [Key: string]: EventInfo[] };
 
@@ -23,12 +24,19 @@ export class EventListComponent implements OnInit {
 
   count: number;
 
+  private subscriptions: Subscription[] = [];
+
   constructor(private eventService: EventService, private filterService: FilterService) { }
 
   ngOnInit(): void {
-    this.filterService.eventGroupsChanged.subscribe(() => this.load());
-    this.filterService.dateFilterChanged.subscribe(() => this.load());
+    this.subscriptions.push(this.filterService.eventGroupsChanged.subscribe(() => this.load()));
+    this.subscriptions.push(this.filterService.dateFilterChanged.subscribe(() => this.load()));
     this.load();
+  }
+
+  ngOnDestroy() {
+    while(this.subscriptions.length > 0)
+      this.subscriptions.pop().unsubscribe();
   }
 
   load() {

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as CanvasJS from '../../assets/canvasjs.min';
 import { appConfig } from '../app.config';
@@ -9,7 +9,8 @@ import * as dateFormat from "dateformat";
 import { groupBy } from "../utils";
 import { EventInfo } from "../dtos/event";
 import { FilterService } from '../services/filter.service';
-import { AfterAttach } from '../services/attach-detach-hooks.service';
+import { AfterAttach, BeforeDetach } from '../services/attach-detach-hooks.service';
+import { Subscription } from 'rxjs';
 
 let id = 0;
 
@@ -18,7 +19,7 @@ let id = 0;
   templateUrl: './statistic-display.component.html',
   styleUrls: ['./statistic-display.component.css']
 })
-export class StatisticDisplayComponent implements OnInit, AfterAttach {
+export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach, BeforeDetach {
   private _statisticUrl: string;
   @Input()
   set statisticUrl(value: string) {
@@ -41,6 +42,8 @@ export class StatisticDisplayComponent implements OnInit, AfterAttach {
   eventElements = [];
   eventEmojiSize = 24;
 
+  subscriptions: Subscription[] = [];
+
   private chart;
 
   constructor(private dataService: DataService, private eventService: EventService, private route: ActivatedRoute, private filterService: FilterService) {
@@ -48,25 +51,43 @@ export class StatisticDisplayComponent implements OnInit, AfterAttach {
   }
 
   ngOnInit() {
-    this.route.data.subscribe(data => {
+    this.subscribeAll();
+    this.loadAndShowEvents();
+  }
+
+  ngOnDestroy() {
+    this.unsubscribeAll();
+  }
+
+  ngAfterAttach() {
+    this.subscribeAll();
+    this.loadAndShowStatistic();
+  }
+
+  ngBeforeDetach() {
+    this.unsubscribeAll();
+  }
+
+  subscribeAll() {
+    this.subscriptions.push(this.route.data.subscribe(data => {
       if (data.statisticUrl != null) {
         this._statisticUrl = data.statisticUrl;
         this.loadAndShowStatistic();
       }
       this.displayName = data.displayName;
-    });
-    this.loadAndShowEvents();
-
-    this.filterService.eventGroupsChanged.subscribe(() => this.loadAndShowEvents());
-    this.filterService.dateFilterChanged.subscribe(() => {
+    }));
+    this.subscriptions.push(this.filterService.eventGroupsChanged.subscribe(() => this.loadAndShowEvents()));
+    this.subscriptions.push(this.filterService.dateFilterChanged.subscribe(() => {
       this.loadAndShowStatistic();
       this.loadAndShowEvents();
-    });
-    this.filterService.groupingPeriodChanged.subscribe(() => this.loadAndShowStatistic());
+    }));
+    this.subscriptions.push(this.filterService.groupingPeriodChanged.subscribe(() => this.loadAndShowStatistic()));
   }
 
-  ngAfterAttach() {
-    this.loadAndShowStatistic();
+  unsubscribeAll() {
+    while (this.subscriptions.length > 0) {
+      this.subscriptions.pop().unsubscribe();
+    }
   }
 
   loadAndShowEvents() {
@@ -79,6 +100,9 @@ export class StatisticDisplayComponent implements OnInit, AfterAttach {
   loadAndShowStatistic() {
     this.statistic = null;
     this.isLoading = true;
+    if (this.chart != null)
+      this.chart.destroy();
+      
     this.dataService.getStatistic(this._statisticUrl).subscribe((r: Statistic) => {
       this.isLoading = false;
       this.statistic = r;
@@ -135,8 +159,6 @@ export class StatisticDisplayComponent implements OnInit, AfterAttach {
       }
       data.push(dataSingle);
     }
-
-    console.log(this.chartContainerGraph.nativeElement.offsetWidth);
 
     let dataSingle = {
       type: "column",
@@ -229,7 +251,7 @@ export class StatisticDisplayComponent implements OnInit, AfterAttach {
     if (this.chart == null)
       return;
 
-    if (this.statistic.filter.groupingPeriod == "week" || this.statistic.filter.groupingPeriod == "month")
+    if (this.statistic == null || this.statistic.filter.groupingPeriod == "week" || this.statistic.filter.groupingPeriod == "month")
       return;
 
     let periodCounts = {};
@@ -274,6 +296,9 @@ export class StatisticDisplayComponent implements OnInit, AfterAttach {
 
   toolTipContent(e, events) {
     var str = "";
+
+    if (this.statistic == null)
+      return "";
 
     var date = <Date>e.entries[0].dataPoint.x;
 

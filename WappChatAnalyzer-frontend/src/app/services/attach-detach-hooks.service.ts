@@ -7,6 +7,9 @@ export interface BeforeAttach {
 export interface AfterAttach {
     ngAfterAttach(): void;
 }
+export interface BeforeDetach {
+    ngBeforeDetach(): void;
+}
 
 interface DetachedRouteHandleExt extends DetachedRouteHandle {
     componentRef: ComponentRef<Component>;
@@ -21,7 +24,8 @@ export class AttachDetachHooksService {
 
     private pseudoSuper: {
         retrieve: (route: ActivatedRouteSnapshot) => DetachedRouteHandleExt,
-        shouldAttach: (route: ActivatedRouteSnapshot) => boolean
+        shouldAttach: (route: ActivatedRouteSnapshot) => boolean,
+        store: (route: ActivatedRouteSnapshot, handle: DetachedRouteHandle | null) => void
     };
 
     private currentHandle: DetachedRouteHandleExt;
@@ -33,10 +37,12 @@ export class AttachDetachHooksService {
         this.pseudoSuper = {
             shouldAttach: reuseStrategy.shouldAttach.bind(reuseStrategy),
             retrieve: reuseStrategy.retrieve.bind(reuseStrategy),
+            store: reuseStrategy.store.bind(reuseStrategy),
         };
 
         reuseStrategy.retrieve = this.retrieve.bind(this);
         reuseStrategy.shouldAttach = this.shouldAttach.bind(this);
+        reuseStrategy.store = this.store.bind(this);
 
 
         // Router events
@@ -64,6 +70,12 @@ export class AttachDetachHooksService {
     private shouldAttach(route: ActivatedRouteSnapshot): boolean {
         this.pendingBeforeAttach = this.pseudoSuper.shouldAttach(route);
         return this.pendingBeforeAttach;
+    }
+
+    private store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle | null): void {
+        this.callHook(handle as DetachedRouteHandleExt, 'ngBeforeDetach');
+
+        this.pseudoSuper.store(route, handle);
     }
 
     private callHook(detachedTree: DetachedRouteHandleExt, hookName: string): void {

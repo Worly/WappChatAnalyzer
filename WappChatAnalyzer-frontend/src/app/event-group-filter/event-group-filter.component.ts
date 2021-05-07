@@ -1,5 +1,6 @@
-import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { EventGroup } from '../dtos/event';
 import { EventService } from '../services/event.service';
 import { FilterService } from '../services/filter.service';
@@ -9,7 +10,7 @@ import { FilterService } from '../services/filter.service';
   templateUrl: './event-group-filter.component.html',
   styleUrls: ['./event-group-filter.component.css']
 })
-export class EventGroupFilterComponent implements OnInit {
+export class EventGroupFilterComponent implements OnInit, OnDestroy {
 
   popupVisible: boolean = false;
 
@@ -20,19 +21,26 @@ export class EventGroupFilterComponent implements OnInit {
 
   timeoutId: number = null;
 
+  private subscriptions: Subscription[] = [];
+
   constructor(private elementRef: ElementRef, private eventService: EventService, private activatedRoute: ActivatedRoute, private filterService: FilterService) { }
 
   ngOnInit(): void {
     this.notSelected = this.filterService.eventGroupsNotSelected;
-    this.filterService.eventGroupsChanged.subscribe(notSelected => {
+    this.subscriptions.push(this.filterService.eventGroupsChanged.subscribe(notSelected => {
       this.notSelected = notSelected;
-    });
+    }));
 
     this.isLoading = true;
     this.eventService.getEventGroups().subscribe(eg => {
       this.eventGroups = eg;
       this.isLoading = false;
     });
+  }
+
+  ngOnDestroy() {
+    while(this.subscriptions.length > 0)
+      this.subscriptions.pop().unsubscribe();
   }
 
   togglePopup() {
