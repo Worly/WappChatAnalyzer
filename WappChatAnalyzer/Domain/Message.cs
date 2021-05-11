@@ -1,18 +1,59 @@
-﻿using System;
+﻿using DelegateDecompiler;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
+using WappChatAnalyzer.Services;
 
-namespace WappChatAnalyzer.Services
+namespace WappChatAnalyzer.Domain
 {
+    [Index(nameof(SentDateTime))]
     public class Message
     {
+        public static readonly int NORMALIZED_HOURS = -7;
+
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int Id { get; set; }
         public DateTime SentDateTime { get; set; }
-        public DateTime SentDateNormalized { get => SentDateTime.AddHours(-7).Date; }
+        [Computed]
+        [NotMapped]
+        public DateTime NormalizedSentDate { get => SentDateTime.AddHours(NORMALIZED_HOURS).Date; }
         public string Sender { get; set; }
         public string Text { get; set; }
         public bool IsMedia { get; set; }
+    }
 
+    public static class MessageExtensions
+    {
+        public static IQueryable<Message> Filter(this IQueryable<Message> messages, string fromSender = null, DateTime? onDate = null)
+        {
+            if (fromSender != null)
+                messages = messages.Where(o => o.Sender == fromSender);
+
+            if (onDate != null)
+                messages = messages.Where(o => o.NormalizedSentDate == onDate);
+
+            return messages;
+        }
+
+        public static IQueryable<Message> FilterDateRange(this IQueryable<Message> messages, DateTime? fromDate, DateTime? toDate)
+        {
+            if (fromDate != null)
+                messages = messages.Where(o => o.NormalizedSentDate >= fromDate.Value.Date).Decompile();
+
+            if (toDate != null)
+                messages = messages.Where(o => o.NormalizedSentDate <= toDate.Value.Date).Decompile();
+
+            return messages;
+        }
+    }
+
+    public static class MessageUtils
+    {
         public static List<Message> ParseMessages(string[] lines)
         {
             var messages = new List<Message>();
@@ -88,31 +129,6 @@ namespace WappChatAnalyzer.Services
             isMedia = message == "<Media omitted>";
 
             return true;
-        }
-    }
-
-    public static class MessageExtensions
-    {
-        public static IEnumerable<Message> Filter(this IEnumerable<Message> messages, string fromSender = null, DateTime? onDate = null)
-        {
-            if (fromSender != null)
-                messages = messages.Where(o => o.Sender == fromSender);
-
-            if (onDate != null)
-                messages = messages.Where(o => o.SentDateNormalized == onDate);
-
-            return messages;
-        }
-
-        public static IEnumerable<Message> FilterDateRange(this IEnumerable<Message> messages, DateTime? fromDate, DateTime? toDate)
-        {
-            if (fromDate != null)
-                messages = messages.Where(o => o.SentDateNormalized.Date >= fromDate.Value.Date);
-
-            if (toDate != null)
-                messages = messages.Where(o => o.SentDateNormalized.Date <= toDate.Value.Date);
-
-            return messages;
         }
     }
 }

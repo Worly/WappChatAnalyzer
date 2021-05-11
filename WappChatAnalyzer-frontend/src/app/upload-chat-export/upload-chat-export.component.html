@@ -1,0 +1,15 @@
+<div class="my-container">
+    <div class="title">Upload chat export</div>
+    <div>
+        <label for="file-upload" class="custom-file-upload">
+            <div class="button" [ngClass]="{'disabled': isLoading}">Choose file</div>
+        </label>
+        <input id="file-upload" type="file" (change)="handleFileInput($event.target.files)">
+        <span>{{ fileToUpload == null ? "No file chosen" : fileToUpload.name }}</span>
+        <br/>
+        <div class="button" [ngClass]="{'disabled': fileToUpload == null || isLoading}" (click)="upload()">Upload</div>
+        <span *ngIf="isLoading">Importing... please wait</span>
+        &nbsp;
+        <span>{{message}}</span>
+    </div>
+</div>

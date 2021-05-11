@@ -1,0 +1,41 @@
+.title {
+    font-size: 2.5rem;
+    text-align: center;
+}
+
+.my-table {
+    border-collapse: separate !important;
+    width: 100%;
+    border: 1px solid lightgray;
+    border-radius: 8px;
+}
+
+.my-table td, .my-table th {
+    text-align: center;
+    padding: 4px 0px;
+    border: 1px solid lightgray;
+}
+
+.my-table>tr:first-child>th:first-child {
+    border-top-left-radius: 8px;
+}
+
+.my-table>tr:first-child>th:last-child {
+    border-top-right-radius: 8px;
+}
+
+.my-table>tr:last-child>td:first-child {
+    border-bottom-left-radius: 8px;
+}
+
+.my-table>tr:last-child>td:last-child {
+    border-bottom-right-radius: 8px;
+}
+
+.my-table td {
+    font-size: 1.2rem;
+}
+
+.my-table th {
+    font-size: 1.4rem;
+}

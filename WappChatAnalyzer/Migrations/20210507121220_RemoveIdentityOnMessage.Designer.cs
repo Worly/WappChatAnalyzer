@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WappChatAnalyzer.Domain;
 
 namespace WappChatAnalyzer.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210507121220_RemoveIdentityOnMessage")]
+    partial class RemoveIdentityOnMessage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,38 +56,6 @@ namespace WappChatAnalyzer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EventGroups");
-                });
-
-            modelBuilder.Entity("WappChatAnalyzer.Domain.ImportHistory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("FirstMessageDateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("FromMessageId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ImportDateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("LastMessageDateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("MessageCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Overlap")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ToMessageId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ImportHistories");
                 });
 
             modelBuilder.Entity("WappChatAnalyzer.Domain.Message", b =>

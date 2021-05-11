@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WappChatAnalyzer.Domain;
 using WappChatAnalyzer.DTOs;
 using WappChatAnalyzer.Services;
 
@@ -18,13 +19,13 @@ namespace WappChatAnalyzer.Controllers
     public class EmojiController : ControllerBase
     {
         private IEmojiService emojiService;
-        private IChat chat;
+        private IMessageService messageService;
         private IStatisticService statisticService;
 
-        public EmojiController(IEmojiService emojiService, IChat chat, IStatisticService statisticService)
+        public EmojiController(IEmojiService emojiService, IMessageService messageService, IStatisticService statisticService)
         {
             this.emojiService = emojiService;
-            this.chat = chat;
+            this.messageService = messageService;
             this.statisticService = statisticService;
         }
 
@@ -43,7 +44,7 @@ namespace WappChatAnalyzer.Controllers
         [HttpGet("getEmojiInfoTotal")]
         public EmojiInfoTotal GetEmojiInfoTotal([FromQuery] Filter filter)
         {
-            var messages = chat.Messages.FilterDateRange(filter.FromDate, filter.ToDate).ToList();
+            var messages = messageService.GetAllMessages().FilterDateRange(filter.FromDate, filter.ToDate).ToList();
 
             var result = new Dictionary<string, Dictionary<string, int>>();
 
@@ -134,7 +135,7 @@ namespace WappChatAnalyzer.Controllers
         [HttpGet("getStatistic/singleEmoji/{emojiCodePoints}")]
         public Statistic<int> GetStatisticSingleEmoji(string emojiCodePoints, [FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(chat, messages => emojiService.CountEmojiInMessages(messages, emojiCodePoints), "SingleEmoji", filter);
+            var result = statisticService.GetStatistic(messageService, messages => emojiService.CountEmojiInMessages(messages, emojiCodePoints), "SingleEmoji", filter);
 
             return result;
         }

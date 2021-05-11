@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WappChatAnalyzer.Domain;
 using WappChatAnalyzer.DTOs;
 using WappChatAnalyzer.Services;
 
@@ -14,13 +15,13 @@ namespace WappChatAnalyzer.Controllers
     [Route("[controller]")]
     public class BasicController : ControllerBase
     {
-        private IChat chat;
+        private IMessageService messageService;
         private IChatAnalyzerService chatAnalyzerService;
         private IStatisticService statisticService;
 
-        public BasicController(IChat chat, IChatAnalyzerService chatAnalyzerService, IStatisticService statisticService)
+        public BasicController(IMessageService messageService, IChatAnalyzerService chatAnalyzerService, IStatisticService statisticService)
         {
-            this.chat = chat;
+            this.messageService = messageService;
             this.chatAnalyzerService = chatAnalyzerService;
             this.statisticService = statisticService;
         }
@@ -28,17 +29,19 @@ namespace WappChatAnalyzer.Controllers
         [HttpGet("getBasicInfoTotal")]
         public BasicInfoTotal GetBasicInfoTotal([FromQuery] Filter filter)
         {
+            var messages = messageService.GetAllMessages().FilterDateRange(filter.FromDate, filter.ToDate).ToList();
+            var allSenders = messageService.GetAllSenders();
             return new BasicInfoTotal()
             {
-                BasicInfo = GetBasicInfo(chat.Messages.FilterDateRange(filter.FromDate, filter.ToDate)),
-                BasicInfoForSenders = chat.Messages.Select(o => o.Sender).Distinct().ToDictionary(sender => sender, sender => GetBasicInfo(chat.Messages.Filter(sender).FilterDateRange(filter.FromDate, filter.ToDate)))
+                BasicInfo = GetBasicInfo(messages),
+                BasicInfoForSenders = allSenders.ToDictionary(sender => sender, sender => GetBasicInfo(messages.AsQueryable().Filter(sender)))
             };
         }
 
         [HttpGet("getStatistic/numberOfMessages")]
         public ActionResult<Statistic<int>> GetStatisticNumberOfMessages([FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(chat, chatAnalyzerService.TotalNumberOfMessages, "NumberOfMessages", filter);
+            var result = statisticService.GetStatistic(messageService, chatAnalyzerService.TotalNumberOfMessages, "NumberOfMessages", filter);
 
             return result;
         }
@@ -46,7 +49,7 @@ namespace WappChatAnalyzer.Controllers
         [HttpGet("getStatistic/numberOfWords")]
         public ActionResult<Statistic<int>> GetStatisticNumberOfWords([FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(chat, chatAnalyzerService.TotalNumberOfWords, "NumberOfWords", filter);
+            var result = statisticService.GetStatistic(messageService, chatAnalyzerService.TotalNumberOfWords, "NumberOfWords", filter);
 
             return result;
         }
@@ -54,7 +57,7 @@ namespace WappChatAnalyzer.Controllers
         [HttpGet("getStatistic/numberOfCharacters")]
         public ActionResult<Statistic<int>> GetStatisticNumberOfCharacters([FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(chat, chatAnalyzerService.TotalNumberOfCharacters, "NumberOfCharacters", filter);
+            var result = statisticService.GetStatistic(messageService, chatAnalyzerService.TotalNumberOfCharacters, "NumberOfCharacters", filter);
 
             return result;
         }
@@ -62,7 +65,7 @@ namespace WappChatAnalyzer.Controllers
         [HttpGet("getStatistic/numberOfMedia")]
         public ActionResult<Statistic<int>> GetStatisticNumberOfMedia([FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(chat, chatAnalyzerService.TotalNumberOfMedia, "NumberOfMedia", filter);
+            var result = statisticService.GetStatistic(messageService, chatAnalyzerService.TotalNumberOfMedia, "NumberOfMedia", filter);
 
             return result;
         }
@@ -70,7 +73,7 @@ namespace WappChatAnalyzer.Controllers
         [HttpGet("getStatistic/numberOfEmojis")]
         public ActionResult<Statistic<int>> GetStatisticNumberOfEmojis([FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(chat, chatAnalyzerService.TotalNumberOfEmojis, "NumberOfEmojis", filter);
+            var result = statisticService.GetStatistic(messageService, chatAnalyzerService.TotalNumberOfEmojis, "NumberOfEmojis", filter);
 
             return result;
         }

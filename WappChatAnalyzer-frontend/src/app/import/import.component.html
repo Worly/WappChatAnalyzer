@@ -1,0 +1,32 @@
+<app-upload-chat-export (onUploaded)="onImportedNew()"></app-upload-chat-export>
+
+<br /><br />
+
+<div class="my-container">
+    <div class="title">Import history</div>
+    <br />
+    <div>
+        <table class="my-table">
+            <tr>
+                <th>Import date time</th>
+                <th>First message</th>
+                <th>Last message</th>
+                <th>Message count</th>
+                <th>From ID</th>
+                <th>To ID</th>
+                <th>Overlap</th>
+                <th>Imported</th>
+            </tr>
+            <tr *ngFor="let import of imports | orderBy: 'id' : true">
+                <td>{{import.importDateTime | date:'dd/MM/yyyy HH:mm:ss'}}</td>
+                <td>{{import.firstMessageDateTime | date:'dd/MM/yyyy HH:mm'}}</td>
+                <td>{{import.lastMessageDateTime | date:'dd/MM/yyyy HH:mm'}}</td>
+                <td>{{import.messageCount | number}}</td>
+                <td>{{import.fromMessageId | number}}</td>
+                <td>{{import.toMessageId | number}}</td>
+                <td>{{import.overlap | number}}</td>
+                <td>{{(import.messageCount - import.overlap) | number}}</td>
+            </tr>
+        </table>
+    </div>
+</div>

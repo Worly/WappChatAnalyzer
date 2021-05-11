@@ -102,7 +102,8 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
     this.isLoading = true;
     if (this.chart != null)
       this.chart.destroy();
-      
+    this.eventElements = [];
+
     this.dataService.getStatistic(this._statisticUrl).subscribe((r: Statistic) => {
       this.isLoading = false;
       this.statistic = r;

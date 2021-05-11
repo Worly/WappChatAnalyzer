@@ -31,8 +31,10 @@ namespace WappChatAnalyzer
         {
             services.AddDbContext<MainDbContext>();
 
+            //services.AddSingleton<IMessageService, LocalMessageService>();
+            services.AddScoped<IMessageService, MessageService>();
+
             services.AddSingleton<IStatisticService, StatisticService>();
-            services.AddSingleton<IChat, Chat>();
             services.AddSingleton<IEmojiService, EmojiService>();
             services.AddSingleton<IChatAnalyzerService, ChatAnalyzerService>();
             services.AddScoped<IEventService, EventService>();

@@ -27,6 +27,8 @@ import { FormsModule } from '@angular/forms';
 import { DropdownComponent } from './dropdown/dropdown.component';
 import { AttachDetachHooksService } from './services/attach-detach-hooks.service';
 import { GroupingPeriodPickerComponent } from './grouping-period-picker/grouping-period-picker.component';
+import { UploadChatExportComponent } from './upload-chat-export/upload-chat-export.component';
+import { ImportComponent } from './import/import.component';
 
 
 
@@ -49,7 +51,9 @@ import { GroupingPeriodPickerComponent } from './grouping-period-picker/grouping
     EventGroupFilterComponent,
     DateRangeFilterComponent,
     DropdownComponent,
-    GroupingPeriodPickerComponent
+    GroupingPeriodPickerComponent,
+    UploadChatExportComponent,
+    ImportComponent
   ],
   imports: [
     BrowserModule,
