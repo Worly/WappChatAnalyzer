@@ -287,7 +287,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
             let url = this.emojiService.getLinkToWappEmojiImage(r);
             
             var img = "";
-            img = img.concat("<img class=\"emoji\" draggable=\"false\" src=\"");
+            img = img.concat("<img class=\"emoji\" src=\"");
             img = img.concat(url);
             img = img.concat("\" alt=\"");
             img = img.concat(char);

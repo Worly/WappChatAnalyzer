@@ -262,4 +262,5 @@ svg {
     height: 21px;
     vertical-align: top;
     image-rendering: -webkit-optimize-contrast;
+    -webkit-user-drag: none;
 }
