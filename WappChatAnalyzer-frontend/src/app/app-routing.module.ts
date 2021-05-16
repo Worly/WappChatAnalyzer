@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ChatComponent } from './chat/chat.component';
 import { EventListComponent } from './event-list/event-list.component';
 import { HomeComponent } from './home/home.component';
 import { ImportComponent } from './import/import.component';
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: "statistic-display/emojis", component: StatisticDisplayEmojisComponent, data: { shouldDetach: true } },
   { path: "events", component: EventListComponent },
   { path: "import", component: ImportComponent },
+  { path: "chat", component: ChatComponent },
   { path: "**", redirectTo: "/home" }
 ];
 

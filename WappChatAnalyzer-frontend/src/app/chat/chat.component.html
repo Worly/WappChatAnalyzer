@@ -1,0 +1,59 @@
+<div class="splitScreenContainer">
+    <div class="chatContainer">
+        <div #chat class="chat" (scroll)="onScroll()">
+            <div class="background"></div>
+            <div *ngFor="let message of messages; index as i;" (invoke)="bindElementToMessage($event, i)"
+                [ngClass]="{'message-not-last-in-group': isNotLastInGroup(i), 'message-in': !isMessageMine(message), 'message-out': isMessageMine(message)}"
+                class="message-container">
+                <div [ngClass]="{'message-first-in-group': isFirstInGroup(i)}" class="message">
+                    <span *ngIf="isFirstInGroup(i) && !isMessageMine(message)" class="tail-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 13" width="8" height="13">
+                            <path opacity=".13" d="M1.533 3.568L8 12.193V1H2.812C1.042 1 .474 2.156 1.533 3.568z">
+                            </path>
+                            <path fill="currentColor" d="M1.533 2.568L8 11.193V0H2.812C1.042 0 .474 1.156 1.533 2.568z">
+                            </path>
+                        </svg>
+                    </span>
+                    <span *ngIf="isFirstInGroup(i) && isMessageMine(message)" class="tail-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 13" width="8" height="13">
+                            <path opacity=".13" d="M5.188 1H0v11.193l6.467-8.625C7.526 2.156 6.958 1 5.188 1z"></path>
+                            <path fill="currentColor" d="M5.188 0H0v11.193l6.467-8.625C7.526 1.156 6.958 0 5.188 0z">
+                            </path>
+                        </svg>
+                    </span>
+                    <div class="message-background shadow">
+                        <div class="text-container">
+                            <div class="text">
+                                <span [innerHtml]="message.emojifiedText != null ? message.emojifiedText : message.text"></span>
+                                <span class="extra-space-for-time"></span>
+                            </div>
+                            <div class="time-container">
+                                <div class="time-div">
+                                    <span class="time">{{message.sentDateTime | date:'HH:mm'}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="sender-container">
+            <span>Perspective: </span>&nbsp;
+            <app-dropdown [(value)]="me" [items]="senders"></app-dropdown>
+        </div>
+        <div class="date-container">
+            <div class="left button no-select"
+                [ngClass]="{'disabled': getFirstVisibleMessage() == null || suspendIncreaseDecreaseDate}"
+                (click)="decreaseDate()">⯇</div>
+            <div class="date button no-select date-input" [dpDayPicker]="dateConfig" theme="dp-material"
+                (onSelect)="onDateSelected($event)">
+                {{getCurrentDate() | date: 'dd/MM/yyyy'}}
+            </div>
+            <div class="right button no-select"
+                [ngClass]="{'disabled': getFirstVisibleMessage() == null || suspendIncreaseDecreaseDate}"
+                (click)="increaseDate()">⯈</div>
+        </div>
+    </div>
+</div>

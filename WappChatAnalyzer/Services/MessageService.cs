@@ -12,6 +12,9 @@ namespace WappChatAnalyzer.Services
         IQueryable<Message> GetAllMessages();
         int ImportMessages(List<Message> messages);
         List<ImportHistory> GetImportHistory();
+        List<Message> GetMessages(int fromId, int toId);
+        Message GetFirstMessageOfDayBefore(DateTime dateTime);
+        Message GetFirstMessageOfDayAfter(DateTime dateTime);
     }
 
     public class MessageService : IMessageService
@@ -118,6 +121,29 @@ namespace WappChatAnalyzer.Services
         public List<ImportHistory> GetImportHistory()
         {
             return context.ImportHistories.ToList();
+        }
+
+        public List<Message> GetMessages(int fromId, int toId)
+        {
+            return context.Messages.Where(o => o.Id >= fromId && o.Id <= toId).ToList();
+        }
+
+        public Message GetFirstMessageOfDayBefore(DateTime dateTime)
+        {
+            return this.context.Messages
+                .Where(o => o.SentDateTime < dateTime)
+                .OrderByDescending(o => o.SentDateTime.Date)
+                .ThenBy(o => o.SentDateTime.TimeOfDay)
+                .ThenBy(o => o.Id)
+                .FirstOrDefault();
+        }
+
+        public Message GetFirstMessageOfDayAfter(DateTime dateTime)
+        {
+            return this.context.Messages
+                .OrderBy(o => o.Id)
+                .Where(o => o.SentDateTime >= dateTime)
+                .FirstOrDefault();
         }
     }
 }

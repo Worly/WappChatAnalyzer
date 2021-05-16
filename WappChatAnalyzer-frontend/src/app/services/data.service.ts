@@ -48,12 +48,4 @@ export class DataService {
       params: this.getParams()
     });
   }
-
-  getEmojiByCodePoints(codePoints: string): Observable<Emoji> {
-    return <Observable<Emoji>>this.http.get(appConfig.apiUrl + "emoji/getEmoji", {
-      params: {
-        emojiCodePoints: codePoints
-      }
-    });
-  }
 }

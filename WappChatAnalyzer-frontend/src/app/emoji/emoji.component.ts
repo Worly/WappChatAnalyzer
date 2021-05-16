@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { DataService } from '../services/data.service';
+import { EmojiService } from '../services/emoji.service';
 import { ToastComponent } from '../toast/toast.component';
 
 @Component({
@@ -8,9 +9,6 @@ import { ToastComponent } from '../toast/toast.component';
   styleUrls: ['./emoji.component.css']
 })
 export class EmojiComponent implements OnInit {
-
-  private readonly emojiIconApiPoint = "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/72/whatsapp/273/";
-
   private _codePoints: string;
   @Input()
   public set codePoints(value: string) {
@@ -32,7 +30,7 @@ export class EmojiComponent implements OnInit {
   public emojiName: string;
   public showName: boolean;
 
-  constructor(private dataService: DataService) {
+  constructor(private emojiService: EmojiService) {
 
   }
 
@@ -50,15 +48,10 @@ export class EmojiComponent implements OnInit {
     else {
       this.emojiHtml = this._codePoints.split(' ').map(c => "&#x" + c + ";").join('');
 
-      this.dataService.getEmojiByCodePoints(this._codePoints).subscribe(r => {
-        let name = r.name.toLowerCase().split(' ').join("-");
-        let codePoints = r.codePoints.toLowerCase().split(' ').join('-');
-
-        this.iconUrl = this.emojiIconApiPoint + name + "_" + codePoints + ".png";
-
+      this.emojiService.getEmojiByCodePoints(this._codePoints).subscribe(r => {
+        this.iconUrl = this.emojiService.getLinkToWappEmojiImage(r)
 
         this.emojiName = r.name;
-
 
         this.showWappEmoji = true;
       });

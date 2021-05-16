@@ -29,12 +29,15 @@ import { AttachDetachHooksService } from './services/attach-detach-hooks.service
 import { GroupingPeriodPickerComponent } from './grouping-period-picker/grouping-period-picker.component';
 import { UploadChatExportComponent } from './upload-chat-export/upload-chat-export.component';
 import { ImportComponent } from './import/import.component';
+import { ChatComponent } from './chat/chat.component';
+import { InvokeDirective } from './invoke-directive/invoke.directive';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
+    InvokeDirective,
     StatisticDisplayComponent,
     HomeComponent,
     BasicInfoSingleComponent,
@@ -53,7 +56,8 @@ import { ImportComponent } from './import/import.component';
     DropdownComponent,
     GroupingPeriodPickerComponent,
     UploadChatExportComponent,
-    ImportComponent
+    ImportComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
