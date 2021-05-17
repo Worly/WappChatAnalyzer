@@ -35,7 +35,7 @@ export class EventListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    while(this.subscriptions.length > 0)
+    while (this.subscriptions.length > 0)
       this.subscriptions.pop().unsubscribe();
   }
 
@@ -112,13 +112,12 @@ export class EventListComponent implements OnInit, OnDestroy {
     this.editingEventInfo.emoji = e.info.emoji;
     this.editingEventInfo.groupName = e.info.groupName;
     this.editingEventInfo.date = e.info.date;
+    this.editingEventInfo.order = e.info.order;
     this.editingEventInfo = null;
 
     setTimeout(() => {
-      if (oldDate != newDate) {
-        this.removeFromList(temp, oldDate);
-        this.addToList(temp);
-      }
+      this.removeFromList(temp, oldDate);
+      this.addToList(temp);
     }, 500);
   }
 
@@ -132,6 +131,12 @@ export class EventListComponent implements OnInit, OnDestroy {
         this.events[fromDate].splice(index, 1);
         if (this.events[fromDate].length == 0)
           delete this.events[fromDate];
+        else {
+          let order = 1;
+          for (let event of this.events[fromDate].sort((a, b) => a.order - b.order)) {
+            event.order = order++;
+          }
+        }
 
         this.count--;
       }
@@ -139,8 +144,16 @@ export class EventListComponent implements OnInit, OnDestroy {
   }
 
   addToList(eventInfo: EventInfo) {
-    if (this.events.hasOwnProperty(eventInfo.date))
+    if (this.events.hasOwnProperty(eventInfo.date)) {
+      let order = 1;
+      for (let event of this.events[eventInfo.date].sort((a, b) => a.order - b.order)) {
+        if (eventInfo.order == order)
+          order++;
+
+        event.order = order++;
+      }
       this.events[eventInfo.date].push(eventInfo);
+    }
     else
       this.events[eventInfo.date] = [eventInfo];
 

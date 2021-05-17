@@ -1,6 +1,7 @@
 export class EventInfo {
     public id: number;
     public date: string;
+    public order: number;
     public name: string;
     public emoji: string;
     public groupName: string;
@@ -9,6 +10,7 @@ export class EventInfo {
 export class Event {
     public id: number;
     public date: string;
+    public order: number;
     public name: string;
     public emoji: string;
     public eventGroup: EventGroup;

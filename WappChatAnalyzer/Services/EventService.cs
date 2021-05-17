@@ -48,6 +48,7 @@ namespace WappChatAnalyzer.Services
             {
                 Id = o.Id,
                 Name = o.Name,
+                Order = o.Order,
                 Date = o.DateTime.ToString("yyyy-MM-dd"),
                 Emoji = o.Emoji,
                 GroupName = o.EventGroup.Name
@@ -85,6 +86,7 @@ namespace WappChatAnalyzer.Services
                 Id = ev.Id,
                 Name = ev.Name,
                 Date = ev.DateTime.ToString("yyyy-MM-dd"),
+                Order = ev.Order,
                 Emoji = ev.Emoji,
                 EventGroup = new EventGroupDTO()
                 {
@@ -98,10 +100,34 @@ namespace WappChatAnalyzer.Services
         {
             var ev = mainDbContext.Events.Include(o => o.EventGroup).FirstOrDefault(o => o.Id == eventDTO.Id);
 
+            var oldOrder = ev.Order;
+
             ev.Name = eventDTO.Name;
             ev.Emoji = eventDTO.Emoji;
             ev.EventGroupId = eventDTO.EventGroup.Id;
             ev.DateTime = DateTime.Parse(eventDTO.Date);
+            ev.Order = eventDTO.Order;
+
+            if (ev.Order > oldOrder)
+            {
+                foreach(var evnt in mainDbContext.Events.Where(o => o.DateTime == ev.DateTime && o.Order > oldOrder && o.Order <= ev.Order))
+                {
+                    if (evnt.Id == ev.Id)
+                        continue;
+
+                    evnt.Order--;
+                }
+            }
+            else if (ev.Order < oldOrder)
+            {
+                foreach (var evnt in mainDbContext.Events.Where(o => o.DateTime == ev.DateTime && o.Order >= ev.Order && o.Order < oldOrder))
+                {
+                    if (evnt.Id == ev.Id)
+                        continue;
+
+                    evnt.Order++;
+                }
+            }
 
             mainDbContext.SaveChanges();
         }
@@ -116,6 +142,9 @@ namespace WappChatAnalyzer.Services
                 Name = eventDTO.Name
             };
 
+            var orders = mainDbContext.Events.Where(o => o.DateTime == newEvent.DateTime).Select(o => o.Order).ToList();
+            newEvent.Order = orders.Count == 0 ? 1 : orders.Max() + 1;
+
             mainDbContext.Events.Add(newEvent);
             mainDbContext.SaveChanges();
 
@@ -125,6 +154,10 @@ namespace WappChatAnalyzer.Services
         public void DeleteEvent(int id)
         {
             var ev = mainDbContext.Events.FirstOrDefault(o => o.Id == id);
+
+            foreach (var evnt in mainDbContext.Events.Where(o => o.DateTime == ev.DateTime && o.Order > ev.Order))
+                evnt.Order--;
+
             mainDbContext.Events.Remove(ev);
             mainDbContext.SaveChanges();
         }

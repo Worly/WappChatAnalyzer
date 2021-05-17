@@ -6,10 +6,19 @@
     <div class="groupName">
         <!-- <div contenteditable="true" (input)="onPropertyChange('eventGroup.name', $event.target.innerHTML)">
             {{event.eventGroup.name}}</div> -->
-        <app-event-group-picker class="underlined" [value]="event.eventGroup" (valueChange)="groupChanged($event)"></app-event-group-picker>
+        <app-event-group-picker class="underlined" [value]="event.eventGroup" (valueChange)="groupChanged($event)">
+        </app-event-group-picker>
     </div>
     <div class="name">
-        <div class="underlined" contenteditable="true" (input)="onPropertyChange('name', $event.target.innerHTML)">{{event.name}}</div>
+        <div class="underlined" contenteditable="true" (input)="onPropertyChange('name', $event.target.innerHTML)">
+            {{event.name}}</div>
+    </div>
+    <div class="order">
+        <div *ngIf="!isNew">
+            <span class="orderButton no-select" (click)="decreaseOrder()">▲</span>
+            {{newEvent.order}}
+            <span class="orderButton no-select" (click)="increaseOrder()">▼</span>
+        </div>
     </div>
     <div class="eventDate">
         <div [dpDayPicker]="dayPickerConfig" theme="dp-material" (onSelect)="onDateSelected($event)">

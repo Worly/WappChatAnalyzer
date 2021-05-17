@@ -56,8 +56,14 @@
     font-weight: bold;
 }
 
-.eventDate {
+.order {
     margin-left: auto;
+    min-width: 150px;
+    text-align: center;
+    color: rgb(146, 146, 146);
+}
+
+.eventDate {
     color: rgb(146, 146, 146);
 }
 

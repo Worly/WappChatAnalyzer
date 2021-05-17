@@ -263,8 +263,9 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
       if (this.statistic.filter.groupingPeriod == "hour")
         date.setHours(12);
 
-      for (let i = 0; i < this.events[key].length; i++) {
-        let event = this.events[key][i];
+      let sortedEvents = this.events[key].sort((a, b) => a.order - b.order);
+      for (let i = 0; i < sortedEvents.length; i++) {
+        let event = sortedEvents[i];
         var x = this.chart.axisX[0].convertValueToPixel(date);
 
         let y = -10;
@@ -344,7 +345,7 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
     for (let key in this.events) {
       var eventDate = this.dateToPeriodStart(new Date(key), this.statistic.filter.groupingPeriod);
       if (this.compareDatesWithoutTime(eventDate, date)) {
-        for (let event of this.events[key]) {
+        for (let event of this.events[key].sort((a, b) => a.order - b.order)) {
           if (this.statistic.filter.groupingPeriod != "month")
             str = str.concat("<br/><span>" + event.groupName + " " + event.emoji + " " + (event.name != null ? event.name : "") + "</span>");
           else {

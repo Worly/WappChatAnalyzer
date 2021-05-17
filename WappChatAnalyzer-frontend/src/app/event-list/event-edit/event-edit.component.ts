@@ -126,6 +126,7 @@ export class EventEditComponent implements OnInit {
     eInfo.id = event.id;
     eInfo.name = event.name;
     eInfo.date = event.date;
+    eInfo.order = event.order;
     eInfo.emoji = event.emoji;
     eInfo.groupName = event.eventGroup?.name;
     return eInfo;
@@ -133,5 +134,13 @@ export class EventEditComponent implements OnInit {
 
   groupChanged(eventGroup: EventGroup) {
     this.onPropertyChange("eventGroup", eventGroup);
+  }
+
+  increaseOrder() {
+    this.onPropertyChange("order", this.newEvent.order + 1);
+  }
+
+  decreaseOrder() {
+    this.onPropertyChange("order", this.newEvent.order - 1);
   }
 }

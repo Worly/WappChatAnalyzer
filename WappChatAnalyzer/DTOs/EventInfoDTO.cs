@@ -10,6 +10,7 @@ namespace WappChatAnalyzer.DTOs
     {
         public int Id { get; set; }
         public string Date { get; set; }
+        public int Order { get; set; }
         public string Name { get; set; }
         public string Emoji { get; set; }
         public string GroupName { get; set; }
@@ -19,6 +20,7 @@ namespace WappChatAnalyzer.DTOs
     {
         public int Id { get; set; }
         public string Date { get; set; }
+        public int Order { get; set; }
         public string Name { get; set; }
         public string Emoji { get; set; }
         public EventGroupDTO EventGroup { get; set; }
