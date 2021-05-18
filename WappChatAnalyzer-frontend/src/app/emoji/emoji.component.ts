@@ -1,5 +1,4 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { DataService } from '../services/data.service';
 import { EmojiService } from '../services/emoji.service';
 import { ToastComponent } from '../toast/toast.component';
 

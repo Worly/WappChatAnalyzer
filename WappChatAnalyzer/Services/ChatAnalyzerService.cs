@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WappChatAnalyzer.Domain;
 
@@ -14,6 +15,7 @@ namespace WappChatAnalyzer.Services
         int TotalNumberOfCharacters(IEnumerable<Message> messages);
         int TotalNumberOfMedia(IEnumerable<Message> messages);
         int TotalNumberOfEmojis(IEnumerable<Message> messages);
+        int TotalNumberOfRegex(Regex regex, IEnumerable<Message> messages);
     }
 
     public class ChatAnalyzerService : IChatAnalyzerService
@@ -63,6 +65,12 @@ namespace WappChatAnalyzer.Services
 
                 return emojiCount;
             });
+        }
+
+
+        public int TotalNumberOfRegex(Regex regex, IEnumerable<Message> messages)
+        {
+            return messages.Sum(o => regex.Matches(o.Text).Count);
         }
     }
 }

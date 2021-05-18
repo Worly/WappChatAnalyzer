@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { BasicInfoTotal } from '../dtos/basicInfo';
+import { BasicInfoTotal } from '../dtos/statisticTotal';
 import { AfterAttach, BeforeDetach } from '../services/attach-detach-hooks.service';
-import { DataService } from '../services/data.service';
+import { StatisticService } from '../services/statistic.service';
 import { FilterService } from '../services/filter.service';
+import { CustomStatistic } from '../dtos/customStatistic';
 
 @Component({
   selector: 'app-home',
@@ -13,12 +14,13 @@ import { FilterService } from '../services/filter.service';
 export class HomeComponent implements OnInit, OnDestroy, AfterAttach, BeforeDetach {
 
   public basicInfoTotal: BasicInfoTotal;
+  public customStatistics: CustomStatistic[];
 
   public isLoading: boolean;
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private dataService: DataService, private filterService: FilterService) { }
+  constructor(private statisticService: StatisticService, private filterService: FilterService) { }
 
   ngOnInit(): void {
     this.subscribeAll();
@@ -49,9 +51,19 @@ export class HomeComponent implements OnInit, OnDestroy, AfterAttach, BeforeDeta
 
   load() {
     this.isLoading = true;
-    this.dataService.getBasicInfo().subscribe(r => {
+    this.statisticService.getBasicInfo().subscribe(r => {
       this.isLoading = false;
       this.basicInfoTotal = r;
+    });
+
+
+    this.statisticService.getCustomStatistics().subscribe(r => {
+      this.customStatistics = r;
+      for(let stat of r) {
+        this.statisticService.getCustomStatisticTotal(stat.id).subscribe(t => {
+          stat["statisticTotal"] = t;
+        })
+      }
     });
   }
 

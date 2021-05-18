@@ -7,16 +7,16 @@ namespace WappChatAnalyzer.DTOs
 {
     public class BasicInfoTotal
     {
-        public BasicInfo BasicInfo { get; set; }
-        public Dictionary<string, BasicInfo> BasicInfoForSenders { get; set; }
+        public StatisticTotal TotalNumberOfMessages { get; set; }
+        public StatisticTotal TotalNumberOfWords { get; set; }
+        public StatisticTotal TotalNumberOfCharacters { get; set; }
+        public StatisticTotal TotalNumberOfMedia { get; set; }
+        public StatisticTotal TotalNumberOfEmojis { get; set; }
     }
 
-    public class BasicInfo
+    public class StatisticTotal
     {
-        public int TotalNumberOfMessages { get; set; }
-        public int TotalNumberOfWords { get; set; }
-        public int TotalNumberOfCharacters { get; set; } 
-        public int TotalNumberOfMedia { get; set; }
-        public int TotalNumberOfEmojis { get; set; }
+        public int Total { get; set; }
+        public Dictionary<string, int> TotalForSenders { get; set; }
     }
 }

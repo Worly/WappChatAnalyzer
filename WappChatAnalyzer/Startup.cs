@@ -38,6 +38,7 @@ namespace WappChatAnalyzer
             services.AddSingleton<IEmojiService, EmojiService>();
             services.AddSingleton<IChatAnalyzerService, ChatAnalyzerService>();
             services.AddScoped<IEventService, EventService>();
+            services.AddScoped<ICustomStatisticService, CustomStatisticService>();
 
             services.AddControllers();
         }

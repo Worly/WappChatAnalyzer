@@ -1,0 +1,7 @@
+<div class="wrapper" (click)="onClick()">
+    <div class="name"><b>{{displayName}}</b>: {{_statisticTotal != null ? (_statisticTotal.total | number) : ""}}</div>
+    <div>
+        <app-ratio-bar *ngIf="_statisticTotal != null" [items]="_statisticTotal.totalForSenders" [height]="70"></app-ratio-bar>
+    </div>
+    <div class="overlay"></div>
+</div>

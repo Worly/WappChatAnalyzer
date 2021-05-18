@@ -1,0 +1,5 @@
+<div *ngIf="customStatistic != null">
+    <div class="title">Number of {{customStatistic.name | lowercase}}</div>
+    <app-statistic-display [statisticUrl]="'statistic/getStatistic/custom/' + customStatistic.id">
+    </app-statistic-display>
+</div>

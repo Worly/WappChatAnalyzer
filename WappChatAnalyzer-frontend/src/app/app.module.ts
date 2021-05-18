@@ -6,7 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { StatisticDisplayComponent } from './statistic-display/statistic-display.component';
 import { HomeComponent } from './home/home.component';
-import { BasicInfoSingleComponent } from './basic-info-single/basic-info-single.component';
+import { StatisticTotalComponent } from './statistic-total/statistic-total.component';
 import { EmojiComponent } from './emoji/emoji.component';
 import { StatisticDisplayEmojisComponent } from './statistic-display-emojis/statistic-display-emojis.component';
 import { EmojiInfoSingleComponent } from './emoji-info-single/emoji-info-single.component';
@@ -31,6 +31,7 @@ import { UploadChatExportComponent } from './upload-chat-export/upload-chat-expo
 import { ImportComponent } from './import/import.component';
 import { ChatComponent } from './chat/chat.component';
 import { InvokeDirective } from './invoke-directive/invoke.directive';
+import { StatisticDisplayCustomComponent } from './statistic-display-custom/statistic-display-custom.component';
 
 
 
@@ -40,7 +41,7 @@ import { InvokeDirective } from './invoke-directive/invoke.directive';
     InvokeDirective,
     StatisticDisplayComponent,
     HomeComponent,
-    BasicInfoSingleComponent,
+    StatisticTotalComponent,
     EmojiComponent,
     StatisticDisplayEmojisComponent,
     EmojiInfoSingleComponent,
@@ -57,7 +58,8 @@ import { InvokeDirective } from './invoke-directive/invoke.directive';
     GroupingPeriodPickerComponent,
     UploadChatExportComponent,
     ImportComponent,
-    ChatComponent
+    ChatComponent,
+    StatisticDisplayCustomComponent
   ],
   imports: [
     BrowserModule,

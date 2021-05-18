@@ -2,17 +2,18 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { appConfig } from '../app.config';
-import { BasicInfoTotal } from '../dtos/basicInfo';
+import { BasicInfoTotal, StatisticTotal } from '../dtos/statisticTotal';
 import { Emoji } from '../dtos/emoji';
 import { EmojiInfoTotal } from '../dtos/emojiInfoTotal';
 import { Statistic } from '../dtos/statistic';
 import { FilterService } from './filter.service';
 import * as dateFormat from "dateformat";
+import { CustomStatistic } from '../dtos/customStatistic';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DataService {
+export class StatisticService {
 
   constructor(private http: HttpClient, private filterService: FilterService) { }
 
@@ -32,13 +33,27 @@ export class DataService {
   }
 
   getBasicInfo(): Observable<BasicInfoTotal> {
-    return <Observable<BasicInfoTotal>>this.http.get(appConfig.apiUrl + "basic/getBasicInfoTotal", {
+    return <Observable<BasicInfoTotal>>this.http.get(appConfig.apiUrl + "statistic/getBasicInfoTotal", {
       params: this.getParams()
     });
   }
 
   getStatistic(statisticUrl: string): Observable<Statistic> {
     return <Observable<Statistic>>this.http.get(appConfig.apiUrl + statisticUrl, {
+      params: this.getParams()
+    });
+  }
+
+  getCustomStatistics(): Observable<CustomStatistic[]> {
+    return <Observable<CustomStatistic[]>>this.http.get(appConfig.apiUrl + "statistic/getCustomStatistics")
+  }
+
+  getCustomStatistic(id: number): Observable<CustomStatistic> {
+    return <Observable<CustomStatistic>>this.http.get(appConfig.apiUrl + "statistic/getCustomStatistic/" + id);
+  }
+
+  getCustomStatisticTotal(id: number): Observable<StatisticTotal> {
+    return <Observable<StatisticTotal>>this.http.get(appConfig.apiUrl + "statistic/getCustomStatisticTotal/" + id, {
       params: this.getParams()
     });
   }

@@ -1,5 +1,5 @@
 <div class="title">Number of emojis</div>
-<app-statistic-display [statisticUrl]="'basic/getStatistic/numberOfEmojis'"></app-statistic-display>
+<app-statistic-display [statisticUrl]="'statistic/getStatistic/numberOfEmojis'"></app-statistic-display>
 <hr />
 <div *ngIf="emojis != null">
     <div *ngFor="let emojiInfo of emojis.emojiInfos | slice: 0 : showCount">

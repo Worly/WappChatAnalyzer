@@ -5,29 +5,35 @@
 <div *ngIf="basicInfoTotal != null && !isLoading">
     <div>
         <div class="single">
-            <app-basic-info-single [displayName]="'Messages'" [basicInfoTotal]="basicInfoTotal"
-                [statisticAccessor]="'totalNumberOfMessages'" [clickLink]="'/statistic-display/messages'">
-            </app-basic-info-single>
+            <app-statistic-total [displayName]="'Messages'" [statisticTotal]="basicInfoTotal.totalNumberOfMessages"
+                [clickLink]="'/statistic-display/messages'">
+            </app-statistic-total>
         </div>
         <div class="single">
-            <app-basic-info-single [displayName]="'Words'" [basicInfoTotal]="basicInfoTotal"
-                [statisticAccessor]="'totalNumberOfWords'" [clickLink]="'/statistic-display/words'">
-            </app-basic-info-single>
+            <app-statistic-total [displayName]="'Words'" [statisticTotal]="basicInfoTotal.totalNumberOfWords"
+                [clickLink]="'/statistic-display/words'">
+            </app-statistic-total>
         </div>
         <div class="single">
-            <app-basic-info-single [displayName]="'Characters'" [basicInfoTotal]="basicInfoTotal"
-                [statisticAccessor]="'totalNumberOfCharacters'" [clickLink]="'/statistic-display/characters'">
-            </app-basic-info-single>
+            <app-statistic-total [displayName]="'Characters'"
+                [statisticTotal]="basicInfoTotal.totalNumberOfCharacters" [clickLink]="'/statistic-display/characters'">
+            </app-statistic-total>
         </div>
         <div class="single">
-            <app-basic-info-single [displayName]="'Media'" [basicInfoTotal]="basicInfoTotal"
-                [statisticAccessor]="'totalNumberOfMedia'" [clickLink]="'/statistic-display/media'">
-            </app-basic-info-single>
+            <app-statistic-total [displayName]="'Media'" [statisticTotal]="basicInfoTotal.totalNumberOfMedia"
+                [clickLink]="'/statistic-display/media'">
+            </app-statistic-total>
         </div>
         <div class="single">
-            <app-basic-info-single [displayName]="'Emojis'" [basicInfoTotal]="basicInfoTotal"
-                [statisticAccessor]="'totalNumberOfEmojis'" [clickLink]="'/statistic-display/emojis'">
-            </app-basic-info-single>
+            <app-statistic-total [displayName]="'Emojis'" [statisticTotal]="basicInfoTotal.totalNumberOfEmojis"
+                [clickLink]="'/statistic-display/emojis'">
+            </app-statistic-total>
+        </div>
+
+        <div class="single" *ngFor="let statistic of customStatistics">
+            <app-statistic-total [displayName]="statistic.name" [statisticTotal]="statistic.statisticTotal"
+                [clickLink]="'/statistic-display/custom/' + statistic.id">
+            </app-statistic-total>
         </div>
     </div>
 </div>

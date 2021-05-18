@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { EmojiInfoTotal } from '../dtos/emojiInfoTotal';
 import { AfterAttach, BeforeDetach } from '../services/attach-detach-hooks.service';
-import { DataService } from '../services/data.service';
+import { StatisticService } from '../services/statistic.service';
 import { FilterService } from '../services/filter.service';
 import { StatisticDisplayComponent } from '../statistic-display/statistic-display.component';
 
@@ -22,7 +22,7 @@ export class StatisticDisplayEmojisComponent implements OnInit, AfterAttach, Bef
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private dataService: DataService, private filterService: FilterService) { }
+  constructor(private statisticService: StatisticService, private filterService: FilterService) { }
 
   ngOnInit(): void {
     this.subscribeAll();
@@ -51,7 +51,7 @@ export class StatisticDisplayEmojisComponent implements OnInit, AfterAttach, Bef
   }
 
   load() {
-    this.dataService.getEmojiInfoTotal().subscribe(r => {
+    this.statisticService.getEmojiInfoTotal().subscribe(r => {
       this.emojis = r;
     });
   }

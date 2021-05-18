@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import * as CanvasJS from '../../assets/canvasjs.min';
 import { appConfig } from '../app.config';
 import { Statistic } from "../dtos/statistic";
-import { DataService } from '../services/data.service';
+import { StatisticService } from '../services/statistic.service';
 import { EventService } from '../services/event.service';
 import * as dateFormat from "dateformat";
 import { groupBy } from "../utils";
@@ -46,7 +46,7 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
 
   private chart;
 
-  constructor(private dataService: DataService, private eventService: EventService, private route: ActivatedRoute, private filterService: FilterService) {
+  constructor(private statisticService: StatisticService, private eventService: EventService, private route: ActivatedRoute, private filterService: FilterService) {
     this.id = id++;
   }
 
@@ -104,7 +104,7 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
       this.chart.destroy();
     this.eventElements = [];
 
-    this.dataService.getStatistic(this._statisticUrl).subscribe((r: Statistic) => {
+    this.statisticService.getStatistic(this._statisticUrl).subscribe((r: Statistic) => {
       this.isLoading = false;
       this.statistic = r;
       this.renderTotal(r);
