@@ -2,19 +2,18 @@
     font-size: 3em;
     text-align: center;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .stickyTop {
     position: sticky;
-    top: 0;
     background-color: #fff7f4;
     z-index: 100;
+    top: 0;
     margin: -20px;
     padding: 20px;
-    border-bottom-left-radius: 18px;
-    border-bottom-right-radius: 18px;
-    box-shadow: -1px 4px 7px 0px #f5edea, 1px 4px 7px 0px #f5edea;
+    border-radius: 18px;
+    box-shadow: 0 0 6px 4px #f5edea;
 }
 
 .eventGroupFilter {
@@ -47,7 +46,7 @@
 }
 
 .top170 {
-    top: 172px;
+    top: 170px;
 }
 
 .top290 {
