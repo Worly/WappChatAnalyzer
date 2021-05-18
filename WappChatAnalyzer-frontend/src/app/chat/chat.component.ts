@@ -276,7 +276,10 @@ export class ChatComponent implements OnInit, AfterViewInit {
       let splitter = new GraphemeSplitter();
 
       for (let char of splitter.splitGraphemes(text)) {
-        html.push(char);
+        if (char == "<")
+          html.push("&#60;");
+        else
+          html.push(char);
         if (emojiRegexExpr.test(char)) {
           let codePoints = Array.from(char)
             .map((v) => v.codePointAt(0).toString(16).toUpperCase())
@@ -285,7 +288,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
           subscriptions++;
           this.emojiService.getEmojiByCodePoints(codePoints).subscribe(r => {
             let url = this.emojiService.getLinkToWappEmojiImage(r);
-            
+
             var img = "";
             img = img.concat("<img class=\"emoji\" src=\"");
             img = img.concat(url);
