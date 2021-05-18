@@ -1,6 +1,7 @@
 .title {
     font-size: 3em;
     text-align: center;
+    margin-bottom: 10px;
 }
 
 .single {
@@ -8,7 +9,13 @@
 }
 
 .filter {
+    position: sticky;
+    top: 0;
+    z-index: 100;
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 30px;
+    padding: 20px;
+    margin: -20px;
+    margin-bottom: 5px;
+    background-color: #fff7f4;
 }
