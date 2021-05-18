@@ -2,36 +2,42 @@
 <div class="filter">
     <app-date-range-filter></app-date-range-filter>
 </div>
-<div *ngIf="basicInfoTotal != null && !isLoading">
+<div>
     <div>
         <div class="single">
-            <app-statistic-total [displayName]="'Messages'" [statisticTotal]="basicInfoTotal.totalNumberOfMessages"
+            <app-statistic-total [displayName]="'Messages'"
+                [statisticTotalApiUrl]="'statistic/getStatisticTotal/numberOfMessages'"
                 [clickLink]="'/statistic-display/messages'">
             </app-statistic-total>
         </div>
         <div class="single">
-            <app-statistic-total [displayName]="'Words'" [statisticTotal]="basicInfoTotal.totalNumberOfWords"
+            <app-statistic-total [displayName]="'Words'"
+                [statisticTotalApiUrl]="'statistic/getStatisticTotal/numberOfWords'"
                 [clickLink]="'/statistic-display/words'">
             </app-statistic-total>
         </div>
         <div class="single">
             <app-statistic-total [displayName]="'Characters'"
-                [statisticTotal]="basicInfoTotal.totalNumberOfCharacters" [clickLink]="'/statistic-display/characters'">
+                [statisticTotalApiUrl]="'statistic/getStatisticTotal/numberOfCharacters'"
+                [clickLink]="'/statistic-display/characters'">
             </app-statistic-total>
         </div>
         <div class="single">
-            <app-statistic-total [displayName]="'Media'" [statisticTotal]="basicInfoTotal.totalNumberOfMedia"
+            <app-statistic-total [displayName]="'Media'"
+                [statisticTotalApiUrl]="'statistic/getStatisticTotal/numberOfMedia'"
                 [clickLink]="'/statistic-display/media'">
             </app-statistic-total>
         </div>
         <div class="single">
-            <app-statistic-total [displayName]="'Emojis'" [statisticTotal]="basicInfoTotal.totalNumberOfEmojis"
+            <app-statistic-total [displayName]="'Emojis'"
+                [statisticTotalApiUrl]="'statistic/getStatisticTotal/numberOfEmojis'"
                 [clickLink]="'/statistic-display/emojis'">
             </app-statistic-total>
         </div>
 
         <div class="single" *ngFor="let statistic of customStatistics">
-            <app-statistic-total [displayName]="statistic.name" [statisticTotal]="statistic.statisticTotal"
+            <app-statistic-total [displayName]="statistic.name"
+                [statisticTotalApiUrl]="'statistic/getStatisticTotal/custom/' + statistic.id"
                 [clickLink]="'/statistic-display/custom/' + statistic.id">
             </app-statistic-total>
         </div>

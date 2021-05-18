@@ -10,7 +10,7 @@ import { StatisticDisplaySingleEmojiComponent } from './statistic-display-single
 import { StatisticDisplayComponent } from './statistic-display/statistic-display.component';
 
 const routes: Routes = [
-  { path: "home", component: HomeComponent, data: { shouldDetach: true } },
+  { path: "home", component: HomeComponent },
   { path: "statistic-display/emoji/:codePoints", component: StatisticDisplaySingleEmojiComponent },
   { path: "statistic-display/messages", component: StatisticDisplayComponent, data: { statisticUrl: "statistic/getStatistic/numberOfMessages", displayName: "Number of messages" } },
   { path: "statistic-display/words", component: StatisticDisplayComponent, data: { statisticUrl: "statistic/getStatistic/numberOfWords", displayName: "Number of words" } },

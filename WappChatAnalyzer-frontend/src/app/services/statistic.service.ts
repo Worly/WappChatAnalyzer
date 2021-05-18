@@ -2,8 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { appConfig } from '../app.config';
-import { BasicInfoTotal, StatisticTotal } from '../dtos/statisticTotal';
-import { Emoji } from '../dtos/emoji';
+import { StatisticTotal } from '../dtos/statisticTotal';
 import { EmojiInfoTotal } from '../dtos/emojiInfoTotal';
 import { Statistic } from '../dtos/statistic';
 import { FilterService } from './filter.service';
@@ -32,8 +31,8 @@ export class StatisticService {
     return params;
   }
 
-  getBasicInfo(): Observable<BasicInfoTotal> {
-    return <Observable<BasicInfoTotal>>this.http.get(appConfig.apiUrl + "statistic/getBasicInfoTotal", {
+  getStatisticTotal(apiUrl: string): Observable<StatisticTotal> {
+    return <Observable<StatisticTotal>>this.http.get(appConfig.apiUrl + apiUrl, {
       params: this.getParams()
     });
   }
