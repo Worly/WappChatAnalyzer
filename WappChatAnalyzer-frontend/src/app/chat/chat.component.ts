@@ -131,7 +131,6 @@ export class ChatComponent implements OnInit, AfterViewInit {
   }
 
   private insertNewMessages(newMessages: Message[]) {
-    console.log(newMessages);
     for (let msg of newMessages)
       this.emojify(msg.text).subscribe(r => msg.emojifiedText = r);
 
