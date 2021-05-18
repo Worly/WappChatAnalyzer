@@ -2,6 +2,19 @@
     font-size: 3em;
     text-align: center;
     font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.stickyTop {
+    position: sticky;
+    top: 0;
+    background-color: #fff7f4;
+    z-index: 100;
+    margin: -20px;
+    padding: 20px;
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+    box-shadow: -6px 6px 7px 0px #f5edea, 6px 6px 7px 0px #f5edea;
 }
 
 .eventGroupFilter {
@@ -10,20 +23,37 @@
     margin-bottom: 30px;
 }
 
+.blankSpace {
+    height: 30px;
+}
+
 .result-count {
     font-size: 1.2rem;
     color: rgb(73, 73, 73);
     text-align: right;
     margin-bottom: -45px;
     margin-top: 20px;
+    z-index: 15;
 }
 
 .date {
-    margin-top: 15px;
+    position: sticky;
+    z-index: 10;
+    background-color: #fff7f4;
+    padding-top: 15px;
     margin-bottom: 5px;
     font-size: 1.5rem;
     font-weight: bold;
 }
+
+.top170 {
+    top: 172px;
+}
+
+.top290 {
+    top: 290px;
+}
+
 .item-wrapper {
     position: relative;
     min-height: 90px;
@@ -31,7 +61,6 @@
     border-radius: 8px;
     margin-bottom: 10px;
     padding: 15px;
-    
     font-size: 1.4rem;
 }
 
@@ -76,9 +105,11 @@
     left: 0;
     border-radius: 8px;
 }
+
 .overlay:hover {
     background-color: rgba(255, 255, 255, 0.2);
 }
+
 .overlay:active {
     background-color: rgba(0, 0, 0, 0.1);
 }

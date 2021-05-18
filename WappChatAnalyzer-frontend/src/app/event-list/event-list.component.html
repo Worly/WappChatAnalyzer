@@ -1,25 +1,27 @@
 <div>
     <div class="title">Events</div>
 
-    <div class="eventGroupFilter">
-        <app-date-range-filter></app-date-range-filter>
-        <app-event-group-filter></app-event-group-filter>
-    </div>
+    <div class="stickyTop">
+        <div class="eventGroupFilter">
+            <app-date-range-filter></app-date-range-filter>
+            <app-event-group-filter></app-event-group-filter>
+        </div>
 
-    <div style="margin-bottom: 10px;">
         <div *ngIf="!addingNew" class="button-new" (click)="onNewClick()">＋ Add new</div>
-    </div>
 
-    <div *ngIf="addingNew" class="item-wrapper">
-        <div class="item">
-            <app-event-edit style="width: 100%;" [isNew]="true" (onDone)="onNewDone($event)"></app-event-edit>
+        <div *ngIf="addingNew" class="item-wrapper">
+            <div class="item">
+                <app-event-edit style="width: 100%;" [isNew]="true" (onDone)="onNewDone($event)"></app-event-edit>
+            </div>
         </div>
     </div>
+
+    <div class="blankSpace"></div>
 
     <div class="result-count">Results: {{count}}</div>
 
     <div *ngFor="let day of events | keyvalue | orderBy: 'key' : true">
-        <div class="date">{{formatDate(day.key, true)}}</div>
+        <div class="date" [ngClass]="{'top170': !addingNew, 'top290': addingNew}">{{formatDate(day.key, true)}}</div>
         <div *ngFor="let item of day.value | orderBy: 'order'" class="item-wrapper">
             <div *ngIf="editingEventInfo != item" class="item">
                 <div class="emoji">{{item.emoji}}</div>
