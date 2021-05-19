@@ -189,16 +189,28 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
       });
     }
 
-    for (let i = 0; i < statistic.timePeriods.length; i++) {
-      let total = 0;
-      for (let sender in statistic.valuesBySendersOnTimePeriods)
-        total += statistic.valuesBySendersOnTimePeriods[sender][i];
+    for (let i = 0; i < numberOfPeriodsShowing; i++) {
+      let date = this.addPeriods(firstDate, i, statistic.filter.groupingPeriod);
+      let index = statistic.timePeriods.findIndex(o => new Date(o).getTime() == date.getTime());
 
-      dataSingle.dataPoints.push({
-        x: new Date(statistic.timePeriods[i]),
-        y: total
-      });
+      if (index == -1) {
+        dataSingle.dataPoints.push({
+          x: date,
+          y: 0
+        });
+      }
+      else {
+        let total = 0;
+        for (let sender in statistic.valuesBySendersOnTimePeriods)
+          total += statistic.valuesBySendersOnTimePeriods[sender][index];
+
+        dataSingle.dataPoints.push({
+          x: date,
+          y: total
+        });
+      }
     }
+
     data.push(dataSingle);
 
     this.chart = new CanvasJS.Chart("chartContainerGraph" + this.id, {
@@ -255,6 +267,9 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
     if (this.statistic == null || this.statistic.filter.groupingPeriod == "timeOfDay" || this.statistic.filter.groupingPeriod == "week" || this.statistic.filter.groupingPeriod == "month")
       return;
 
+    var firstDate = this.chart.data[2].dataPoints[0].x;
+    var lastDate = this.chart.data[2].dataPoints[this.chart.data[2].dataPoints.length - 1].x;
+
     let periodCounts = {};
 
     for (let key in this.events) {
@@ -262,6 +277,9 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
 
       if (this.statistic.filter.groupingPeriod == "hour")
         date.setHours(12);
+
+      if (date < firstDate || date > lastDate)
+        continue;
 
       let sortedEvents = this.events[key].sort((a, b) => a.order - b.order);
       for (let i = 0; i < sortedEvents.length; i++) {
@@ -273,8 +291,9 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
         if (this.statistic.filter.groupingPeriod != "hour") {
           var chartDataPoint = this.chart.data[2].dataPoints.find(e => e.x.getTime() == date.getTime()) //this.compareDatesWithoutTime(e.x, date));
           if (chartDataPoint == null)
-            continue;
-          y = this.chart.axisY[0].convertValueToPixel(chartDataPoint.y);
+            y = this.chart.axisY[0].convertValueToPixel(0);
+          else
+            y = this.chart.axisY[0].convertValueToPixel(chartDataPoint.y);
           yDir = -1;
         }
 
