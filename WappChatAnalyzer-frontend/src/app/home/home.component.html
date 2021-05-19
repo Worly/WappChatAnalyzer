@@ -47,14 +47,14 @@
                 <div>Name:</div>
                 <div>
                     <div class="underlined" contenteditable="true"
-                        (input)="onPropertyChange('name', $event.target.innerHTML)"></div>
+                        (input)="onPropertyChange('name', $event.target.innerText)"></div>
                         
                 </div>
                 &nbsp;&nbsp;&nbsp;
                 <div>Regex:</div>
                 <div>
                     <div class="underlined" contenteditable="true"
-                        (input)="onPropertyChange('regex', $event.target.innerHTML)"></div>
+                        (input)="onPropertyChange('regex', $event.target.innerText)"></div>
                 </div>
 
                 <div class="button button-save" (click)="save()">Save</div>

@@ -4,13 +4,11 @@
         <div class="empty" *ngIf="event.emoji == null"></div>
     </div>
     <div class="groupName">
-        <!-- <div contenteditable="true" (input)="onPropertyChange('eventGroup.name', $event.target.innerHTML)">
-            {{event.eventGroup.name}}</div> -->
         <app-event-group-picker class="underlined" [value]="event.eventGroup" (valueChange)="groupChanged($event)">
         </app-event-group-picker>
     </div>
     <div class="name">
-        <div class="underlined" contenteditable="true" (input)="onPropertyChange('name', $event.target.innerHTML)">
+        <div class="underlined" contenteditable="true" (input)="onPropertyChange('name', $event.target.innerText)">
             {{event.name}}</div>
     </div>
     <div class="order">
