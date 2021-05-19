@@ -1,6 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { AfterAttach, BeforeDetach } from '../services/attach-detach-hooks.service';
+import { Component, OnInit } from '@angular/core';
 import { StatisticService } from '../services/statistic.service';
 import { FilterService } from '../services/filter.service';
 import { CustomStatistic } from '../dtos/customStatistic';
@@ -13,7 +11,8 @@ import { CustomStatistic } from '../dtos/customStatistic';
 export class HomeComponent implements OnInit {
   public customStatistics: CustomStatistic[];
 
-  public isLoading: boolean;
+  addingNew: boolean = false;
+  newStatistic: CustomStatistic = new CustomStatistic();
 
   constructor(private statisticService: StatisticService, private filterService: FilterService) { }
 
@@ -25,6 +24,26 @@ export class HomeComponent implements OnInit {
     this.statisticService.getCustomStatistics().subscribe(r => {
       this.customStatistics = r;
     });
+  }
+
+  onNewClick() {
+    this.newStatistic = new CustomStatistic();
+    this.addingNew = true;
+  }
+
+  onPropertyChange(property: string, value: string) {
+    this.newStatistic[property] = value;
+  }
+
+  save() {
+    this.addingNew = false;
+    this.statisticService.saveCustomStatistic(this.newStatistic).subscribe(r => {
+      this.customStatistics.push(r);
+    });
+  }
+
+  cancel() {
+    this.addingNew = false;
   }
 
 }

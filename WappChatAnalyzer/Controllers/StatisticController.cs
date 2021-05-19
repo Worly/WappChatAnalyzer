@@ -158,5 +158,11 @@ namespace WappChatAnalyzer.Controllers
         {
             return customStatisticService.GetCustomStatistic(id);
         }
+
+        [HttpPost("saveCustomStatistic")]
+        public CustomStatistic GetCustomStatistics([FromBody] CustomStatistic customStatistic)
+        {
+            return customStatisticService.SaveCustomStatistic(customStatistic);
+        }
     }
 }

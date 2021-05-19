@@ -41,8 +41,25 @@
                 [clickLink]="'/statistic-display/custom/' + statistic.id">
             </app-statistic-total>
         </div>
+        <div *ngIf="!addingNew" class="button-new" (click)="onNewClick()">＋ Add new</div>
+        <div *ngIf="addingNew">
+            <div class="newStatisticWrapper">
+                <div>Name:</div>
+                <div>
+                    <div class="underlined" contenteditable="true"
+                        (input)="onPropertyChange('name', $event.target.innerHTML)"></div>
+                        
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                <div>Regex:</div>
+                <div>
+                    <div class="underlined" contenteditable="true"
+                        (input)="onPropertyChange('regex', $event.target.innerHTML)"></div>
+                </div>
+
+                <div class="button button-save" (click)="save()">Save</div>
+                <div class="button button-cancel" (click)="cancel()">Cancel</div>
+            </div>
+        </div>
     </div>
-</div>
-<div *ngIf="isLoading" style="margin-top: 100px">
-    <app-loading></app-loading>
 </div>

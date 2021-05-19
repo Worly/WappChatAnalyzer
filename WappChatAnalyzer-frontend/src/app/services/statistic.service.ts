@@ -51,6 +51,10 @@ export class StatisticService {
     return <Observable<CustomStatistic>>this.http.get(appConfig.apiUrl + "statistic/getCustomStatistic/" + id);
   }
 
+  saveCustomStatistic(customStatistic: CustomStatistic): Observable<CustomStatistic> {
+    return <Observable<CustomStatistic>>this.http.post(appConfig.apiUrl + "statistic/saveCustomStatistic", customStatistic);
+  }
+
   getCustomStatisticTotal(id: number): Observable<StatisticTotal> {
     return <Observable<StatisticTotal>>this.http.get(appConfig.apiUrl + "statistic/getCustomStatisticTotal/" + id, {
       params: this.getParams()
