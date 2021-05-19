@@ -252,7 +252,7 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
     if (this.chart == null)
       return;
 
-    if (this.statistic == null || this.statistic.filter.groupingPeriod == "week" || this.statistic.filter.groupingPeriod == "month")
+    if (this.statistic == null || this.statistic.filter.groupingPeriod == "timeOfDay" || this.statistic.filter.groupingPeriod == "week" || this.statistic.filter.groupingPeriod == "month")
       return;
 
     let periodCounts = {};
@@ -331,6 +331,9 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
     else if (this.statistic.filter.groupingPeriod == "month") {
       dateStr = dateFormat(date, "mmmm yyyy");
     }
+    else if (this.statistic.filter.groupingPeriod == "timeOfDay") {
+      dateStr = dateFormat(date, "HH:MM");
+    }
     else {
       let dateF = "dddd dd/mm/yyyy";
       if (this.statistic.filter.groupingPeriod == "hour")
@@ -389,6 +392,9 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
       if (toDate.getFullYear() - fromDate.getFullYear() > 0)
         format += "/yyyy";
     }
+    else if (groupingPeriod == "timeOfDay") {
+      format = "HH:MM";
+    }
     else if (groupingPeriod == "hour") {
       format = "";
       if (filterRangeInHours > 24) {
@@ -414,7 +420,7 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
   }
 
   numberOfPeriodsBetween(fromDate: Date, toDate: Date, groupingPeriod: string): number {
-    if (groupingPeriod == "hour")
+    if (groupingPeriod == "hour" || groupingPeriod == "timeOfDay")
       return Math.round((<any>toDate - <any>fromDate) / 1000 / 60 / 60 + 1);
     else if (groupingPeriod == "date")
       return Math.round((<any>toDate - <any>fromDate) / 1000 / 60 / 60 / 24 + 1);
@@ -428,7 +434,7 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
 
   addPeriods(fromDate: Date, numberOfPeriods: number, groupingPeriod: string): Date {
     var copy = new Date(fromDate);
-    if (groupingPeriod == "hour")
+    if (groupingPeriod == "hour" || groupingPeriod == "timeOfDay")
       copy.setHours(fromDate.getHours() + numberOfPeriods);
     else if (groupingPeriod == "date")
       copy.setDate(fromDate.getDate() + numberOfPeriods);

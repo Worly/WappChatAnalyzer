@@ -10,10 +10,11 @@ import { FilterService } from '../services/filter.service';
 export class GroupingPeriodPickerComponent implements OnInit, OnDestroy {
 
   groupingPeriods = [
+    { value: "timeOfDay", display: "Time of day"},
     { value: "hour", display: "Hour" },
     { value: "date", display: "Date" },
     { value: "week", display: "Week" },
-    { value: "month", display: "Month" }
+    { value: "month", display: "Month" },
   ];
 
   groupingPeriodObject: { value: string, display: string };

@@ -27,6 +27,9 @@ namespace WappChatAnalyzer.Services
             Func<Message, DateTime> groupingSelector = null;
             switch (filter.GroupingPeriod)
             {
+                case "timeOfDay":
+                    groupingSelector = o => new DateTime(2021, 1, 1, o.SentDateTime.Hour, 0, 0);
+                    break;
                 case "hour":
                     groupingSelector = o => new DateTime(o.SentDateTime.Year, o.SentDateTime.Month, o.SentDateTime.Day, o.SentDateTime.Hour, 0, 0);
                     break;
@@ -43,11 +46,7 @@ namespace WappChatAnalyzer.Services
                     throw new ArgumentOutOfRangeException("Grouping period cannot be: " + filter.GroupingPeriod);
             }
 
-            var timePeriods = filteredMessages.GroupBy(groupingSelector).Distinct().Select(o => o.Key).ToList();
-
-            // napravi novi expression koji zove gorupingSelector expression i zove equals s p
-
-            //var test = filteredMessages.Where(o => == DateTime.Today.AddDays(-3)).ToList();
+            var timePeriods = filteredMessages.GroupBy(groupingSelector).Distinct().Select(o => o.Key).OrderBy(o => o).ToList();
 
             var valuesBySendersOnTimePeriods =
                 messageService
