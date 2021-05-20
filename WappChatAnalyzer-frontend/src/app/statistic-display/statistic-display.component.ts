@@ -8,7 +8,7 @@ import { EventService } from '../services/event.service';
 import * as dateFormat from "dateformat";
 import { groupBy } from "../utils";
 import { EventInfo } from "../dtos/event";
-import { FilterService } from '../services/filter.service';
+import { DateRangeType, FilterService, PeriodType } from '../services/filter.service';
 import { AfterAttach, BeforeDetach } from '../services/attach-detach-hooks.service';
 import { Subscription } from 'rxjs';
 
@@ -83,6 +83,10 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
       this.loadAndShowEvents();
     }));
     this.subscriptions.push(this.filterService.groupingPeriodChanged.subscribe(() => this.loadAndShowStatistic()));
+    this.subscriptions.push(this.filterService.groupingPeriodAndDateFilterChanged.subscribe(() => {
+      this.loadAndShowStatistic();
+      this.loadAndShowEvents();
+    }));
   }
 
   unsubscribeAll() {
@@ -167,6 +171,7 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
       name: "Total",
       color: "#FC7536",
       fillOpacity: 0.8,
+      click: e => this.onClickDataPoint(e),
       dataPoints: []
     };
     let stripLines = [];
@@ -257,6 +262,20 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
       data: data
     });
     this.chart.render();
+  }
+
+  onClickDataPoint(event) {
+    let date = event.dataPoint.x;
+
+    if (this.statistic.filter.groupingPeriod == "date") {
+      this.filterService.applyGroupingAndDatePeriodRange("hour", PeriodType.DAY, FilterService.getBackwardsIndexForDate(date, PeriodType.DAY));
+    }
+    else if (this.statistic.filter.groupingPeriod == "week") {
+      this.filterService.applyGroupingAndDatePeriodRange("date", PeriodType.WEEK, FilterService.getBackwardsIndexForDate(date, PeriodType.WEEK));
+    }
+    else if (this.statistic.filter.groupingPeriod == "month") {
+      this.filterService.applyGroupingAndDatePeriodRange("week", PeriodType.MONTH, FilterService.getBackwardsIndexForDate(date, PeriodType.MONTH));
+    }
   }
 
   renderEvents() {

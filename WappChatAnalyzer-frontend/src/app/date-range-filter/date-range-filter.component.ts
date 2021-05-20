@@ -76,9 +76,8 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getValuesFromService();
-    this.subscriptions.push(this.filterService.dateFilterChanged.subscribe(() => {
-      this.getValuesFromService();
-    }));
+    this.subscriptions.push(this.filterService.dateFilterChanged.subscribe(() => this.getValuesFromService()));
+    this.subscriptions.push(this.filterService.groupingPeriodAndDateFilterChanged.subscribe(() => this.getValuesFromService()));
   }
 
   ngOnDestroy() {
@@ -125,22 +124,8 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
 
   onPeriodEdit(event) {
     let date = event.date.toDate();
-    let today = new Date();
-    today.setHours(0, 0, 0, 0);
 
-    if (this.datePeriodType == PeriodType.DAY) {
-      this.datePeriodBackwardsIndex = Math.round((<any>today - date) / (1000 * 60 * 60 * 24));
-    }
-    else if (this.datePeriodType == PeriodType.WEEK) {
-      this.datePeriodBackwardsIndex = Math.round((<any>today - date) / (7 * 24 * 60 * 60 * 1000));
-    }
-    else if (this.datePeriodType == PeriodType.MONTH) {
-      this.datePeriodBackwardsIndex = today.getMonth() - date.getMonth() + (12 * (today.getFullYear() - date.getFullYear()))
-    }
-    else if (this.datePeriodType == PeriodType.YEAR) {
-      this.datePeriodBackwardsIndex = today.getFullYear() - date.getFullYear();
-    }
-
+    this.datePeriodBackwardsIndex = FilterService.getBackwardsIndexForDate(date, this.datePeriodType);
 
     this.startApplyTimeout(0);
   }

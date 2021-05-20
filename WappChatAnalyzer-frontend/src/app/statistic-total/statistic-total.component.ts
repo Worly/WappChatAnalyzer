@@ -26,6 +26,7 @@ export class StatisticTotalComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.push(this.filterService.dateFilterChanged.subscribe(() => this.load()));
+    this.subscriptions.push(this.filterService.groupingPeriodAndDateFilterChanged.subscribe(() => this.load()));
     this.load();
   }
 

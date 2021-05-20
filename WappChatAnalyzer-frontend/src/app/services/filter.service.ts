@@ -29,6 +29,8 @@ export class FilterService {
   groupingPeriod: string = "date";
   groupingPeriodChanged: Subject<string> = new Subject<string>();
 
+  groupingPeriodAndDateFilterChanged: Subject<void> = new Subject<void>();
+
   constructor() {
     this.dateRangeTo = new Date();
 
@@ -66,10 +68,18 @@ export class FilterService {
     this.dateRangeTo = dateTo;
     this.dateFilterChanged.next(this.getFromToDates());
   }
-  
+
   applyGroupingPeriod(groupingPeriod: string) {
     this.groupingPeriod = groupingPeriod;
     this.groupingPeriodChanged.next(groupingPeriod);
+  }
+
+  applyGroupingAndDatePeriodRange(groupingPeriod: string, datePeriodType: PeriodType, datePeriodBackwardsIndex: number) {
+    this.groupingPeriod = groupingPeriod;
+    this.dateRangeType = DateRangeType.PERIOD;
+    this.datePeriodType = datePeriodType;
+    this.datePeriodBackwardsIndex = datePeriodBackwardsIndex;
+    this.groupingPeriodAndDateFilterChanged.next();
   }
 
   getFromToDates() {
@@ -143,6 +153,26 @@ export class FilterService {
       from: new Date(),
       to: new Date()
     };
+  }
+
+  static getBackwardsIndexForDate(date: Date, periodType: PeriodType): number {
+    let today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (periodType == PeriodType.DAY) {
+      return Math.round((<any>today - <any>date) / (1000 * 60 * 60 * 24));
+    }
+    else if (periodType == PeriodType.WEEK) {
+      return Math.round((<any>today - <any>date) / (7 * 24 * 60 * 60 * 1000));
+    }
+    else if (periodType == PeriodType.MONTH) {
+      return today.getMonth() - date.getMonth() + (12 * (today.getFullYear() - date.getFullYear()))
+    }
+    else if (periodType == PeriodType.YEAR) {
+      return today.getFullYear() - date.getFullYear();
+    }
+    else
+      throw "Invalid periodType";
   }
 
 }

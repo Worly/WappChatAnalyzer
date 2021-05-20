@@ -10,7 +10,7 @@ import { FilterService } from '../services/filter.service';
 export class GroupingPeriodPickerComponent implements OnInit, OnDestroy {
 
   groupingPeriods = [
-    { value: "timeOfDay", display: "Time of day"},
+    { value: "timeOfDay", display: "Time of day" },
     { value: "hour", display: "Hour" },
     { value: "date", display: "Date" },
     { value: "week", display: "Week" },
@@ -18,7 +18,7 @@ export class GroupingPeriodPickerComponent implements OnInit, OnDestroy {
   ];
 
   groupingPeriodObject: { value: string, display: string };
-  
+
   timeoutId: number = null;
 
   private subscriptions: Subscription[] = [];
@@ -27,13 +27,12 @@ export class GroupingPeriodPickerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getValuesFromService();
-    this.subscriptions.push(this.filterService.groupingPeriodChanged.subscribe(() => {
-      this.getValuesFromService();
-    }));
+    this.subscriptions.push(this.filterService.groupingPeriodChanged.subscribe(() => this.getValuesFromService()));
+    this.subscriptions.push(this.filterService.groupingPeriodAndDateFilterChanged.subscribe(() => this.getValuesFromService()));
   }
 
   ngOnDestroy() {
-    while(this.subscriptions.length > 0)
+    while (this.subscriptions.length > 0)
       this.subscriptions.pop().unsubscribe();
   }
 

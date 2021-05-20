@@ -32,6 +32,7 @@ export class EventListComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.filterService.eventGroupsChanged.subscribe(() => this.load()));
     this.subscriptions.push(this.filterService.eventSearchTermChanged.subscribe(() => this.load()));
     this.subscriptions.push(this.filterService.dateFilterChanged.subscribe(() => this.load()));
+    this.subscriptions.push(this.filterService.groupingPeriodAndDateFilterChanged.subscribe(() => this.load()));
     this.load();
   }
 

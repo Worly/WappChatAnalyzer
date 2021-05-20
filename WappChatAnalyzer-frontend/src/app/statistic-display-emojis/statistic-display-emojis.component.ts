@@ -42,6 +42,7 @@ export class StatisticDisplayEmojisComponent implements OnInit, AfterAttach, Bef
 
   subscribeAll() {
     this.subscriptions.push(this.filterService.dateFilterChanged.subscribe(() => this.load()));
+    this.subscriptions.push(this.filterService.groupingPeriodAndDateFilterChanged.subscribe(() => this.load()));
     this.subscriptions.push(this.filterService.groupingPeriodChanged.subscribe(() => this.load()));
   }
 
