@@ -16,10 +16,14 @@
     box-shadow: 0 0 6px 4px #f5edea;
 }
 
-.eventGroupFilter {
+.filters {
     display: flex;
     justify-content: flex-end;
     margin-bottom: 30px;
+}
+
+.filters>*:first-child {
+    flex-grow: 1;
 }
 
 .blankSpace {
@@ -27,12 +31,13 @@
 }
 
 .result-count {
+    position: absolute;
     font-size: 1.2rem;
     color: rgb(73, 73, 73);
     text-align: right;
-    margin-bottom: -45px;
-    margin-top: 20px;
-    z-index: 15;
+    z-index: 20;
+    right: 20px;
+    top: 310px;
 }
 
 .date {

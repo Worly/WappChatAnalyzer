@@ -77,6 +77,7 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
       this.displayName = data.displayName;
     }));
     this.subscriptions.push(this.filterService.eventGroupsChanged.subscribe(() => this.loadAndShowEvents()));
+    this.subscriptions.push(this.filterService.eventSearchTermChanged.subscribe(() => this.loadAndShowEvents()));
     this.subscriptions.push(this.filterService.dateFilterChanged.subscribe(() => {
       this.loadAndShowStatistic();
       this.loadAndShowEvents();

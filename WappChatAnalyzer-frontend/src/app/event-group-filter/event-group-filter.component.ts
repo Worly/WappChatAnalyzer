@@ -23,7 +23,7 @@ export class EventGroupFilterComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private elementRef: ElementRef, private eventService: EventService, private activatedRoute: ActivatedRoute, private filterService: FilterService) { }
+  constructor(private elementRef: ElementRef, private eventService: EventService, private filterService: FilterService) { }
 
   ngOnInit(): void {
     this.notSelected = this.filterService.eventGroupsNotSelected;

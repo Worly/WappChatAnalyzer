@@ -32,6 +32,7 @@ import { ImportComponent } from './import/import.component';
 import { ChatComponent } from './chat/chat.component';
 import { InvokeDirective } from './invoke-directive/invoke.directive';
 import { StatisticDisplayCustomComponent } from './statistic-display-custom/statistic-display-custom.component';
+import { EventSearchComponent } from './event-search/event-search.component';
 
 
 
@@ -59,7 +60,8 @@ import { StatisticDisplayCustomComponent } from './statistic-display-custom/stat
     UploadChatExportComponent,
     ImportComponent,
     ChatComponent,
-    StatisticDisplayCustomComponent
+    StatisticDisplayCustomComponent,
+    EventSearchComponent
   ],
   imports: [
     BrowserModule,

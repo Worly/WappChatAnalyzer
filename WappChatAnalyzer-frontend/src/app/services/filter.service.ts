@@ -10,6 +10,9 @@ export class FilterService {
   eventGroupsNotSelected: number[] = [];
   eventGroupsChanged: Subject<number[]> = new Subject<number[]>();
 
+  eventSearchTerm: string = "";
+  eventSearchTermChanged: Subject<string> = new Subject<string>();
+
 
   dateRangeType: DateRangeType = DateRangeType.LAST;
 
@@ -37,6 +40,11 @@ export class FilterService {
   applyEventGroups(notSelected: number[]) {
     this.eventGroupsNotSelected = notSelected;
     this.eventGroupsChanged.next(notSelected);
+  }
+
+  applyEventSearchTerm(searchTerm: string) {
+    this.eventSearchTerm = searchTerm;
+    this.eventSearchTermChanged.next(searchTerm);
   }
 
   applyDateLastRange(dateLastDaysRange: number) {

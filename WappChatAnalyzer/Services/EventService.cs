@@ -10,8 +10,8 @@ namespace WappChatAnalyzer.Services
 {
     public interface IEventService
     {
-        List<EventInfoDTO> GetEvents(int[] notSelectedGroups, DateTime? fromDate, DateTime? toDate, int? skip, int? take);
-        int GetEventCount(int[] notSelectedGroups, DateTime? fromDate, DateTime? toDate);
+        List<EventInfoDTO> GetEvents(int[] notSelectedGroups, string searchTerm, DateTime? fromDate, DateTime? toDate, int? skip, int? take);
+        int GetEventCount(int[] notSelectedGroups, string searchTerm, DateTime? fromDate, DateTime? toDate);
         List<EventGroupDTO> GetEventGroups();
         EventDTO GetEvent(int id);
         void SaveEvent(EventDTO eventDTO);
@@ -28,7 +28,7 @@ namespace WappChatAnalyzer.Services
             this.mainDbContext = mainDbContext;
         }
 
-        public List<EventInfoDTO> GetEvents(int[] notSelectedGroups, DateTime? fromDate, DateTime? toDate, int? skip, int? take)
+        public List<EventInfoDTO> GetEvents(int[] notSelectedGroups, string searchTerm, DateTime? fromDate, DateTime? toDate, int? skip, int? take)
         {
             IQueryable<Event> query = mainDbContext.Events.Include(o => o.EventGroup).OrderByDescending(o => o.DateTime).ThenBy(o => o.Id);
 
@@ -38,6 +38,12 @@ namespace WappChatAnalyzer.Services
                 query = query.Where(o => o.DateTime.Date >= fromDate.Value.Date);
             if (toDate != null)
                 query = query.Where(o => o.DateTime.Date <= toDate.Value.Date);
+
+            if (searchTerm != null && searchTerm != "")
+            {
+                var search = searchTerm.Split(' ').Aggregate((f, s) => f + "* " + s) + "*";
+                query = query.Where(o => EF.Functions.Match(o.Name, search, MySqlMatchSearchMode.Boolean));
+            }
 
             if (skip != null)
                 query = query.Skip(skip.Value);
@@ -55,7 +61,7 @@ namespace WappChatAnalyzer.Services
             }).ToList();
         }
 
-        public int GetEventCount(int[] notSelectedGroups, DateTime? fromDate, DateTime? toDate)
+        public int GetEventCount(int[] notSelectedGroups, string searchTerm, DateTime? fromDate, DateTime? toDate)
         {
             IQueryable<Event> query = mainDbContext.Events;
 
@@ -65,6 +71,12 @@ namespace WappChatAnalyzer.Services
                 query = query.Where(o => o.DateTime.Date >= fromDate.Value.Date);
             if (toDate != null)
                 query = query.Where(o => o.DateTime.Date <= toDate.Value.Date);
+
+            if (searchTerm != null && searchTerm != "")
+            {
+                var search = searchTerm.Split(' ').Aggregate((f, s) => f + "* " + s) + "*";
+                query = query.Where(o => EF.Functions.Match(o.Name, search, MySqlMatchSearchMode.Boolean));
+            }
 
             return query.Count();
         }

@@ -17,6 +17,7 @@ export class EventService {
     var params = {};
 
     params["notSelectedGroupsJSON"] = JSON.stringify(this.filterService.eventGroupsNotSelected);
+    params["searchTerm"] = this.filterService.eventSearchTerm;
 
     var format = "yyyy-mm-dd";
     var fromToDates = this.filterService.getFromToDates();

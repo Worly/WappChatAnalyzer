@@ -17,9 +17,13 @@
     font-size: 19px;
 }
 
-.event-group-filter {
+.filters {
     margin-top: 20px;
     margin-bottom: 10px;
     display: flex;
     justify-content: flex-end;
+}
+
+.filters>*:first-child {
+    flex-grow: 1;
 }

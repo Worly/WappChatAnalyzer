@@ -1,0 +1,36 @@
+.myWrapper {
+    position: relative;
+    font-size: 1.3rem;
+    width: 100%;
+}
+
+.searchBox {
+    width: 100%;
+    background-color: white;
+    padding: 6px 15px;
+    border-radius: 8px;
+    border: 1px solid rgb(179, 179, 179);
+}
+
+.searchBox:focus {
+    outline: none;
+}
+
+.clearButton {
+    position: absolute;
+    font-size: 2.2rem;
+    display: inline-block;
+    line-height: 20px;
+    right: 15px;
+    top: 10px;
+    cursor: pointer;
+    color: rgb(160, 160, 160);
+}
+
+.clearButton:hover {
+    color: rgb(190, 190, 190);
+}
+
+.clearButton:active {
+    color: rgb(100, 100, 100);
+}
