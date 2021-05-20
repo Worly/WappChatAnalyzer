@@ -16,13 +16,18 @@
             {{formatPeriod()}}
             <div *ngIf="popupVisible" class="popup">
                 <div>
-                    <div *ngFor="let item of periodItems" class="item no-select" (click)="selectPeriod($event, item.value)">
+                    <div *ngFor="let item of periodItems" class="item no-select"
+                        (click)="selectPeriod($event, item.value)">
                         {{item.name}}
                     </div>
                 </div>
             </div>
         </div>
         <div class="right button no-select" (click)="onPeriodIncreaseIndex()">⯈</div>
+        <div class="editPeriod no-select" [dpDayPicker]="dateConfig" theme="dp-material"
+            (onSelect)="onPeriodEdit($event)">
+            ✎&#xFE0E;
+        </div>
     </div>
     <div *ngIf="dateRangeType == dateRangeTypes.RANGE" class="type-range">
         <div class="date-input" [dpDayPicker]="dateConfig" theme="dp-material" (onSelect)="onFromDateSelected($event)">

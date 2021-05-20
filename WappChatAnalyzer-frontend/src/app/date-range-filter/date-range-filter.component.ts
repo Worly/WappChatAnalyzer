@@ -82,7 +82,7 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    while(this.subscriptions.length > 0)
+    while (this.subscriptions.length > 0)
       this.subscriptions.pop().unsubscribe();
   }
 
@@ -119,6 +119,32 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
     this.popupVisible = !this.popupVisible;
   }
 
+  onOpenPeriodEdit(event: MouseEvent) {
+    event.stopImmediatePropagation();
+  }
+
+  onPeriodEdit(event) {
+    let date = event.date.toDate();
+    let today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (this.datePeriodType == PeriodType.DAY) {
+      this.datePeriodBackwardsIndex = Math.round((<any>today - date) / (1000 * 60 * 60 * 24));
+    }
+    else if (this.datePeriodType == PeriodType.WEEK) {
+      this.datePeriodBackwardsIndex = Math.round((<any>today - date) / (7 * 24 * 60 * 60 * 1000));
+    }
+    else if (this.datePeriodType == PeriodType.MONTH) {
+      this.datePeriodBackwardsIndex = today.getMonth() - date.getMonth() + (12 * (today.getFullYear() - date.getFullYear()))
+    }
+    else if (this.datePeriodType == PeriodType.YEAR) {
+      this.datePeriodBackwardsIndex = today.getFullYear() - date.getFullYear();
+    }
+
+
+    this.startApplyTimeout(0);
+  }
+
   selectPeriod(event: MouseEvent, periodType: PeriodType) {
     event.stopImmediatePropagation();
     this.datePeriodType = periodType;
@@ -134,7 +160,7 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
       return dateFormat(fromToDate.from, format);
     }
     else if (this.datePeriodType == PeriodType.WEEK) {
-      return dateFormat(fromToDate.from, "dd/mm") + " - " + dateFormat(fromToDate.to, "dd/mm/yyyy") ;
+      return dateFormat(fromToDate.from, "dd/mm") + " - " + dateFormat(fromToDate.to, "dd/mm/yyyy");
     }
     else if (this.datePeriodType == PeriodType.MONTH) {
       return dateFormat(fromToDate.from, "mmmm yyyy");

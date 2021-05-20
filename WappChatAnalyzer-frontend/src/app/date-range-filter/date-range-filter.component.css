@@ -73,8 +73,10 @@
 }
 
 .type-period {
+    position: relative;
     display: flex;
     align-items: center;
+    white-space: nowrap;
 }
 
 .type-period>.button {
@@ -131,8 +133,26 @@
 
 .type-period>.middle {
     flex-grow: 8;
-    width: 250px;
+    width: 270px;
     text-align: center;
+}
+
+.editPeriod {
+    position: absolute;
+    top: 6px;
+    left: 60px;
+    display: inline-block;
+    cursor: pointer;
+    color: rgb(100, 100, 100);
+    z-index: 10;
+}
+
+.editPeriod:hover {
+    color: rgb(180, 180, 180);
+}
+
+.editPeriod:active {
+    color: black;
 }
 
 .popup {
