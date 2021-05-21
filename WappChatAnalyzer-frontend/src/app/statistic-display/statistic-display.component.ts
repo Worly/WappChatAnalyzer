@@ -44,7 +44,8 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
 
   subscriptions: Subscription[] = [];
 
-  private chart;
+  chart;
+  pieChart;
 
   constructor(private statisticService: StatisticService, private eventService: EventService, private route: ActivatedRoute, private filterService: FilterService) {
     this.id = id++;
@@ -105,8 +106,14 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
   loadAndShowStatistic() {
     this.statistic = null;
     this.isLoading = true;
-    if (this.chart != null)
+    if (this.chart != null) {
       this.chart.destroy();
+      this.chart = null;
+    }
+    if (this.pieChart != null) {
+      this.pieChart.destroy();
+      this.pieChart = null;
+    }
     this.eventElements = [];
 
     this.statisticService.getStatistic(this._statisticUrl).subscribe((r: Statistic) => {
@@ -128,7 +135,7 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
       });
     }
 
-    new CanvasJS.Chart("chartContainerTotal" + this.id, {
+    this.pieChart = new CanvasJS.Chart("chartContainerTotal" + this.id, {
       animationEnabled: false,
       exportEnabled: false,
       backgroundColor: "rgba(0,0,0,0)",
@@ -140,7 +147,8 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
         indexLabelFontSize: 17,
         dataPoints: dataPoints
       }]
-    }).render();
+    });
+    this.pieChart.render();
   }
 
   renderGraph(statistic: Statistic) {
@@ -198,7 +206,6 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
     for (let i = 0; i < numberOfPeriodsShowing; i++) {
       let date = this.addPeriods(firstDate, i, statistic.filter.groupingPeriod);
       let index = statistic.timePeriods.findIndex(o => new Date(o).getTime() == date.getTime());
-
       if (index == -1) {
         dataSingle.dataPoints.push({
           x: date,
@@ -284,7 +291,7 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
     if (this.chart == null)
       return;
 
-    if (this.statistic == null || this.statistic.filter.groupingPeriod == "timeOfDay" || this.statistic.filter.groupingPeriod == "week" || this.statistic.filter.groupingPeriod == "month")
+    if (this.statistic == null || this.statistic.timePeriods.length == 0 || this.statistic.filter.groupingPeriod == "timeOfDay" || this.statistic.filter.groupingPeriod == "week" || this.statistic.filter.groupingPeriod == "month")
       return;
 
     var firstDate = this.chart.data[2].dataPoints[0].x;

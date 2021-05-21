@@ -156,20 +156,30 @@ export class FilterService {
   }
 
   static getBackwardsIndexForDate(date: Date, periodType: PeriodType): number {
-    let today = new Date();
-    today.setHours(0, 0, 0, 0);
-
     if (periodType == PeriodType.DAY) {
+      let today = new Date();
+      today.setHours(0, 0, 0, 0);
       return Math.round((<any>today - <any>date) / (1000 * 60 * 60 * 24));
     }
     else if (periodType == PeriodType.WEEK) {
-      return Math.round((<any>today - <any>date) / (7 * 24 * 60 * 60 * 1000));
+      let firstDayOfWeek = new Date();
+      firstDayOfWeek.setHours(0, 0, 0, 0);
+      var dayOfWeekFromMonday = (firstDayOfWeek.getDay() + 7 - 1) % 7;
+      firstDayOfWeek.setDate(firstDayOfWeek.getDate() - dayOfWeekFromMonday);
+
+      return Math.round((<any>firstDayOfWeek - <any>date) / (7 * 24 * 60 * 60 * 1000));
     }
     else if (periodType == PeriodType.MONTH) {
-      return today.getMonth() - date.getMonth() + (12 * (today.getFullYear() - date.getFullYear()))
+      let firstDayOfMonth = new Date();
+      firstDayOfMonth.setHours(0, 0, 0, 0);
+      firstDayOfMonth.setDate(1);
+      return firstDayOfMonth.getMonth() - date.getMonth() + (12 * (firstDayOfMonth.getFullYear() - date.getFullYear()))
     }
     else if (periodType == PeriodType.YEAR) {
-      return today.getFullYear() - date.getFullYear();
+      let firstDayOfYear = new Date();
+      firstDayOfYear.setHours(0, 0, 0, 0);
+      firstDayOfYear.setMonth(0, 1)
+      return firstDayOfYear.getFullYear() - date.getFullYear();
     }
     else
       throw "Invalid periodType";
