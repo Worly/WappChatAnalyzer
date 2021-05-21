@@ -290,6 +290,12 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
     var firstDate = this.chart.data[2].dataPoints[0].x;
     var lastDate = this.chart.data[2].dataPoints[this.chart.data[2].dataPoints.length - 1].x;
 
+    this.eventEmojiSize = 0.8 * (this.chart.axisX[0].convertValueToPixel(this.addPeriods(firstDate, 1, this.statistic.filter.groupingPeriod)) - this.chart.axisX[0].convertValueToPixel(firstDate));
+    if (this.eventEmojiSize < 18)
+      this.eventEmojiSize = 18;
+    if (this.eventEmojiSize > 40)
+      this.eventEmojiSize = 40;
+
     let periodCounts = {};
 
     for (let key in this.events) {

@@ -45,7 +45,8 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
   dateConfig = {
     format: "YYYY-MM-DD",
     firstDayOfWeek: "mo",
-    closeOnSelectDelay: 0
+    closeOnSelectDelay: 0,
+    opens: "left"
   };
 
   timeoutId: number = null;

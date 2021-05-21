@@ -1,17 +1,43 @@
 .my-container {
     position: relative;
     display: inline-block;
+}
+
+.button {
+    display: flex;
+    align-items: center;
     padding: 5px 15px;
     background-color: white;
     border: 1px solid rgb(179, 179, 179);
     border-radius: 8px;
     white-space: nowrap;
+    cursor: pointer;
 }
 
-.clickable {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
+.button::before {
+    border-radius: 8px;
+}
+
+.button:hover::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: .1;
+}
+
+.button:active::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: .2;
 }
 
 .picker {
@@ -35,6 +61,10 @@
     white-space: nowrap;
 }
 
+.item::before {
+    border-radius: 4px;
+}
+
 .item:hover::before {
     content: "";
     position: absolute;
@@ -55,4 +85,8 @@
     height: 100%;
     background-color: black;
     opacity: .2;
+}
+
+.selected {
+    font-weight: bold;
 }

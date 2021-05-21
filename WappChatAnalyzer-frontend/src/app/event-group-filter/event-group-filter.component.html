@@ -1,6 +1,8 @@
 <div class="my-container">
     <div class="button no-select" [ngClass]="{'active-filters': notSelected.length != 0}" (click)="togglePopup()">
-        Event group filter
+        <div class="icon">
+            <i class="fas fa-filter"></i>
+        </div>
     </div>
     <div *ngIf="popupVisible" class="popup">
         <div *ngIf="isLoading">Loading...</div>

@@ -1,12 +1,15 @@
 <div class="my-container">
-    <div class="clickable" (click)="togglePicker()">
+    <div class="button" (click)="togglePicker()">
         <span *ngIf="value == null">Select...</span>
         <span *ngIf="value != null">{{display(value)}}</span>
-        <span style="font-size: 0.6em; margin-left: 8px;">⯆</span>
+        &nbsp;&nbsp;
+        <i style="font-size: 18px;" class="fas fa-caret-down"></i>
     </div>
     <div *ngIf="pickerVisible" class="picker">
         <div>
-            <div *ngFor="let item of items" class="item no-select" (click)="select(item)">
+            <div *ngFor="let item of items" class="item no-select"
+            [ngClass]="{'selected': value == item}"
+                (click)="select(item); $event.stopImmediatePropagation()">
                 {{display(item)}}
             </div>
         </div>

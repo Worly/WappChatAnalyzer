@@ -187,6 +187,7 @@ svg {
 }
 
 .date-container {
+    position: relative;
     display: flex;
     width: 100%;
     max-width: 400px;
@@ -240,12 +241,18 @@ svg {
     flex-grow: 1;
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
+    color: rgb(80, 80, 80);
+    height: 45px;
+    text-align: center;
 }
 
 .right {
     flex-grow: 1;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
+    color: rgb(80, 80, 80);
+    height: 45px;
+    text-align: center;
 }
 
 .left::before {

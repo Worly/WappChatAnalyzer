@@ -24,7 +24,8 @@
                     <div class="message-background shadow">
                         <div class="text-container">
                             <div class="text">
-                                <span [innerHtml]="message.emojifiedText != null ? message.emojifiedText : message.text"></span>
+                                <span
+                                    [innerHtml]="message.emojifiedText != null ? message.emojifiedText : message.text"></span>
                                 <span class="extra-space-for-time"></span>
                             </div>
                             <div class="time-container">
@@ -46,14 +47,22 @@
         <div class="date-container">
             <div class="left button no-select"
                 [ngClass]="{'disabled': getFirstVisibleMessage() == null || suspendIncreaseDecreaseDate}"
-                (click)="decreaseDate()">⯇</div>
+                (click)="decreaseDate()">
+                <div style="display: inline-block; margin-top: 5px;">
+                    <i class="fas fa-angle-left"></i>
+                </div>
+            </div>
             <div class="date button no-select date-input" [dpDayPicker]="dateConfig" theme="dp-material"
                 (onSelect)="onDateSelected($event)">
                 {{getCurrentDate() | date: 'dd/MM/yyyy'}}
             </div>
             <div class="right button no-select"
                 [ngClass]="{'disabled': getFirstVisibleMessage() == null || suspendIncreaseDecreaseDate}"
-                (click)="increaseDate()">⯈</div>
+                (click)="increaseDate()">
+                <div style="display: inline-block; margin-top: 5px;">
+                    <i class="fas fa-angle-right"></i>
+                </div>
+            </div>
         </div>
     </div>
 </div>

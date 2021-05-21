@@ -37,8 +37,10 @@ export class DropdownComponent implements OnInit {
   }
 
   select(item: any) {
-    this._value = item;
-    this.valueChange.emit(this._value);
+    if (this._value != item) {
+      this._value = item;
+      this.valueChange.emit(this._value);
+    }
     this.pickerVisible = false;
   }
 
