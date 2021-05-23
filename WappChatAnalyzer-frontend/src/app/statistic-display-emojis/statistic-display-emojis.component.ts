@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Unsubscribable } from 'rxjs';
 import { EmojiInfoTotal } from '../dtos/emojiInfoTotal';
 import { AfterAttach, BeforeDetach } from '../services/attach-detach-hooks.service';
 import { StatisticService } from '../services/statistic.service';
-import { FilterService } from '../services/filter.service';
+import { FilterService, FilterType } from '../services/filter.service';
 import { StatisticDisplayComponent } from '../statistic-display/statistic-display.component';
 
 @Component({
@@ -20,7 +20,7 @@ export class StatisticDisplayEmojisComponent implements OnInit, AfterAttach, Bef
 
   public showCount: number = 10;
 
-  private subscriptions: Subscription[] = [];
+  private subscriptions: Unsubscribable[] = [];
 
   constructor(private statisticService: StatisticService, private filterService: FilterService) { }
 
@@ -41,9 +41,7 @@ export class StatisticDisplayEmojisComponent implements OnInit, AfterAttach, Bef
   }
 
   subscribeAll() {
-    this.subscriptions.push(this.filterService.dateFilterChanged.subscribe(() => this.load()));
-    this.subscriptions.push(this.filterService.groupingPeriodAndDateFilterChanged.subscribe(() => this.load()));
-    this.subscriptions.push(this.filterService.groupingPeriodChanged.subscribe(() => this.load()));
+    this.subscriptions.push(this.filterService.subscribeToFilterChanged([FilterType.DATE_RANGE], () => this.load()));
   }
 
   unsubscribeAll() {

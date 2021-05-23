@@ -8,9 +8,9 @@ import { EventService } from '../services/event.service';
 import * as dateFormat from "dateformat";
 import { groupBy } from "../utils";
 import { EventInfo } from "../dtos/event";
-import { DateRangeType, FilterService, PeriodType } from '../services/filter.service';
+import { DateRangeType, FilterService, FilterType, PeriodType } from '../services/filter.service';
 import { AfterAttach, BeforeDetach } from '../services/attach-detach-hooks.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Unsubscribable } from 'rxjs';
 
 let id = 0;
 
@@ -42,12 +42,12 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
   eventElements = [];
   eventEmojiSize = 24;
 
-  subscriptions: Subscription[] = [];
+  subscriptions: Unsubscribable[] = [];
 
   chart;
   pieChart;
 
-  constructor(private statisticService: StatisticService, private eventService: EventService, private route: ActivatedRoute, private filterService: FilterService) {
+  constructor(private statisticService: StatisticService, private eventService: EventService, private route: ActivatedRoute, public filterService: FilterService) {
     this.id = id++;
   }
 
@@ -79,14 +79,11 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
     }));
     this.subscriptions.push(this.filterService.eventGroupsChanged.subscribe(() => this.loadAndShowEvents()));
     this.subscriptions.push(this.filterService.eventSearchTermChanged.subscribe(() => this.loadAndShowEvents()));
-    this.subscriptions.push(this.filterService.dateFilterChanged.subscribe(() => {
-      this.loadAndShowStatistic();
+    this.subscriptions.push(this.filterService.subscribeToFilterChanged([FilterType.DATE_RANGE], () => {
       this.loadAndShowEvents();
     }));
-    this.subscriptions.push(this.filterService.groupingPeriodChanged.subscribe(() => this.loadAndShowStatistic()));
-    this.subscriptions.push(this.filterService.groupingPeriodAndDateFilterChanged.subscribe(() => {
+    this.subscriptions.push(this.filterService.subscribeToFilterChanged([FilterType.DATE_RANGE, FilterType.GROUPING_PERIOD], () => {
       this.loadAndShowStatistic();
-      this.loadAndShowEvents();
     }));
   }
 

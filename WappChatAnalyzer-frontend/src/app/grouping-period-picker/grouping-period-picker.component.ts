@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { FilterService } from '../services/filter.service';
+import { Subscription, Unsubscribable } from 'rxjs';
+import { FilterService, FilterType } from '../services/filter.service';
 
 @Component({
   selector: 'app-grouping-period-picker',
@@ -21,14 +21,13 @@ export class GroupingPeriodPickerComponent implements OnInit, OnDestroy {
 
   timeoutId: number = null;
 
-  private subscriptions: Subscription[] = [];
+  private subscriptions: Unsubscribable[] = [];
 
   constructor(private filterService: FilterService) { }
 
   ngOnInit(): void {
     this.getValuesFromService();
-    this.subscriptions.push(this.filterService.groupingPeriodChanged.subscribe(() => this.getValuesFromService()));
-    this.subscriptions.push(this.filterService.groupingPeriodAndDateFilterChanged.subscribe(() => this.getValuesFromService()));
+    this.subscriptions.push(this.filterService.subscribeToFilterChanged([FilterType.GROUPING_PERIOD], () => this.getValuesFromService()));
   }
 
   ngOnDestroy() {

@@ -26,9 +26,11 @@
     margin-bottom: 10px;
     display: flex;
     justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
-.filters>*:first-child {
+.filters>*:nth-child(2) {
     flex-grow: 1;
 }
 
@@ -39,4 +41,46 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.backButton {
+    position: relative;
+    cursor: pointer;
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.4rem;
+    color: rgb(100, 100, 100);
+}
+
+.backButton.disabled {
+    color: rgb(210, 210, 210);
+    cursor: default;
+}
+
+.backButton::before {
+    border-radius: 8px;
+}
+
+.backButton:not(.disabled):hover::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: .1;
+}
+
+.backButton:not(.disabled):active::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: .2;
 }

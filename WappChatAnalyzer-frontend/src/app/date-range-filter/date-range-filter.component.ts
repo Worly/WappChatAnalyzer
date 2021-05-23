@@ -1,7 +1,7 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { DateRangeType, FilterService, PeriodType } from '../services/filter.service';
+import { DateRangeType, FilterService, FilterType, PeriodType } from '../services/filter.service';
 import * as dateFormat from "dateformat";
-import { Subscription } from 'rxjs';
+import { Subscription, Unsubscribable } from 'rxjs';
 
 @Component({
   selector: 'app-date-range-filter',
@@ -71,14 +71,13 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
     },
   ];
 
-  private subscriptions: Subscription[] = [];
+  private subscriptions: Unsubscribable[] = [];
 
   constructor(private filterService: FilterService) { }
 
   ngOnInit(): void {
     this.getValuesFromService();
-    this.subscriptions.push(this.filterService.dateFilterChanged.subscribe(() => this.getValuesFromService()));
-    this.subscriptions.push(this.filterService.groupingPeriodAndDateFilterChanged.subscribe(() => this.getValuesFromService()));
+    this.subscriptions.push(this.filterService.subscribeToFilterChanged([FilterType.DATE_RANGE], () => this.getValuesFromService()));
   }
 
   ngOnDestroy() {
@@ -185,12 +184,6 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
   }
 
   apply() {
-    this.filterService.dateLastDaysRange = this.dateLastDaysRange;
-    this.filterService.datePeriodType = this.datePeriodType;
-    this.filterService.datePeriodBackwardsIndex = this.datePeriodBackwardsIndex;
-    this.filterService.dateRangeFrom = this.dateRangeFrom;
-    this.filterService.dateRangeTo = this.dateRangeTo;
-
     if (this.dateRangeType == DateRangeType.LAST)
       this.filterService.applyDateLastRange(this.dateLastDaysRange);
     else if (this.dateRangeType == DateRangeType.PERIOD)

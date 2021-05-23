@@ -1,8 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { StatisticTotal } from '../dtos/statisticTotal';
 import { Router } from '@angular/router';
-import { FilterService } from '../services/filter.service';
-import { Subscription } from 'rxjs';
+import { FilterService, FilterType } from '../services/filter.service';
+import { Subscription, Unsubscribable } from 'rxjs';
 import { StatisticService } from '../services/statistic.service';
 
 @Component({
@@ -19,14 +19,14 @@ export class StatisticTotalComponent implements OnInit, OnDestroy {
 
   id: number;
 
-  private subscriptions: Subscription[] = [];
+  private subscriptions: Unsubscribable[] = [];
 
   constructor(private statisticService: StatisticService, private filterService: FilterService, private router: Router) {
   }
 
   ngOnInit(): void {
-    this.subscriptions.push(this.filterService.dateFilterChanged.subscribe(() => this.load()));
-    this.subscriptions.push(this.filterService.groupingPeriodAndDateFilterChanged.subscribe(() => this.load()));
+    this.subscriptions.push(this.filterService.subscribeToFilterChanged([FilterType.DATE_RANGE], () => this.load()));
+
     this.load();
   }
 

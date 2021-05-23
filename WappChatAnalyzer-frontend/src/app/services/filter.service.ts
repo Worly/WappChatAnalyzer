@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, Unsubscribable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -24,12 +24,19 @@ export class FilterService {
   dateRangeFrom: Date;
   dateRangeTo: Date;
 
-  dateFilterChanged: Subject<{ from: Date, to: Date }> = new Subject<{ from: Date, to: Date }>();
-
   groupingPeriod: string = "date";
-  groupingPeriodChanged: Subject<string> = new Subject<string>();
 
-  groupingPeriodAndDateFilterChanged: Subject<void> = new Subject<void>();
+  private dateAndGroupingHistory: {
+    dateRangeType: DateRangeType,
+    dateLastDaysRange: number,
+    datePeriodType: PeriodType,
+    datePeriodBackwardsIndex: number,
+    dateRangeFrom: Date,
+    dateRangeTo: Date,
+    groupingPeriod: string
+  }[] = [];
+
+  private filterChangedSubscribers: { subscribedTo: FilterType[], callback: () => void }[] = [];
 
   constructor() {
     this.dateRangeTo = new Date();
@@ -37,6 +44,68 @@ export class FilterService {
     var today = new Date();
     today.setDate(today.getDate() - 30);
     this.dateRangeFrom = today;
+  }
+
+  subscribeToFilterChanged(filterTypes: FilterType[], callback: () => void): Unsubscribable {
+    var subscription = {
+      subscribedTo: filterTypes,
+      callback: callback
+    };
+    this.filterChangedSubscribers.push(subscription);
+
+    return {
+      unsubscribe: () => {
+        let index = this.filterChangedSubscribers.indexOf(subscription);
+        if (index != -1)
+          this.filterChangedSubscribers.splice(index, 1);
+      }
+    }
+  }
+
+  private emitFilterChanged(filterTypes: FilterType[]) {
+    for (let subscriber of this.filterChangedSubscribers) {
+      if (filterTypes.some(o => subscriber.subscribedTo.includes(o)))
+        subscriber.callback();
+    }
+  }
+
+  private saveHistory() {
+    console.log("saveHistory");
+    console.trace();
+    let a = {
+      dateLastDaysRange: this.dateLastDaysRange,
+      datePeriodBackwardsIndex: this.datePeriodBackwardsIndex,
+      datePeriodType: this.datePeriodType,
+      dateRangeFrom: this.dateRangeFrom,
+      dateRangeTo: this.dateRangeTo,
+      dateRangeType: this.dateRangeType,
+      groupingPeriod: this.groupingPeriod
+    };
+    console.log(a);
+    this.dateAndGroupingHistory.push(a);
+  }
+
+  public hasHistory(): boolean {
+    return this.dateAndGroupingHistory.length > 0;
+  }
+
+  public undoHistory() {
+    if (this.dateAndGroupingHistory.length == 0)
+      return;
+
+    let history = this.dateAndGroupingHistory.pop();
+
+    console.log(history);
+
+    this.dateLastDaysRange = history.dateLastDaysRange;
+    this.datePeriodBackwardsIndex = history.datePeriodBackwardsIndex;
+    this.datePeriodType = history.datePeriodType;
+    this.dateRangeFrom = history.dateRangeFrom;
+    this.dateRangeTo = history.dateRangeTo;
+    this.dateRangeType = history.dateRangeType;
+    this.groupingPeriod = history.groupingPeriod;
+
+    this.emitFilterChanged([FilterType.DATE_RANGE, FilterType.GROUPING_PERIOD]);
   }
 
   applyEventGroups(notSelected: number[]) {
@@ -50,36 +119,41 @@ export class FilterService {
   }
 
   applyDateLastRange(dateLastDaysRange: number) {
+    this.saveHistory();
     this.dateRangeType = DateRangeType.LAST;
     this.dateLastDaysRange = dateLastDaysRange;
-    this.dateFilterChanged.next(this.getFromToDates());
+    this.emitFilterChanged([FilterType.DATE_RANGE]);
   }
 
   applyDatePeriodRange(datePeriodType: PeriodType, datePeriodBackwardsIndex: number) {
+    this.saveHistory();
     this.dateRangeType = DateRangeType.PERIOD;
     this.datePeriodType = datePeriodType;
     this.datePeriodBackwardsIndex = datePeriodBackwardsIndex;
-    this.dateFilterChanged.next(this.getFromToDates());
+    this.emitFilterChanged([FilterType.DATE_RANGE]);
   }
 
   applyDateRange(dateFrom: Date, dateTo: Date) {
+    this.saveHistory();
     this.dateRangeType = DateRangeType.RANGE;
     this.dateRangeFrom = dateFrom;
     this.dateRangeTo = dateTo;
-    this.dateFilterChanged.next(this.getFromToDates());
+    this.emitFilterChanged([FilterType.DATE_RANGE]);
   }
 
   applyGroupingPeriod(groupingPeriod: string) {
+    this.saveHistory();
     this.groupingPeriod = groupingPeriod;
-    this.groupingPeriodChanged.next(groupingPeriod);
+    this.emitFilterChanged([FilterType.GROUPING_PERIOD]);
   }
 
   applyGroupingAndDatePeriodRange(groupingPeriod: string, datePeriodType: PeriodType, datePeriodBackwardsIndex: number) {
+    this.saveHistory();
     this.groupingPeriod = groupingPeriod;
     this.dateRangeType = DateRangeType.PERIOD;
     this.datePeriodType = datePeriodType;
     this.datePeriodBackwardsIndex = datePeriodBackwardsIndex;
-    this.groupingPeriodAndDateFilterChanged.next();
+    this.emitFilterChanged([FilterType.DATE_RANGE, FilterType.GROUPING_PERIOD]);
   }
 
   getFromToDates() {
@@ -198,4 +272,9 @@ export enum PeriodType {
   WEEK,
   MONTH,
   YEAR
+}
+
+export enum FilterType {
+  DATE_RANGE,
+  GROUPING_PERIOD
 }

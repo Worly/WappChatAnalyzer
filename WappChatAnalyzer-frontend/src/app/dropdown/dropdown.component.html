@@ -1,5 +1,5 @@
 <div class="my-container">
-    <div class="button" (click)="togglePicker()">
+    <div class="button no-select" (click)="togglePicker()">
         <span *ngIf="value == null">Select...</span>
         <span *ngIf="value != null">{{display(value)}}</span>
         &nbsp;&nbsp;

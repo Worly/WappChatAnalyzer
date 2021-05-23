@@ -4,8 +4,8 @@ import { EventInfo } from "../dtos/event";
 import { groupBy } from "../utils";
 import * as dateFormat from "dateformat";
 import { Router } from '@angular/router';
-import { FilterService } from '../services/filter.service';
-import { Subscription } from 'rxjs';
+import { FilterService, FilterType } from '../services/filter.service';
+import { Subscription, Unsubscribable } from 'rxjs';
 
 @Component({
   selector: 'app-event-list',
@@ -24,15 +24,14 @@ export class EventListComponent implements OnInit, OnDestroy {
 
   count: number;
 
-  private subscriptions: Subscription[] = [];
+  private subscriptions: Unsubscribable[] = [];
 
   constructor(private eventService: EventService, private filterService: FilterService) { }
 
   ngOnInit(): void {
     this.subscriptions.push(this.filterService.eventGroupsChanged.subscribe(() => this.load()));
     this.subscriptions.push(this.filterService.eventSearchTermChanged.subscribe(() => this.load()));
-    this.subscriptions.push(this.filterService.dateFilterChanged.subscribe(() => this.load()));
-    this.subscriptions.push(this.filterService.groupingPeriodAndDateFilterChanged.subscribe(() => this.load()));
+    this.subscriptions.push(this.filterService.subscribeToFilterChanged([FilterType.DATE_RANGE, FilterType.GROUPING_PERIOD], () => this.load()));
     this.load();
   }
 

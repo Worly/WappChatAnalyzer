@@ -6,6 +6,9 @@
         <app-loading></app-loading>
     </div>
     <div class="filters">
+        <div class="backButton" [ngClass]="{'disabled': !filterService.hasHistory()}" (click)="filterService.undoHistory()">
+            <i class="fas fa-arrow-left"></i>
+        </div>
         <app-event-search></app-event-search>
         <app-date-range-filter></app-date-range-filter>
         <app-grouping-period-picker></app-grouping-period-picker>
