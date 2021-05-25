@@ -18,7 +18,7 @@ export class StatisticDisplaySingleEmojiComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.push(this.route.paramMap.subscribe(params => {
-      this.statisticUrl = "emoji/getStatistic/singleEmoji/" + params.get("codePoints");
+      this.statisticUrl = "statistic/getStatistic/numberOfEmoji/" + params.get("codePoints");
       this.codePoints = params.get("codePoints");
     }));
   }

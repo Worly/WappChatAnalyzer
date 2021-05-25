@@ -50,6 +50,7 @@ export class StatisticDisplayEmojisComponent implements OnInit, AfterAttach, Bef
   }
 
   load() {
+    this.emojis = null;
     this.statisticService.getEmojiInfoTotal().subscribe(r => {
       this.emojis = r;
     });

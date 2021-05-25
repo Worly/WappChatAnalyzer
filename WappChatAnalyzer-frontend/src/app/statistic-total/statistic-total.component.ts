@@ -45,4 +45,15 @@ export class StatisticTotalComponent implements OnInit, OnDestroy {
   onClick() {
     this.router.navigateByUrl(this.clickLink);
   }
+
+  getForRatioBar() {
+    let result = {};
+    for (let senderId in this.statisticTotal.senders) {
+      if (this.statisticTotal.totalForSenders.hasOwnProperty(senderId))
+        result[this.statisticTotal.senders[senderId].name] = this.statisticTotal.totalForSenders[senderId];
+      else
+        result[this.statisticTotal.senders[senderId].name] = 0;
+    }
+    return result;
+  }
 }

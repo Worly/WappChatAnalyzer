@@ -46,10 +46,10 @@ namespace WappChatAnalyzer.Controllers
         {
             var messages = messageService.GetAllMessages().FilterDateRange(filter.FromDate, filter.ToDate).ToList();
 
-            var result = new Dictionary<string, Dictionary<string, int>>();
+            var result = new Dictionary<string, Dictionary<int, int>>();
 
             var tasks = new List<Task>();
-            var taskResults = new ConcurrentBag<Dictionary<string, Dictionary<string, int>>>();
+            var taskResults = new ConcurrentBag<Dictionary<string, Dictionary<int, int>>>();
 
             var batchSize = messages.Count / Environment.ProcessorCount;
 
@@ -76,8 +76,8 @@ namespace WappChatAnalyzer.Controllers
             {
                 foreach (var emoji in item)
                 {
-                    if (!result.TryGetValue(emoji.Key, out Dictionary<string, int> dictionary))
-                        result.Add(emoji.Key, dictionary = new Dictionary<string, int>());
+                    if (!result.TryGetValue(emoji.Key, out Dictionary<int, int> dictionary))
+                        result.Add(emoji.Key, dictionary = new Dictionary<int, int>());
 
                     foreach (var sender in emoji.Value)
                     {
@@ -90,20 +90,23 @@ namespace WappChatAnalyzer.Controllers
                 }
             }
 
+            var senders = messageService.GetAllSenders();
+
             return new EmojiInfoTotal()
             {
                 EmojiInfos = result.OrderByDescending(o => o.Value.Sum(i => i.Value)).ThenBy(o => o.Key).Select(o => new EmojiInfo()
                 {
                     Total = o.Value.Sum(i => i.Value),
                     EmojiCodePoints = o.Key,
+                    Senders = senders.ToDictionary(o => o.Id, o => SenderDTO.From(o)),
                     BySenders = o.Value
                 }).ToList()
             };
         }
 
-        private Dictionary<string, Dictionary<string, int>> GetEmojiInfoTotal(IEnumerable<Message> inMessages)
+        private Dictionary<string, Dictionary<int, int>> GetEmojiInfoTotal(IEnumerable<Message> inMessages)
         {
-            var result = new Dictionary<string, Dictionary<string, int>>();
+            var result = new Dictionary<string, Dictionary<int, int>>();
 
             foreach (var message in inMessages)
             {
@@ -115,27 +118,18 @@ namespace WappChatAnalyzer.Controllers
                     {
                         emoji = emoji.FullyQualified;
 
-                        if (!result.TryGetValue(emoji.CodePoints, out Dictionary<string, int> forSenders))
-                            result.Add(emoji.CodePoints, forSenders = new Dictionary<string, int>());
+                        if (!result.TryGetValue(emoji.CodePoints, out Dictionary<int, int> forSenders))
+                            result.Add(emoji.CodePoints, forSenders = new Dictionary<int, int>());
 
-                        if (!forSenders.TryGetValue(message.Sender, out int count))
-                            forSenders.Add(message.Sender, count = 0);
+                        if (!forSenders.TryGetValue(message.SenderId, out int count))
+                            forSenders.Add(message.SenderId, count = 0);
 
                         count++;
-                        forSenders[message.Sender] = count;
+                        forSenders[message.SenderId] = count;
                     }
                 }
 
             }
-
-            return result;
-        }
-
-
-        [HttpGet("getStatistic/singleEmoji/{emojiCodePoints}")]
-        public Statistic<int> GetStatisticSingleEmoji(string emojiCodePoints, [FromQuery] Filter filter)
-        {
-            var result = statisticService.GetStatistic(messageService, messages => emojiService.CountEmojiInMessages(messages, emojiCodePoints), "SingleEmoji", filter);
 
             return result;
         }

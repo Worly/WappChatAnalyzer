@@ -1,4 +1,4 @@
-<div *ngFor="let item of items | keyvalue; index as i; first as isFirst; last as isLast" class="bar"
+<div *ngFor="let item of getItems() | keyvalue; index as i; first as isFirst; last as isLast" class="bar"
     [ngClass]="{ 'bar-first': isFirst, 'bar-last': isLast }" [style.height]="height + 'px'"
     [style.width]="item.value / total() * 100 + '%'" [style.background-color]="appConfig.colors[item.key]"
     [style.color]="invertColor(appConfig.colors[item.key], true)">

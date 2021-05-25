@@ -8,6 +8,7 @@ namespace WappChatAnalyzer.DTOs
     public class StatisticTotal
     {
         public int Total { get; set; }
-        public Dictionary<string, int> TotalForSenders { get; set; }
+        public Dictionary<int, SenderDTO> Senders { get; set; }
+        public Dictionary<int, int> TotalForSenders { get; set; }
     }
 }

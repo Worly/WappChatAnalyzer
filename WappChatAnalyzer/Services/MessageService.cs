@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,9 +9,9 @@ namespace WappChatAnalyzer.Services
 {
     public interface IMessageService
     {
-        List<string> GetAllSenders();
+        List<Sender> GetAllSenders();
         IQueryable<Message> GetAllMessages();
-        int ImportMessages(List<Message> messages);
+        int ImportMessages(List<Message> messages, out Message firstImportedMessage);
         List<ImportHistory> GetImportHistory();
         List<Message> GetMessages(int fromId, int toId);
         Message GetFirstMessageOfDayBefore(DateTime dateTime);
@@ -19,15 +20,16 @@ namespace WappChatAnalyzer.Services
 
     public class MessageService : IMessageService
     {
+
         private MainDbContext context;
         public MessageService(MainDbContext context)
         {
             this.context = context;
         }
 
-        public List<string> GetAllSenders()
+        public List<Sender> GetAllSenders()
         {
-            return context.Messages.Select(o => o.Sender).Distinct().ToList();
+            return context.Senders.ToList();
         }
 
         public IQueryable<Message> GetAllMessages()
@@ -35,7 +37,7 @@ namespace WappChatAnalyzer.Services
             return context.Messages;
         }
 
-        public int ImportMessages(List<Message> messages)
+        public int ImportMessages(List<Message> messages, out Message firstImportedMessage)
         {
             var lastMessage = context.Messages.OrderBy(o => o.Id).LastOrDefault();
             var nextMessageId = lastMessage != null ? lastMessage.Id + 1 : 1;
@@ -48,6 +50,8 @@ namespace WappChatAnalyzer.Services
                     messages[i].Id = 1 + i;
 
                 context.Messages.AddRange(messages);
+
+                firstImportedMessage = messages.FirstOrDefault();
 
                 context.ImportHistories.Add(new ImportHistory()
                 {
@@ -95,6 +99,8 @@ namespace WappChatAnalyzer.Services
                 if (newMessagesStartIndex == -1)
                     throw new InvalidOperationException("There is no overlap in new messages and old messages");
 
+                firstImportedMessage = messages[newMessagesStartIndex];
+
                 for(int i = newMessagesStartIndex; i < messages.Count; i++)
                 {
                     messages[i].Id = nextMessageId + (i - newMessagesStartIndex);
@@ -125,7 +131,7 @@ namespace WappChatAnalyzer.Services
 
         public List<Message> GetMessages(int fromId, int toId)
         {
-            return context.Messages.Where(o => o.Id >= fromId && o.Id <= toId).ToList();
+            return context.Messages.Include(o => o.Sender).Where(o => o.Id >= fromId && o.Id <= toId).OrderBy(o => o.Id).ToList();
         }
 
         public Message GetFirstMessageOfDayBefore(DateTime dateTime)

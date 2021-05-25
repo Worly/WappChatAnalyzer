@@ -11,9 +11,11 @@ namespace WappChatAnalyzer.Domain
     {
         public DbSet<Event> Events { get; set; }
         public DbSet<EventGroup> EventGroups { get; set; }
+        public DbSet<Sender> Senders { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<ImportHistory> ImportHistories { get; set; }
         public DbSet<CustomStatistic> CustomStatistics { get; set; }
+        public DbSet<StatisticCache> StatisticCaches { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

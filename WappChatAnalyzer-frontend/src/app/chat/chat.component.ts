@@ -4,6 +4,7 @@ import { Message } from '../dtos/message';
 import { EmojiService } from '../services/emoji.service';
 import { MessagesService } from '../services/messages.service';
 import GraphemeSplitter from 'grapheme-splitter';
+import { Sender } from '../dtos/sender';
 
 @Component({
   selector: 'app-chat',
@@ -16,8 +17,8 @@ export class ChatComponent implements OnInit, AfterViewInit {
   @ViewChild("chat")
   chat: ElementRef;
 
-  me;
-  senders: string[] = [];
+  me: Sender;
+  senders: Sender[] = [];
   messages: Message[] = [];
 
   dateConfig = {
@@ -197,15 +198,15 @@ export class ChatComponent implements OnInit, AfterViewInit {
     if (this.messages.length <= index + 1)
       return false;
 
-    return this.messages[index].sender == this.messages[index + 1].sender;
+    return this.messages[index].sender.id == this.messages[index + 1].sender.id;
   }
 
   isFirstInGroup(index: number): boolean {
-    return index == 0 || this.messages[index - 1].sender != this.messages[index].sender;
+    return index == 0 || this.messages[index - 1].sender.id != this.messages[index].sender.id;
   }
 
-  isMessageMine(message): boolean {
-    return message.sender == this.me;
+  isMessageMine(message: Message): boolean {
+    return this.me != null && message.sender != null && message.sender.id == this.me.id;
   }
 
   getCurrentDate() {

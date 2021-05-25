@@ -21,6 +21,17 @@ export class RatioBarComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  getItems() {
+    let result = {};
+    
+    for(let key in this.items) {
+      if (this.items[key] > 0)
+        result[key] = this.items[key];
+    }
+
+    return result;
+  }
+
   total(): number {
     return Object.values(this.items).reduce((f, s) => f + s);
   }

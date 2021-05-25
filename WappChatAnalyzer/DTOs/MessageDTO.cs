@@ -9,7 +9,7 @@ namespace WappChatAnalyzer.DTOs
     {
         public int Id { get; set; }
         public DateTime SentDateTime { get; set; }
-        public string Sender { get; set; }
+        public SenderDTO Sender { get; set; }
         public string Text { get; set; }
         public bool IsMedia { get; set; }
     }

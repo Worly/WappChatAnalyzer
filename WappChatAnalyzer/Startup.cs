@@ -33,10 +33,11 @@ namespace WappChatAnalyzer
 
             //services.AddSingleton<IMessageService, LocalMessageService>();
             services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IStatisticCacheService, StatisticCacheService>();
 
-            services.AddSingleton<IStatisticService, StatisticService>();
             services.AddSingleton<IEmojiService, EmojiService>();
-            services.AddSingleton<IChatAnalyzerService, ChatAnalyzerService>();
+            services.AddScoped<IStatisticService, StatisticService>();
+            services.AddScoped<IStatisticFuncsService, StatisticFuncsService>();
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<ICustomStatisticService, CustomStatisticService>();
 

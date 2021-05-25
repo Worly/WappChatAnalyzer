@@ -12,7 +12,6 @@ export class EmojiInfoSingleComponent implements OnInit {
   @Input()
   public set emojiInfo(value: EmojiInfo) {
     this._emojiInfo = value;
-    this.render();
   }
 
   constructor(private router: Router) { }
@@ -24,7 +23,14 @@ export class EmojiInfoSingleComponent implements OnInit {
     this.router.navigateByUrl("statistic-display/emoji/" + this._emojiInfo.emojiCodePoints);
   }
 
-  render() {
-
+  getForRatioBar() {
+    let result = {};
+    for (let senderId in this._emojiInfo.senders) {
+      if (this._emojiInfo.bySenders.hasOwnProperty(senderId))
+        result[this._emojiInfo.senders[senderId].name] = this._emojiInfo.bySenders[senderId];
+      else
+        result[this._emojiInfo.senders[senderId].name] = 0;
+    }
+    return result;
   }
 }

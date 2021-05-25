@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WappChatAnalyzer.Domain;
 
 namespace WappChatAnalyzer.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210524112947_AddStatisticCache")]
+    partial class AddStatisticCache
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,8 +26,7 @@ namespace WappChatAnalyzer.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(60)
-                        .HasColumnType("varchar(60)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Regex")
                         .HasColumnType("longtext");
@@ -117,8 +118,8 @@ namespace WappChatAnalyzer.Migrations
                     b.Property<bool>("IsMedia")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int>("SenderId")
-                        .HasColumnType("int");
+                    b.Property<string>("Sender")
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("SentDateTime")
                         .HasColumnType("datetime(6)");
@@ -128,25 +129,9 @@ namespace WappChatAnalyzer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SenderId");
-
                     b.HasIndex("SentDateTime");
 
                     b.ToTable("Messages");
-                });
-
-            modelBuilder.Entity("WappChatAnalyzer.Domain.Sender", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Senders");
                 });
 
             modelBuilder.Entity("WappChatAnalyzer.Domain.StatisticCache", b =>
@@ -172,8 +157,8 @@ namespace WappChatAnalyzer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("SenderId")
-                        .HasColumnType("int");
+                    b.Property<string>("Sender")
+                        .HasColumnType("longtext");
 
                     b.Property<int>("StatisticCacheId")
                         .HasColumnType("int");
@@ -182,8 +167,6 @@ namespace WappChatAnalyzer.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SenderId");
 
                     b.HasIndex("StatisticCacheId");
 
@@ -201,32 +184,13 @@ namespace WappChatAnalyzer.Migrations
                     b.Navigation("EventGroup");
                 });
 
-            modelBuilder.Entity("WappChatAnalyzer.Domain.Message", b =>
-                {
-                    b.HasOne("WappChatAnalyzer.Domain.Sender", "Sender")
-                        .WithMany()
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Sender");
-                });
-
             modelBuilder.Entity("WappChatAnalyzer.Domain.StatisticCacheForSender", b =>
                 {
-                    b.HasOne("WappChatAnalyzer.Domain.Sender", "Sender")
-                        .WithMany()
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("WappChatAnalyzer.Domain.StatisticCache", null)
                         .WithMany("ForSenders")
                         .HasForeignKey("StatisticCacheId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("WappChatAnalyzer.Domain.StatisticCache", b =>

@@ -16,6 +16,7 @@
     padding-left: 7px;
     padding-right: 7px;
     font-size: 1.1rem;
+    z-index: 100;
 
     font-weight: normal;
     border-style: dashed;

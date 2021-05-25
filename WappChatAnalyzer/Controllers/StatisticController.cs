@@ -17,76 +17,66 @@ namespace WappChatAnalyzer.Controllers
     public class StatisticController : ControllerBase
     {
         private IMessageService messageService;
-        private IChatAnalyzerService chatAnalyzerService;
+        private IStatisticFuncsService statisticFuncsService;
         private IStatisticService statisticService;
         private ICustomStatisticService customStatisticService;
+        private IStatisticCacheService statisticCacheService;
 
-        public StatisticController(IMessageService messageService, IChatAnalyzerService chatAnalyzerService, IStatisticService statisticService, ICustomStatisticService customStatisticService)
+        public StatisticController(IMessageService messageService, IStatisticFuncsService chatAnalyzerService, IStatisticService statisticService, ICustomStatisticService customStatisticService, IStatisticCacheService statisticCacheService)
         {
             this.messageService = messageService;
-            this.chatAnalyzerService = chatAnalyzerService;
+            this.statisticFuncsService = chatAnalyzerService;
             this.statisticService = statisticService;
             this.customStatisticService = customStatisticService;
+            this.statisticCacheService = statisticCacheService;
         }
 
-        private StatisticTotal GetStatisticTotal(IEnumerable<Message> messages, IEnumerable<string> senders, Func<IEnumerable<Message>, int> statisticFunc)
+        private StatisticTotal GetStatisticTotal(StatisticFunc statisticFunc, DateTime? from, DateTime? to)
         {
+            var caches = statisticCacheService.GetStatisticCaches(statisticFunc, from, to);
+            var senders = messageService.GetAllSenders();
             return new StatisticTotal()
             {
-                Total = statisticFunc(messages),
-                TotalForSenders = senders.ToDictionary(s => s, s => statisticFunc(messages.AsQueryable().Filter(s)))
+                Total = caches.Sum(o => o.TotalsForSenders.Sum(o => o.Value)),
+                Senders = senders.ToDictionary(s => s.Id, s => SenderDTO.From(s)),
+                TotalForSenders = senders.ToDictionary(s => s.Id, s => caches.Sum(o => o.TotalsForSenders[s.Id]))
             };
         }
 
         [HttpGet("getStatisticTotal/numberOfMessages")]
         public ActionResult<StatisticTotal> GetStatisticTotalNumberOfMessages([FromQuery] Filter filter)
         {
-            var messages = messageService.GetAllMessages().FilterDateRange(filter.FromDate, filter.ToDate).ToList();
-            var allSenders = messageService.GetAllSenders();
-
-            return GetStatisticTotal(messages, allSenders, chatAnalyzerService.TotalNumberOfMessages);
+            return GetStatisticTotal(statisticFuncsService.TotalNumberOfMessages(), filter.FromDate, filter.ToDate);
         }
 
         [HttpGet("getStatisticTotal/numberOfWords")]
         public ActionResult<StatisticTotal> GetStatisticTotalNumberOfWords([FromQuery] Filter filter)
         {
-            var messages = messageService.GetAllMessages().FilterDateRange(filter.FromDate, filter.ToDate).ToList();
-            var allSenders = messageService.GetAllSenders();
-
-            return GetStatisticTotal(messages, allSenders, chatAnalyzerService.TotalNumberOfWords);
+            return GetStatisticTotal(statisticFuncsService.TotalNumberOfWords(), filter.FromDate, filter.ToDate);
         }
 
         [HttpGet("getStatisticTotal/numberOfCharacters")]
         public ActionResult<StatisticTotal> GetStatisticTotalNumberOfCharacters([FromQuery] Filter filter)
         {
-            var messages = messageService.GetAllMessages().FilterDateRange(filter.FromDate, filter.ToDate).ToList();
-            var allSenders = messageService.GetAllSenders();
-
-            return GetStatisticTotal(messages, allSenders, chatAnalyzerService.TotalNumberOfCharacters);
+            return GetStatisticTotal(statisticFuncsService.TotalNumberOfCharacters(), filter.FromDate, filter.ToDate);
         }
 
         [HttpGet("getStatisticTotal/numberOfMedia")]
         public ActionResult<StatisticTotal> GetStatisticTotalNumberOfMedia([FromQuery] Filter filter)
         {
-            var messages = messageService.GetAllMessages().FilterDateRange(filter.FromDate, filter.ToDate).ToList();
-            var allSenders = messageService.GetAllSenders();
-
-            return GetStatisticTotal(messages, allSenders, chatAnalyzerService.TotalNumberOfMedia);
+            return GetStatisticTotal(statisticFuncsService.TotalNumberOfMedia(), filter.FromDate, filter.ToDate);
         }
 
         [HttpGet("getStatisticTotal/numberOfEmojis")]
         public ActionResult<StatisticTotal> GetStatisticTotalNumberOfEmojis([FromQuery] Filter filter)
         {
-            var messages = messageService.GetAllMessages().FilterDateRange(filter.FromDate, filter.ToDate).ToList();
-            var allSenders = messageService.GetAllSenders();
-
-            return GetStatisticTotal(messages, allSenders, chatAnalyzerService.TotalNumberOfEmojis);
+            return GetStatisticTotal(statisticFuncsService.TotalNumberOfEmojis(), filter.FromDate, filter.ToDate);
         }
 
         [HttpGet("getStatistic/numberOfMessages")]
         public ActionResult<Statistic<int>> GetStatisticNumberOfMessages([FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(messageService, chatAnalyzerService.TotalNumberOfMessages, "NumberOfMessages", filter);
+            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfMessages(), filter);
 
             return result;
         }
@@ -94,7 +84,7 @@ namespace WappChatAnalyzer.Controllers
         [HttpGet("getStatistic/numberOfWords")]
         public ActionResult<Statistic<int>> GetStatisticNumberOfWords([FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(messageService, chatAnalyzerService.TotalNumberOfWords, "NumberOfWords", filter);
+            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfWords(), filter);
 
             return result;
         }
@@ -102,7 +92,7 @@ namespace WappChatAnalyzer.Controllers
         [HttpGet("getStatistic/numberOfCharacters")]
         public ActionResult<Statistic<int>> GetStatisticNumberOfCharacters([FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(messageService, chatAnalyzerService.TotalNumberOfCharacters, "NumberOfCharacters", filter);
+            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfCharacters(), filter);
 
             return result;
         }
@@ -110,7 +100,7 @@ namespace WappChatAnalyzer.Controllers
         [HttpGet("getStatistic/numberOfMedia")]
         public ActionResult<Statistic<int>> GetStatisticNumberOfMedia([FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(messageService, chatAnalyzerService.TotalNumberOfMedia, "NumberOfMedia", filter);
+            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfMedia(), filter);
 
             return result;
         }
@@ -118,7 +108,15 @@ namespace WappChatAnalyzer.Controllers
         [HttpGet("getStatistic/numberOfEmojis")]
         public ActionResult<Statistic<int>> GetStatisticNumberOfEmojis([FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(messageService, chatAnalyzerService.TotalNumberOfEmojis, "NumberOfEmojis", filter);
+            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfEmojis(), filter);
+
+            return result;
+        }
+
+        [HttpGet("getStatistic/numberOfEmoji/{emojiCodePoints}")]
+        public Statistic<int> GetStatisticSingleEmoji(string emojiCodePoints, [FromQuery] Filter filter)
+        {
+            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfEmoji(emojiCodePoints), filter);
 
             return result;
         }
@@ -126,11 +124,7 @@ namespace WappChatAnalyzer.Controllers
         [HttpGet("getStatistic/custom/{id}")]
         public ActionResult<Statistic<int>> GetCustomStatistic(int id, [FromQuery] Filter filter)
         {
-            var customStatistic = customStatisticService.GetCustomStatistic(id);
-
-            var regex = new Regex(customStatistic.Regex, RegexOptions.IgnoreCase);
-
-            var result = statisticService.GetStatistic(messageService, o => chatAnalyzerService.TotalNumberOfRegex(regex, o), customStatistic.Name, filter);
+            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfCustom(id), filter);
 
             return result;
         }
@@ -138,13 +132,7 @@ namespace WappChatAnalyzer.Controllers
         [HttpGet("getStatisticTotal/custom/{id}")]
         public StatisticTotal GetCustomStatisticTotal(int id, [FromQuery] Filter filter)
         {
-            var customStatistic = customStatisticService.GetCustomStatistic(id);
-            var regex = new Regex(customStatistic.Regex, RegexOptions.IgnoreCase);
-
-            var messages = messageService.GetAllMessages().FilterDateRange(filter.FromDate, filter.ToDate).ToList();
-            var allSenders = messageService.GetAllSenders();
-
-            return GetStatisticTotal(messages, allSenders, m => chatAnalyzerService.TotalNumberOfRegex(regex, m));
+            return GetStatisticTotal(statisticFuncsService.TotalNumberOfCustom(id), filter.FromDate, filter.ToDate);
         }
 
         [HttpGet("getCustomStatistics")]
@@ -160,9 +148,11 @@ namespace WappChatAnalyzer.Controllers
         }
 
         [HttpPost("saveCustomStatistic")]
-        public CustomStatistic GetCustomStatistics([FromBody] CustomStatistic customStatistic)
+        public CustomStatistic SaveCustomStatistics([FromBody] CustomStatistic customStatistic)
         {
-            return customStatisticService.SaveCustomStatistic(customStatistic);
+            var result = customStatisticService.SaveCustomStatistic(customStatistic);
+            statisticCacheService.ClearCacheFor(result.Name);
+            return result;
         }
     }
 }

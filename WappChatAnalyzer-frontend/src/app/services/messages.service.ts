@@ -5,6 +5,7 @@ import { appConfig } from '../app.config';
 import { ImportHistory } from "../dtos/importHistory";
 import { Message } from "../dtos/message";
 import * as dateFormat from "dateformat";
+import { Sender } from "../dtos/sender";
 
 @Injectable({
     providedIn: 'root'
@@ -52,7 +53,7 @@ export class MessagesService {
         });
     }
 
-    public getAllSenders(): Observable<string[]> {
-        return <Observable<string[]>>this.http.get(appConfig.apiUrl + "messages/getAllSenders");
+    public getAllSenders(): Observable<Sender[]> {
+        return <Observable<Sender[]>>this.http.get(appConfig.apiUrl + "messages/getAllSenders");
     }
 }

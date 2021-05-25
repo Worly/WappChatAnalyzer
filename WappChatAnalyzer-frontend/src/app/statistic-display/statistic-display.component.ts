@@ -124,11 +124,11 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
 
   renderTotal(statistic: Statistic) {
     let dataPoints = [];
-    for (let sender in statistic.totalBySenders) {
+    for (let senderId in statistic.totalBySenders) {
       dataPoints.push({
-        name: sender,
-        y: statistic.totalBySenders[sender],
-        color: appConfig.colors[sender]
+        name: statistic.senders[senderId].name,
+        y: statistic.totalBySenders[senderId],
+        color: appConfig.colors[statistic.senders[senderId].name]
       });
     }
 
@@ -150,22 +150,22 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
 
   renderGraph(statistic: Statistic) {
     let data = [];
-    for (let sender in statistic.valuesBySendersOnTimePeriods) {
+    for (let senderId in statistic.valuesBySendersOnTimePeriods) {
       let dataSingle = {
         type: "stackedArea100",
         axisYType: "secondary",
-        name: sender,
-        color: appConfig.colors[sender],
+        name: statistic.senders[senderId].name,
+        color: appConfig.colors[statistic.senders[senderId].name],
         showInLegend: true,
         highlightEnabled: false,
         lineThickness: 0,
         markerType: "none",
         dataPoints: []
       };
-      for (let i = 0; i < statistic.valuesBySendersOnTimePeriods[sender].length; i++) {
+      for (let i = 0; i < statistic.valuesBySendersOnTimePeriods[senderId].length; i++) {
         dataSingle.dataPoints.push({
           x: new Date(statistic.timePeriods[i]),
-          y: statistic.valuesBySendersOnTimePeriods[sender][i]
+          y: statistic.valuesBySendersOnTimePeriods[senderId][i]
         });
       }
       data.push(dataSingle);

@@ -14,6 +14,7 @@ namespace WappChatAnalyzer.DTOs
     {
         public string EmojiCodePoints { get; set; }
         public int Total { get; set; }
-        public Dictionary<string, int> BySenders { get; set; }
+        public Dictionary<int, SenderDTO> Senders { get; set; }
+        public Dictionary<int, int> BySenders { get; set; }
     }
 }

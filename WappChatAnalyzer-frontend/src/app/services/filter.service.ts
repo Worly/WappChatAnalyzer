@@ -70,9 +70,7 @@ export class FilterService {
   }
 
   private saveHistory() {
-    console.log("saveHistory");
-    console.trace();
-    let a = {
+    this.dateAndGroupingHistory.push({
       dateLastDaysRange: this.dateLastDaysRange,
       datePeriodBackwardsIndex: this.datePeriodBackwardsIndex,
       datePeriodType: this.datePeriodType,
@@ -80,9 +78,7 @@ export class FilterService {
       dateRangeTo: this.dateRangeTo,
       dateRangeType: this.dateRangeType,
       groupingPeriod: this.groupingPeriod
-    };
-    console.log(a);
-    this.dateAndGroupingHistory.push(a);
+    });
   }
 
   public hasHistory(): boolean {
@@ -94,8 +90,6 @@ export class FilterService {
       return;
 
     let history = this.dateAndGroupingHistory.pop();
-
-    console.log(history);
 
     this.dateLastDaysRange = history.dateLastDaysRange;
     this.datePeriodBackwardsIndex = history.datePeriodBackwardsIndex;

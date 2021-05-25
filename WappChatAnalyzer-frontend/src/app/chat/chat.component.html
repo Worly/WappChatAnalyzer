@@ -42,7 +42,7 @@
     <div>
         <div class="sender-container">
             <span>Perspective: </span>&nbsp;
-            <app-dropdown [(value)]="me" [items]="senders"></app-dropdown>
+            <app-dropdown [(value)]="me" [items]="senders" [displayProperty]="'name'"></app-dropdown>
         </div>
         <div class="date-container">
             <div class="left button no-select"

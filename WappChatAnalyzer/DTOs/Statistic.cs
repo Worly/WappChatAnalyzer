@@ -11,10 +11,12 @@ namespace WappChatAnalyzer.DTOs
 
         public Filter Filter { get; set; }
 
+        public Dictionary<int, SenderDTO> Senders { get; set; }
+
         public T Total { get; set; }
-        public Dictionary<string, T> TotalBySenders { get; set; }
+        public Dictionary<int, T> TotalBySenders { get; set; }
 
         public List<DateTime> TimePeriods { get; set; }
-        public Dictionary<string, List<T>> ValuesBySendersOnTimePeriods { get; set; }
+        public Dictionary<int, List<T>> ValuesBySendersOnTimePeriods { get; set; }
     }
 }

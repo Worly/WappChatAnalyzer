@@ -16,10 +16,12 @@ namespace WappChatAnalyzer.Controllers
     public class MessagesController : ControllerBase
     {
         private IMessageService messageService;
+        private IStatisticCacheService statisticCacheService;
 
-        public MessagesController(IMessageService messageService)
+        public MessagesController(IMessageService messageService, IStatisticCacheService statisticCacheService)
         {
             this.messageService = messageService;
+            this.statisticCacheService = statisticCacheService;
         }
 
         [HttpPost("uploadChatExport")]
@@ -35,9 +37,13 @@ namespace WappChatAnalyzer.Controllers
                     lines.Add(reader.ReadLine());
             }
 
-            var messages = MessageUtils.ParseMessages(lines.ToArray());
+            var senders = messageService.GetAllSenders();
+            var messages = MessageUtils.ParseMessages(lines.ToArray(), senders);
 
-            return Ok(messageService.ImportMessages(messages));
+            int importedMessagesCount = messageService.ImportMessages(messages, out Message firstImportedMessage);
+            statisticCacheService.ClearCacheAfter(firstImportedMessage.NormalizedSentDate);
+
+            return Ok(importedMessagesCount);
         }
 
         [HttpGet("getImportHistory")]
@@ -65,7 +71,7 @@ namespace WappChatAnalyzer.Controllers
             return messageService.GetMessages(fromId, toId).Select(o => new MessageDTO()
             {
                 Id = o.Id,
-                Sender = o.Sender,
+                Sender = SenderDTO.From(o.Sender),
                 SentDateTime = o.SentDateTime,
                 Text = o.Text,
                 IsMedia = o.IsMedia
@@ -81,7 +87,7 @@ namespace WappChatAnalyzer.Controllers
             return new MessageDTO()
             {
                 Id = message.Id,
-                Sender = message.Sender,
+                Sender = SenderDTO.From(message.Sender),
                 IsMedia = message.IsMedia,
                 SentDateTime = message.SentDateTime,
                 Text = message.Text
@@ -97,7 +103,7 @@ namespace WappChatAnalyzer.Controllers
             return new MessageDTO()
             {
                 Id = message.Id,
-                Sender = message.Sender,
+                Sender = SenderDTO.From(message.Sender),
                 IsMedia = message.IsMedia,
                 SentDateTime = message.SentDateTime,
                 Text = message.Text
@@ -105,9 +111,9 @@ namespace WappChatAnalyzer.Controllers
         }
 
         [HttpGet("getAllSenders")]
-        public List<string> GetAllSenders()
+        public List<SenderDTO> GetAllSenders()
         {
-            return this.messageService.GetAllSenders();
+            return this.messageService.GetAllSenders().Select(o => SenderDTO.From(o)).ToList();
         }
     }
 }

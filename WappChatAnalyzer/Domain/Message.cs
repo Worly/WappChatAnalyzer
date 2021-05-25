@@ -22,17 +22,18 @@ namespace WappChatAnalyzer.Domain
         [Computed]
         [NotMapped]
         public DateTime NormalizedSentDate { get => SentDateTime.AddHours(NORMALIZED_HOURS).Date; }
-        public string Sender { get; set; }
+        public int SenderId { get; set; }
+        public Sender Sender { get; set; }
         public string Text { get; set; }
         public bool IsMedia { get; set; }
     }
 
     public static class MessageExtensions
     {
-        public static IQueryable<Message> Filter(this IQueryable<Message> messages, string fromSender = null, DateTime? onDate = null)
+        public static IQueryable<Message> Filter(this IQueryable<Message> messages, Sender fromSender = null, DateTime? onDate = null)
         {
             if (fromSender != null)
-                messages = messages.Where(o => o.Sender == fromSender);
+                messages = messages.Where(o => o.SenderId == fromSender.Id);
 
             if (onDate != null)
                 messages = messages.Where(o => o.NormalizedSentDate == onDate);
@@ -54,7 +55,7 @@ namespace WappChatAnalyzer.Domain
 
     public static class MessageUtils
     {
-        public static List<Message> ParseMessages(string[] lines)
+        public static List<Message> ParseMessages(string[] lines, List<Sender> senders)
         {
             var messages = new List<Message>();
 
@@ -64,10 +65,13 @@ namespace WappChatAnalyzer.Domain
             {
                 if (TryParseMessageStart(line, out DateTime sentDateTime, out string sender, out string message, out bool isMedia))
                 {
+                    var senderObj = senders.FirstOrDefault(o => o.Name == sender);
+                    if (senderObj == null)
+                        senders.Add(senderObj = new Sender() { Name = sender });
                     messages.Add(currentMessage = new Message()
                     {
                         SentDateTime = sentDateTime,
-                        Sender = sender,
+                        Sender = senderObj,
                         Text = message,
                         IsMedia = isMedia
                     });
