@@ -1,9 +1,14 @@
-<div *ngFor="let item of getItems() | keyvalue; index as i; first as isFirst; last as isLast" class="bar"
-    [ngClass]="{ 'bar-first': isFirst, 'bar-last': isLast }" [style.height]="height + 'px'"
-    [style.width]="item.value / total() * 100 + '%'" [style.background-color]="appConfig.colors[item.key]"
-    [style.color]="invertColor(appConfig.colors[item.key], true)">
-    <div class="bar-text-wrapper">
-        <div class="bar-text-inner"><b>{{item.key}}</b>:<br /> {{item.value | number}}
-            ({{(item.value / total() * 100) | number: "1.0-0"}}%)</div>
+<div class="my-wrapper" [style.height]="height + 'px'">
+    <div *ngFor="let item of getItems() | keyvalue; index as i; first as isFirst; last as isLast" class="bar"
+        [ngClass]="{ 'bar-first': isFirst, 'bar-last': isLast }" 
+        [style.width]="item.value / total() * 100 + '%'" [style.background-color]="appConfig.colors[item.key]"
+        [style.color]="invertColor(appConfig.colors[item.key], true)">
+        <div class="bar-text-wrapper">
+            <div class="bar-text-inner"><b>{{item.key}}</b>:<br /> {{item.value | number}}
+                ({{(item.value / total() * 100) | number: "1.0-0"}}%)</div>
+        </div>
+    </div>
+    <div class="middle-mark">
+
     </div>
 </div>
