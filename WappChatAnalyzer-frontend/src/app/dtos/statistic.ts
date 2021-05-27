@@ -12,4 +12,5 @@ export class Statistic {
 
     public timePeriods: string[];
     public valuesBySendersOnTimePeriods: { [Key: number]: number[]; };
+    public totalsOnTimePeriods: number[];
 }

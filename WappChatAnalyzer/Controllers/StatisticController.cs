@@ -74,7 +74,7 @@ namespace WappChatAnalyzer.Controllers
         }
 
         [HttpGet("getStatistic/numberOfMessages")]
-        public ActionResult<Statistic<int>> GetStatisticNumberOfMessages([FromQuery] Filter filter)
+        public ActionResult<Statistic> GetStatisticNumberOfMessages([FromQuery] Filter filter)
         {
             var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfMessages(), filter);
 
@@ -82,7 +82,7 @@ namespace WappChatAnalyzer.Controllers
         }
 
         [HttpGet("getStatistic/numberOfWords")]
-        public ActionResult<Statistic<int>> GetStatisticNumberOfWords([FromQuery] Filter filter)
+        public ActionResult<Statistic> GetStatisticNumberOfWords([FromQuery] Filter filter)
         {
             var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfWords(), filter);
 
@@ -90,7 +90,7 @@ namespace WappChatAnalyzer.Controllers
         }
 
         [HttpGet("getStatistic/numberOfCharacters")]
-        public ActionResult<Statistic<int>> GetStatisticNumberOfCharacters([FromQuery] Filter filter)
+        public ActionResult<Statistic> GetStatisticNumberOfCharacters([FromQuery] Filter filter)
         {
             var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfCharacters(), filter);
 
@@ -98,7 +98,7 @@ namespace WappChatAnalyzer.Controllers
         }
 
         [HttpGet("getStatistic/numberOfMedia")]
-        public ActionResult<Statistic<int>> GetStatisticNumberOfMedia([FromQuery] Filter filter)
+        public ActionResult<Statistic> GetStatisticNumberOfMedia([FromQuery] Filter filter)
         {
             var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfMedia(), filter);
 
@@ -106,7 +106,7 @@ namespace WappChatAnalyzer.Controllers
         }
 
         [HttpGet("getStatistic/numberOfEmojis")]
-        public ActionResult<Statistic<int>> GetStatisticNumberOfEmojis([FromQuery] Filter filter)
+        public ActionResult<Statistic> GetStatisticNumberOfEmojis([FromQuery] Filter filter)
         {
             var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfEmojis(), filter);
 
@@ -114,7 +114,7 @@ namespace WappChatAnalyzer.Controllers
         }
 
         [HttpGet("getStatistic/numberOfEmoji/{emojiCodePoints}")]
-        public Statistic<int> GetStatisticSingleEmoji(string emojiCodePoints, [FromQuery] Filter filter)
+        public Statistic GetStatisticSingleEmoji(string emojiCodePoints, [FromQuery] Filter filter)
         {
             var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfEmoji(emojiCodePoints), filter);
 
@@ -122,7 +122,7 @@ namespace WappChatAnalyzer.Controllers
         }
 
         [HttpGet("getStatistic/custom/{id}")]
-        public ActionResult<Statistic<int>> GetCustomStatistic(int id, [FromQuery] Filter filter)
+        public ActionResult<Statistic> GetCustomStatistic(int id, [FromQuery] Filter filter)
         {
             var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfCustom(id), filter);
 

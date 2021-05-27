@@ -4,8 +4,8 @@
     <div class="stickyTop">
         <div class="filters">
             <app-event-search></app-event-search>
-            <app-date-range-filter></app-date-range-filter>
             <app-event-group-filter></app-event-group-filter>
+            <app-date-range-filter></app-date-range-filter>
         </div>
 
         <div *ngIf="!addingNew" class="button-new" (click)="onNewClick()">＋ Add new</div>

@@ -24,12 +24,15 @@ export class DropdownComponent implements OnInit {
   @Input()
   displayProperty: string;
 
+  @Input()
+  displayFunction: (any) => string;
+
   pickerVisible: boolean = false;
 
   constructor(private elementRef: ElementRef) { }
 
   ngOnInit(): void {
-    
+
   }
 
   togglePicker() {
@@ -45,10 +48,12 @@ export class DropdownComponent implements OnInit {
   }
 
   display(item: any) {
-    if(this.displayProperty == null)
-      return item;
-    else
+    if (this.displayFunction != null)
+      return this.displayFunction(item);
+    else if (this.displayProperty != null)
       return item[this.displayProperty];
+    else
+      return item;
   }
 
   @HostListener('document:mousedown', ['$event'])

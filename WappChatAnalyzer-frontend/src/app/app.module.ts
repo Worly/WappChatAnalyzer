@@ -33,6 +33,7 @@ import { ChatComponent } from './chat/chat.component';
 import { InvokeDirective } from './invoke-directive/invoke.directive';
 import { StatisticDisplayCustomComponent } from './statistic-display-custom/statistic-display-custom.component';
 import { EventSearchComponent } from './event-search/event-search.component';
+import { PerPickerComponent } from './per-picker/per-picker.component';
 
 
 
@@ -61,7 +62,8 @@ import { EventSearchComponent } from './event-search/event-search.component';
     ImportComponent,
     ChatComponent,
     StatisticDisplayCustomComponent,
-    EventSearchComponent
+    EventSearchComponent,
+    PerPickerComponent
   ],
   imports: [
     BrowserModule,

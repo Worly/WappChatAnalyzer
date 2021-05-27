@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WappChatAnalyzer.DTOs
 {
-    public class Statistic<T>
+    public class Statistic
     {
         public string StatisticName { get; set; }
 
@@ -13,10 +13,11 @@ namespace WappChatAnalyzer.DTOs
 
         public Dictionary<int, SenderDTO> Senders { get; set; }
 
-        public T Total { get; set; }
-        public Dictionary<int, T> TotalBySenders { get; set; }
+        public float Total { get; set; }
+        public Dictionary<int, float> TotalBySenders { get; set; }
 
         public List<DateTime> TimePeriods { get; set; }
-        public Dictionary<int, List<T>> ValuesBySendersOnTimePeriods { get; set; }
+        public Dictionary<int, List<float>> ValuesBySendersOnTimePeriods { get; set; }
+        public List<float> TotalsOnTimePeriods { get; set; }
     }
 }

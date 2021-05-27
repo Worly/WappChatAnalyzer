@@ -82,7 +82,7 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
     this.subscriptions.push(this.filterService.subscribeToFilterChanged([FilterType.DATE_RANGE], () => {
       this.loadAndShowEvents();
     }));
-    this.subscriptions.push(this.filterService.subscribeToFilterChanged([FilterType.DATE_RANGE, FilterType.GROUPING_PERIOD], () => {
+    this.subscriptions.push(this.filterService.subscribeToFilterChanged([FilterType.DATE_RANGE, FilterType.GROUPING_PERIOD, FilterType.PER], () => {
       this.loadAndShowStatistic();
     }));
   }
@@ -210,13 +210,9 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
         });
       }
       else {
-        let total = 0;
-        for (let sender in statistic.valuesBySendersOnTimePeriods)
-          total += statistic.valuesBySendersOnTimePeriods[sender][index];
-
         dataSingle.dataPoints.push({
           x: date,
-          y: total
+          y: statistic.totalsOnTimePeriods[index]
         });
       }
     }
@@ -238,6 +234,7 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
       axisY: {
         labelFontFamily: "Raleway",
         labelFontSize: 16,
+        minimum: 0
       },
       axisX: {
         labelFontFamily: "Raleway",
@@ -294,7 +291,7 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
     var firstDate = this.chart.data[2].dataPoints[0].x;
     var lastDate = this.chart.data[2].dataPoints[this.chart.data[2].dataPoints.length - 1].x;
 
-    this.eventEmojiSize = 0.8 * (this.chart.axisX[0].convertValueToPixel(this.addPeriods(firstDate, 1, this.statistic.filter.groupingPeriod)) - this.chart.axisX[0].convertValueToPixel(firstDate));
+    this.eventEmojiSize = 0.7 * (this.chart.axisX[0].convertValueToPixel(this.addPeriods(firstDate, 1, this.statistic.filter.groupingPeriod)) - this.chart.axisX[0].convertValueToPixel(firstDate));
     if (this.eventEmojiSize < 18)
       this.eventEmojiSize = 18;
     if (this.eventEmojiSize > 40)
@@ -365,11 +362,12 @@ export class StatisticDisplayComponent implements OnInit, OnDestroy, AfterAttach
         continue;
 
       var percentage = (e.entries[i].dataPoint.y / total) * 100;
-      var str1 = "<span style= \"color:" + e.entries[i].dataSeries.color + "\"> " + e.entries[i].dataSeries.name + "</span>: <strong>" + e.entries[i].dataPoint.y.toLocaleString('en-US', { maximumFractionDigits: 2 }) + "</strong> (" + percentage.toFixed(0) + "%)<br/>";
+      var str1 = "<span style= \"color:" + e.entries[i].dataSeries.color + "\"> " + e.entries[i].dataSeries.name + "</span>: <strong>" + e.entries[i].dataPoint.y.toLocaleString('en-US', { maximumFractionDigits: 4 }) + "</strong> (" + percentage.toFixed(0) + "%)<br/>";
 
       str = str.concat(str1);
     }
-    str = str.concat("<span style= \"color: #FC7536\">Total</span>: <strong>" + total.toLocaleString('en-US', { maximumFractionDigits: 2 }) + "</strong><br/>");
+    let totalEntry = e.entries.find(o => o.dataSeries.name == "Total");
+    str = str.concat("<span style= \"color: #FC7536\">Total</span>: <strong>" + totalEntry.dataPoint.y.toLocaleString('en-US', { maximumFractionDigits: 4 }) + "</strong><br/>");
 
     let dateStr = "";
     if (this.statistic.filter.groupingPeriod == "week") {

@@ -26,6 +26,9 @@ export class FilterService {
 
   groupingPeriod: string = "date";
 
+  per: string = "none";
+  perReciprocal: boolean = false;
+
   private dateAndGroupingHistory: {
     dateRangeType: DateRangeType,
     dateLastDaysRange: number,
@@ -33,7 +36,9 @@ export class FilterService {
     datePeriodBackwardsIndex: number,
     dateRangeFrom: Date,
     dateRangeTo: Date,
-    groupingPeriod: string
+    groupingPeriod: string,
+    per: string,
+    perReciprocal: boolean
   }[] = [];
 
   private filterChangedSubscribers: { subscribedTo: FilterType[], callback: () => void }[] = [];
@@ -77,7 +82,9 @@ export class FilterService {
       dateRangeFrom: this.dateRangeFrom,
       dateRangeTo: this.dateRangeTo,
       dateRangeType: this.dateRangeType,
-      groupingPeriod: this.groupingPeriod
+      groupingPeriod: this.groupingPeriod,
+      per: this.per,
+      perReciprocal: this.perReciprocal
     });
   }
 
@@ -98,8 +105,10 @@ export class FilterService {
     this.dateRangeTo = history.dateRangeTo;
     this.dateRangeType = history.dateRangeType;
     this.groupingPeriod = history.groupingPeriod;
+    this.per = history.per;
+    this.perReciprocal = history.perReciprocal;
 
-    this.emitFilterChanged([FilterType.DATE_RANGE, FilterType.GROUPING_PERIOD]);
+    this.emitFilterChanged([FilterType.DATE_RANGE, FilterType.GROUPING_PERIOD, FilterType.PER]);
   }
 
   applyEventGroups(notSelected: number[]) {
@@ -139,6 +148,13 @@ export class FilterService {
     this.saveHistory();
     this.groupingPeriod = groupingPeriod;
     this.emitFilterChanged([FilterType.GROUPING_PERIOD]);
+  }
+
+  applyPer(per: string, perReciprocal: boolean) {
+    this.saveHistory();
+    this.per = per;
+    this.perReciprocal = perReciprocal;
+    this.emitFilterChanged([FilterType.PER]);
   }
 
   applyGroupingAndDatePeriodRange(groupingPeriod: string, datePeriodType: PeriodType, datePeriodBackwardsIndex: number) {
@@ -270,5 +286,6 @@ export enum PeriodType {
 
 export enum FilterType {
   DATE_RANGE,
-  GROUPING_PERIOD
+  GROUPING_PERIOD,
+  PER
 }

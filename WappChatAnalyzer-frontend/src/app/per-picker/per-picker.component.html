@@ -1,0 +1,16 @@
+<div class="my-wrapper">
+    <div *ngIf="!perReciprocal" class="per-button no-select" (click)="setReciprocal(true)">
+        Per:
+        <div class="arrow">
+            <i class="fas fa-arrow-right"></i>
+        </div>
+    </div>
+    <app-dropdown [items]="perItems" [value]="perObject" [displayFunction]="displayFunc.bind(this)" (valueChange)="onPerChanged($event)">
+    </app-dropdown>
+    <div *ngIf="perReciprocal" class="per-button no-select" (click)="setReciprocal(false)">
+        : per
+        <div class="arrow">
+            <i class="fas fa-arrow-left"></i>
+        </div>
+    </div>
+</div>
