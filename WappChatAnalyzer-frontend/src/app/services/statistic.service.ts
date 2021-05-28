@@ -26,9 +26,9 @@ export class StatisticService {
     if (fromToDates.to != null)
       params["toDate"] = dateFormat(fromToDates.to, format);
 
-    params["groupingPeriod"] = this.filterService.groupingPeriod;
-    params["per"] = this.filterService.per;
-    params["perReciprocal"] = this.filterService.perReciprocal;
+    params["groupingPeriod"] = this.filterService.statisticFilters.groupingPeriod;
+    params["per"] = this.filterService.statisticFilters.per;
+    params["perReciprocal"] = this.filterService.statisticFilters.perReciprocal;
 
     return params;
   }

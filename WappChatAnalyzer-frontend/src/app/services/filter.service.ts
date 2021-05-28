@@ -1,54 +1,99 @@
+import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Subject, Unsubscribable } from 'rxjs';
+import * as _ from "lodash";
+import * as dateFormat from "dateformat";
 
 @Injectable({
   providedIn: 'root'
 })
 export class FilterService {
 
-  eventGroupsNotSelected: number[] = [];
-  eventGroupsChanged: Subject<number[]> = new Subject<number[]>();
+  eventFilters: EventFilters = new EventFilters();
 
-  eventSearchTerm: string = "";
+  eventGroupsChanged: Subject<number[]> = new Subject<number[]>();
   eventSearchTermChanged: Subject<string> = new Subject<string>();
 
 
-  dateRangeType: DateRangeType = DateRangeType.LAST;
+  statisticFilters: StatisticFilters = new StatisticFilters();
 
-  dateLastDaysRange: number = 30;
-
-  datePeriodType: PeriodType = PeriodType.MONTH;
-  datePeriodBackwardsIndex: number = 0;
-
-  dateRangeFrom: Date;
-  dateRangeTo: Date;
-
-  groupingPeriod: string = "date";
-
-  per: string = "none";
-  perReciprocal: boolean = false;
-
-  private dateAndGroupingHistory: {
-    dateRangeType: DateRangeType,
-    dateLastDaysRange: number,
-    datePeriodType: PeriodType,
-    datePeriodBackwardsIndex: number,
-    dateRangeFrom: Date,
-    dateRangeTo: Date,
-    groupingPeriod: string,
-    per: string,
-    perReciprocal: boolean
-  }[] = [];
+  private statisticFiltersHistory: StatisticFilters[] = [];
 
   private filterChangedSubscribers: { subscribedTo: FilterType[], callback: () => void }[] = [];
 
-  constructor() {
-    this.dateRangeTo = new Date();
+  constructor(private location: Location, private router: Router, private activatedRoute: ActivatedRoute) {
+    this.getFiltersFromURLParams();
 
-    var today = new Date();
-    today.setDate(today.getDate() - 30);
-    this.dateRangeFrom = today;
+    router.events.subscribe(e => {
+      if (e instanceof NavigationEnd) {
+        this.applyFiltersToURLParams();
+      }
+    });
+  }
+
+  private dateOnlyJSONReplacer(key, value) {
+    if (value instanceof Date || (typeof value === "string" && !isNaN(Date.parse(value))))
+      return dateFormat(value, "yyyy-mm-dd");
+    else
+      return value;
+  }
+
+  private getOnlyDifferences<T>(old: T, newObj: T): object {
+    let result = {};
+
+    for (let key in old) {
+      if (!_.isEqualWith(old[key], newObj[key], (f, s) => {
+        if (f instanceof Date)
+          return dateFormat(f, "yyyy-mm-dd") == dateFormat(new Date(s), "yyyy-mm-dd");
+        return _.isEqual(f, s);
+      }))
+        result[key.toString()] = newObj[key];
+    }
+
+    return result;
+  }
+
+  private URLParamsToObject(): any {
+    let result = {};
+    for (let key of this.activatedRoute.snapshot.queryParamMap.keys)
+      result[key] = this.activatedRoute.snapshot.queryParamMap.get(key);
+    return result;
+  }
+
+  private applyFiltersToURLParams() {
+    let differencesForEventFilters = this.getOnlyDifferences(EventFilters.DEFAULT, this.eventFilters);
+    let differencesForStatisticFilters = this.getOnlyDifferences(StatisticFilters.DEFAULT, this.statisticFilters);
+
+    let url = this.router.createUrlTree([], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        ...this.URLParamsToObject(),
+        eventFilters: _.isEqual(differencesForEventFilters, {}) ? undefined : JSON.stringify(differencesForEventFilters, this.dateOnlyJSONReplacer),
+        statisticFilters: _.isEqual(differencesForStatisticFilters, {}) ? undefined : JSON.stringify(differencesForStatisticFilters, this.dateOnlyJSONReplacer)
+      }
+    }).toString();
+    this.location.replaceState(url);
+  }
+
+  private getFiltersFromURLParams() {
+    let params = this.URLParamsToObject();
+
+    if (params == null)
+      return;
+
+    if (params.eventFilters != null)
+      this.eventFilters = {
+        ...this.eventFilters,
+        ...JSON.parse(params.eventFilters)
+      };
+
+    if (params.statisticFilters != null)
+      this.statisticFilters = {
+        ...this.statisticFilters,
+        ...JSON.parse(params.statisticFilters)
+      };
   }
 
   subscribeToFilterChanged(filterTypes: FilterType[], callback: () => void): Unsubscribable {
@@ -75,99 +120,95 @@ export class FilterService {
   }
 
   private saveHistory() {
-    this.dateAndGroupingHistory.push({
-      dateLastDaysRange: this.dateLastDaysRange,
-      datePeriodBackwardsIndex: this.datePeriodBackwardsIndex,
-      datePeriodType: this.datePeriodType,
-      dateRangeFrom: this.dateRangeFrom,
-      dateRangeTo: this.dateRangeTo,
-      dateRangeType: this.dateRangeType,
-      groupingPeriod: this.groupingPeriod,
-      per: this.per,
-      perReciprocal: this.perReciprocal
-    });
+    this.statisticFiltersHistory.push({...this.statisticFilters});
   }
 
   public hasHistory(): boolean {
-    return this.dateAndGroupingHistory.length > 0;
+    return this.statisticFiltersHistory.length > 0;
   }
 
   public undoHistory() {
-    if (this.dateAndGroupingHistory.length == 0)
+    if (this.statisticFiltersHistory.length == 0)
       return;
 
-    let history = this.dateAndGroupingHistory.pop();
-
-    this.dateLastDaysRange = history.dateLastDaysRange;
-    this.datePeriodBackwardsIndex = history.datePeriodBackwardsIndex;
-    this.datePeriodType = history.datePeriodType;
-    this.dateRangeFrom = history.dateRangeFrom;
-    this.dateRangeTo = history.dateRangeTo;
-    this.dateRangeType = history.dateRangeType;
-    this.groupingPeriod = history.groupingPeriod;
-    this.per = history.per;
-    this.perReciprocal = history.perReciprocal;
+    this.statisticFilters = this.statisticFiltersHistory.pop();
+    
+    this.applyFiltersToURLParams();
 
     this.emitFilterChanged([FilterType.DATE_RANGE, FilterType.GROUPING_PERIOD, FilterType.PER]);
   }
 
   applyEventGroups(notSelected: number[]) {
-    this.eventGroupsNotSelected = notSelected;
+    this.eventFilters.eventGroupsNotSelected = notSelected;
+    this.applyFiltersToURLParams();
     this.eventGroupsChanged.next(notSelected);
   }
 
   applyEventSearchTerm(searchTerm: string) {
-    this.eventSearchTerm = searchTerm;
+    this.eventFilters.eventSearchTerm = searchTerm;
+    this.applyFiltersToURLParams();
     this.eventSearchTermChanged.next(searchTerm);
   }
 
   applyDateLastRange(dateLastDaysRange: number) {
     this.saveHistory();
-    this.dateRangeType = DateRangeType.LAST;
-    this.dateLastDaysRange = dateLastDaysRange;
+    this.statisticFilters.dateRangeType = DateRangeType.LAST;
+    this.statisticFilters.dateLastDaysRange = dateLastDaysRange;
+    this.applyFiltersToURLParams();
     this.emitFilterChanged([FilterType.DATE_RANGE]);
   }
 
   applyDatePeriodRange(datePeriodType: PeriodType, datePeriodBackwardsIndex: number) {
     this.saveHistory();
-    this.dateRangeType = DateRangeType.PERIOD;
-    this.datePeriodType = datePeriodType;
-    this.datePeriodBackwardsIndex = datePeriodBackwardsIndex;
+    this.statisticFilters.dateRangeType = DateRangeType.PERIOD;
+    this.statisticFilters.datePeriodType = datePeriodType;
+    this.statisticFilters.datePeriodBackwardsIndex = datePeriodBackwardsIndex;
+    this.applyFiltersToURLParams();
     this.emitFilterChanged([FilterType.DATE_RANGE]);
   }
 
   applyDateRange(dateFrom: Date, dateTo: Date) {
     this.saveHistory();
-    this.dateRangeType = DateRangeType.RANGE;
-    this.dateRangeFrom = dateFrom;
-    this.dateRangeTo = dateTo;
+    this.statisticFilters.dateRangeType = DateRangeType.RANGE;
+    this.statisticFilters.dateRangeFrom = dateFrom;
+    this.statisticFilters.dateRangeTo = dateTo;
+    this.applyFiltersToURLParams();
     this.emitFilterChanged([FilterType.DATE_RANGE]);
   }
 
   applyGroupingPeriod(groupingPeriod: string) {
     this.saveHistory();
-    this.groupingPeriod = groupingPeriod;
+    this.statisticFilters.groupingPeriod = groupingPeriod;
+    this.applyFiltersToURLParams();
     this.emitFilterChanged([FilterType.GROUPING_PERIOD]);
   }
 
   applyPer(per: string, perReciprocal: boolean) {
     this.saveHistory();
-    this.per = per;
-    this.perReciprocal = perReciprocal;
+    this.statisticFilters.per = per;
+    this.statisticFilters.perReciprocal = perReciprocal;
+    this.applyFiltersToURLParams();
     this.emitFilterChanged([FilterType.PER]);
   }
 
   applyGroupingAndDatePeriodRange(groupingPeriod: string, datePeriodType: PeriodType, datePeriodBackwardsIndex: number) {
     this.saveHistory();
-    this.groupingPeriod = groupingPeriod;
-    this.dateRangeType = DateRangeType.PERIOD;
-    this.datePeriodType = datePeriodType;
-    this.datePeriodBackwardsIndex = datePeriodBackwardsIndex;
+    this.statisticFilters.groupingPeriod = groupingPeriod;
+    this.statisticFilters.dateRangeType = DateRangeType.PERIOD;
+    this.statisticFilters.datePeriodType = datePeriodType;
+    this.statisticFilters.datePeriodBackwardsIndex = datePeriodBackwardsIndex;
+    this.applyFiltersToURLParams();
     this.emitFilterChanged([FilterType.DATE_RANGE, FilterType.GROUPING_PERIOD]);
   }
 
   getFromToDates() {
-    return this.getFromToDatesFor(this.dateRangeType, this.dateRangeFrom, this.dateRangeTo, this.dateLastDaysRange, this.datePeriodType, this.datePeriodBackwardsIndex);
+    return this.getFromToDatesFor(
+      this.statisticFilters.dateRangeType,
+      this.statisticFilters.dateRangeFrom,
+      this.statisticFilters.dateRangeTo,
+      this.statisticFilters.dateLastDaysRange,
+      this.statisticFilters.datePeriodType,
+      this.statisticFilters.datePeriodBackwardsIndex);
   }
 
   getFromToDatesFor(dateRangeType: DateRangeType, dateRangeFrom: Date, dateRangeTo: Date, dateLastDaysRange: number, datePeriodType: PeriodType, datePeriodBackwardsIndex: number): { from: Date, to: Date } {
@@ -288,4 +329,37 @@ export enum FilterType {
   DATE_RANGE,
   GROUPING_PERIOD,
   PER
+}
+
+export class EventFilters {
+  public eventGroupsNotSelected: number[] = [];
+  public eventSearchTerm: string = "";
+
+  public static DEFAULT: EventFilters = new EventFilters();
+}
+
+export class StatisticFilters {
+  public dateRangeType: DateRangeType = DateRangeType.LAST;
+
+  public dateLastDaysRange: number = 30;
+
+  public datePeriodType: PeriodType = PeriodType.MONTH;
+  public datePeriodBackwardsIndex: number = 0;
+
+  public dateRangeFrom: Date;
+  public dateRangeTo: Date = new Date();
+
+  public groupingPeriod: string = "date";
+
+  public per: string = "none";
+  public perReciprocal: boolean = false;
+
+  public static DEFAULT: StatisticFilters = new StatisticFilters();
+  public constructor() {
+    if (this.dateRangeFrom == null) {
+      var today = new Date();
+      today.setDate(today.getDate() - 30);
+      this.dateRangeFrom = today;
+    }
+  }
 }

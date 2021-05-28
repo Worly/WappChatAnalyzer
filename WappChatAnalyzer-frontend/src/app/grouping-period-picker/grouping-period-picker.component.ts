@@ -36,7 +36,7 @@ export class GroupingPeriodPickerComponent implements OnInit, OnDestroy {
   }
 
   private getValuesFromService() {
-    this.groupingPeriodObject = this.groupingPeriods.find(i => i.value == this.filterService.groupingPeriod);
+    this.groupingPeriodObject = this.groupingPeriods.find(i => i.value == this.filterService.statisticFilters.groupingPeriod);
   }
 
   onGroupingPeriodChanged(value: { value: string, display: string }) {

@@ -86,12 +86,12 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
   }
 
   private getValuesFromService() {
-    this.dateRangeTypeObject = this.dateRangeTypeItems.find(i => i.value == this.filterService.dateRangeType);
-    this.dateLastDaysRange = this.filterService.dateLastDaysRange;
-    this.datePeriodType = this.filterService.datePeriodType;
-    this.datePeriodBackwardsIndex = this.filterService.datePeriodBackwardsIndex;
-    this.dateRangeFrom = this.filterService.dateRangeFrom;
-    this.dateRangeTo = this.filterService.dateRangeTo;
+    this.dateRangeTypeObject = this.dateRangeTypeItems.find(i => i.value == this.filterService.statisticFilters.dateRangeType);
+    this.dateLastDaysRange = this.filterService.statisticFilters.dateLastDaysRange;
+    this.datePeriodType = this.filterService.statisticFilters.datePeriodType;
+    this.datePeriodBackwardsIndex = this.filterService.statisticFilters.datePeriodBackwardsIndex;
+    this.dateRangeFrom = this.filterService.statisticFilters.dateRangeFrom;
+    this.dateRangeTo = this.filterService.statisticFilters.dateRangeTo;
   }
 
   onDateRangeTypeChanged(value: { name: string, value: DateRangeType }) {

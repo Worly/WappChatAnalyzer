@@ -17,7 +17,7 @@ export class EventSearchComponent implements OnInit, OnDestroy {
   constructor(private filterService: FilterService) { }
 
   ngOnInit(): void {
-    this.searchTerm = this.filterService.eventSearchTerm;
+    this.searchTerm = this.filterService.eventFilters.eventSearchTerm;
     this.subscriptions.push(this.filterService.eventSearchTermChanged.subscribe(searchTerm => {
       this.searchTerm = searchTerm;
     }));

@@ -36,8 +36,8 @@ export class PerPickerComponent implements OnInit {
   }
 
   private getValuesFromService() {
-    this.perObject = this.perItems.find(i => i.value == this.filterService.per);
-    this.perReciprocal = this.filterService.perReciprocal;
+    this.perObject = this.perItems.find(i => i.value == this.filterService.statisticFilters.per);
+    this.perReciprocal = this.filterService.statisticFilters.perReciprocal;
   }
 
   onPerChanged(value: { value: string, display: string }) {
