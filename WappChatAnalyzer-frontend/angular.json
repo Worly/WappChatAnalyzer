@@ -71,7 +71,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "WappChatAnalyzer-frontend:build"
+            "browserTarget": "WappChatAnalyzer-frontend:build",
+            "port": 1414
           },
           "configurations": {
             "production": {
