@@ -48,7 +48,12 @@ export class EventEditComponent implements OnInit {
   ngOnInit(): void {
     if (this.isNew) {
       var e = new Event();
-      e.date = dateFormat("yyyy-mm-dd");
+
+      let date = new Date();
+      date.setDate(date.getDate() - 1);
+
+      e.date = dateFormat(date, "yyyy-mm-dd");
+      
       this.loadedEvent(e);
     }
 
