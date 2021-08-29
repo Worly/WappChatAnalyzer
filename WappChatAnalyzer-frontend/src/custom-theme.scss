@@ -9,10 +9,30 @@
 // Be sure that you only ever include this mixin once!
 @include mat-core();
 
+$mat-my: (
+  500: #16b9c5,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $light-primary-text,
+    400: $light-primary-text,
+    500: $light-primary-text,
+    600: $light-primary-text,
+    700: $light-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text,
+    A100: $dark-primary-text,
+    A200: $light-primary-text,
+    A400: $light-primary-text,
+    A700: $light-primary-text,
+  )
+);
+
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$WappChatAnalyzer-frontend-primary: mat-palette($mat-indigo);
+$WappChatAnalyzer-frontend-primary: mat-palette($mat-my);
 $WappChatAnalyzer-frontend-accent: mat-palette($mat-pink, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
