@@ -52,10 +52,12 @@
                     <i class="fas fa-angle-left"></i>
                 </div>
             </div>
-            <div class="date button no-select date-input" [dpDayPicker]="dateConfig" theme="dp-material"
-                (onSelect)="onDateSelected($event)">
+            <div class="date button no-select date-input" (click)="datePicker.open()">
                 {{getCurrentDate() | date: 'dd/MM/yyyy'}}
             </div>
+            <input [matDatepicker]="datePicker" [ngModel]="getCurrentDate()" (ngModelChange)="onDateSelected($event)"
+                style="height: 0px; visibility: hidden; position: absolute; bottom: 0px; left: 50px">
+            <mat-datepicker #datePicker></mat-datepicker>
             <div class="right button no-select"
                 [ngClass]="{'disabled': getFirstVisibleMessage() == null || suspendIncreaseDecreaseDate}"
                 (click)="increaseDate()">

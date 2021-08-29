@@ -23,22 +23,31 @@
                     </div>
                 </div>
             </div>
+            <input [matDatepicker]="periodPicker" (dateChange)="onPeriodEdit($event)"
+                style="height: 0px; width: 0px; visibility: hidden; position: absolute; left: 0px; bottom: 0px; transform: translateY(2px);">
+            <mat-datepicker #periodPicker></mat-datepicker>
         </div>
         <div class="right button no-select" (click)="onPeriodIncreaseIndex()"><i class="fas fa-angle-right"></i></div>
-        <div class="editPeriod no-select" [dpDayPicker]="dateConfig" theme="dp-material"
-            (onSelect)="onPeriodEdit($event)">
+        <div class="editPeriod no-select" (click)="periodPicker.open()">
             <i class="fas fa-pencil-alt"></i>
         </div>
     </div>
     <div *ngIf="dateRangeType == dateRangeTypes.RANGE" class="type-range">
-        <div class="date-input" [dpDayPicker]="dateConfig" theme="dp-material" (onSelect)="onFromDateSelected($event)">
+        <div class="date-input" (click)="fromDatePicker.open()">
             {{dateRangeFrom | date: 'dd/MM/yyyy'}}
+            <input [matDatepicker]="fromDatePicker" [ngModel]="dateRangeFrom"
+                (ngModelChange)="onFromDateSelected($event)"
+                style="height: 0px; width: 0px; visibility: hidden; position: absolute; bottom: 0px; left: 0px; transform: translateY(2px);">
         </div>
+        <mat-datepicker #fromDatePicker></mat-datepicker>
         <div class="to">
             to
         </div>
-        <div class="date-input" [dpDayPicker]="dateConfig" theme="dp-material" (onSelect)="onToDateSelected($event)">
+        <div class="date-input" (click)="toDatePicker.open()">
             {{dateRangeTo | date: 'dd/MM/yyyy'}}
+            <input [matDatepicker]="toDatePicker" [ngModel]="dateRangeTo" (ngModelChange)="onToDateSelected($event)"
+                style="height: 0px; width: 0px; visibility: hidden; position: absolute; bottom: 0px; left: 0px; transform: translateY(2px);">
         </div>
+        <mat-datepicker #toDatePicker></mat-datepicker>
     </div>
 </div>

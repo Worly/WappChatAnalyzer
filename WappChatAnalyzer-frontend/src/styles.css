@@ -1,8 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
 * {
-  font-family: 'Raleway', sans-serif !important;
+  font-family: "Raleway", sans-serif !important;
+  line-height: 1.5;
 }
 
 .no-select {
@@ -21,8 +22,10 @@
                                     supported by Chrome, Edge, Opera and Firefox */
 }
 
-.emoji-picker__emoji, .emoji-picker__preview-emoji {
-  font-family: "Segoe UI Emoji", "Segoe UI Symbol", "Segoe UI", "Apple Color Emoji", "Twemoji Mozilla", "Noto Color Emoji", "EmojiOne Color", "Android Emoji" !important;
+.emoji-picker__emoji,
+.emoji-picker__preview-emoji {
+  font-family: "Segoe UI Emoji", "Segoe UI Symbol", "Segoe UI", "Apple Color Emoji", "Twemoji Mozilla",
+    "Noto Color Emoji", "EmojiOne Color", "Android Emoji" !important;
 }
 
 .emoji-picker__wrapper {
@@ -80,17 +83,36 @@ dp-calendar-nav.dp-material .dp-calendar-nav-container {
 }
 
 dp-day-calendar.dp-material .dp-selected {
-  background-color: #16BAC5 !important;
+  background-color: #16bac5 !important;
 }
 
 dp-day-calendar.dp-material .dp-current-day {
-  border-color: #16BAC5 !important;
+  border-color: #16bac5 !important;
 }
 
 dp-month-calendar.dp-material .dp-current-month {
-  border-color: #16BAC5 !important;
+  border-color: #16bac5 !important;
 }
 
 dp-date-picker {
   display: inline !important;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.mat-button .mat-button-wrapper > *,
+.mat-flat-button .mat-button-wrapper > *,
+.mat-stroked-button .mat-button-wrapper > *,
+.mat-raised-button .mat-button-wrapper > *,
+.mat-icon-button .mat-button-wrapper > *,
+.mat-fab .mat-button-wrapper > *,
+.mat-mini-fab .mat-button-wrapper > *,
+.mat-calendar-body-cell-content {
+  font-size: 1.1rem;
 }

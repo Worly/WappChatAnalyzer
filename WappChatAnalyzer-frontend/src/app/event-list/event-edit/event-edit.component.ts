@@ -85,14 +85,6 @@ export class EventEditComponent implements OnInit {
     this.emojiButton.togglePicker(event.srcElement);
   }
 
-  onDateSelected(event) {
-    var format = "yyyy-mm-dd";
-    var date = dateFormat(event.date, format);
-
-    this.event.date = date;
-    this.onPropertyChange("date", date);
-  }
-
   onSaveClick() {
     if (!this.isDirty)
       return;

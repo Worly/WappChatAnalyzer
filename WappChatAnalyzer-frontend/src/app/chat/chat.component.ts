@@ -255,7 +255,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
       return;
 
     this.suspendIncreaseDecreaseDate = true;
-    this.messagesService.getFirstMessageOfDayAfter(event.date.toDate()).subscribe((msg: Message) => {
+    this.messagesService.getFirstMessageOfDayAfter(event).subscribe((msg: Message) => {
       this.suspendIncreaseDecreaseDate = false;
       if (msg == null)
         return;

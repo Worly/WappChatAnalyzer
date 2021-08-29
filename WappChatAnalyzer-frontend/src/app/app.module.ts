@@ -19,7 +19,6 @@ import { ToastComponent } from './toast/toast.component';
 import { EventListComponent } from './event-list/event-list.component';
 import { OrderModule } from 'ngx-order-pipe';
 import { EventEditComponent } from './event-list/event-edit/event-edit.component';
-import { DpDatePickerModule } from 'ng2-date-picker';
 import { EventGroupPickerComponent } from './event-list/event-group-picker/event-group-picker.component';
 import { EventGroupFilterComponent } from './event-group-filter/event-group-filter.component';
 import { DateRangeFilterComponent } from './date-range-filter/date-range-filter.component';
@@ -34,6 +33,10 @@ import { InvokeDirective } from './invoke-directive/invoke.directive';
 import { StatisticDisplayCustomComponent } from './statistic-display-custom/statistic-display-custom.component';
 import { EventSearchComponent } from './event-search/event-search.component';
 import { PerPickerComponent } from './per-picker/per-picker.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
+import { CustomDateAdapter } from './services/custom-date-adapter';
 
 
 
@@ -71,7 +74,9 @@ import { PerPickerComponent } from './per-picker/per-picker.component';
     FormsModule,
     HttpClientModule,
     OrderModule,
-    DpDatePickerModule
+    NoopAnimationsModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
@@ -81,7 +86,8 @@ import { PerPickerComponent } from './per-picker/per-picker.component';
           return () => new AttachDetachHooksService(router, reuseStrategy);
         },
       deps: [Router, RouteReuseStrategy], multi: true
-    }
+    },
+    { provide: DateAdapter, useClass: CustomDateAdapter }
   ],
   bootstrap: [AppComponent]
 })

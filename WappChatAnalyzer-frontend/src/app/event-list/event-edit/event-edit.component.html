@@ -19,9 +19,12 @@
         </div>
     </div>
     <div class="eventDate">
-        <div [dpDayPicker]="dayPickerConfig" theme="dp-material" (onSelect)="onDateSelected($event)">
+        <div (click)="datePicker.open()">
             {{event.date | date: 'dd/MM/yyyy'}}
         </div>
+        <input [matDatepicker]="datePicker" [(ngModel)]="event.date" (ngModelChange)="onPropertyChange('date', $event)"
+            style="height: 0px; visibility: hidden; position: absolute;">
+        <mat-datepicker #datePicker></mat-datepicker>
     </div>
 </div>
 <hr />

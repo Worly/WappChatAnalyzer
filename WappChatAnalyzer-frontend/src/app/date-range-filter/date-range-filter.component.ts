@@ -123,8 +123,8 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
   }
 
   onPeriodEdit(event) {
-    let date = event.date.toDate();
-
+    console.log(event);
+    let date = event.value;
     this.datePeriodBackwardsIndex = FilterService.getBackwardsIndexForDate(date, this.datePeriodType);
 
     this.startApplyTimeout(0);
@@ -165,12 +165,12 @@ export class DateRangeFilterComponent implements OnInit, OnDestroy {
   }
 
   onFromDateSelected(event) {
-    this.dateRangeFrom = event.date.toDate();
+    this.dateRangeFrom = event;
     this.startApplyTimeout(800);
   }
 
   onToDateSelected(event) {
-    this.dateRangeTo = event.date.toDate();
+    this.dateRangeTo = event;
     this.startApplyTimeout(800);
   }
 
