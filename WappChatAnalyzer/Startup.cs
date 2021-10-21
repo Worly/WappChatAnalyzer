@@ -14,6 +14,7 @@ using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using System.Threading.Tasks;
 using WappChatAnalyzer.Services;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 
 namespace WappChatAnalyzer
 {
@@ -42,6 +43,11 @@ namespace WappChatAnalyzer
             services.AddScoped<ICustomStatisticService, CustomStatisticService>();
 
             services.AddControllers();
+
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "WappChatAnalyzer-frontend/build";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,6 +59,8 @@ namespace WappChatAnalyzer
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
 
             app.UseRouting();
 
@@ -68,6 +76,16 @@ namespace WappChatAnalyzer
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "WappChatAnalyzer-frontend";
+
+                if(env.IsDevelopment())
+                {
+                    spa.UseAngularCliServer(npmScript: "start");
+                }
             });
         }
     }
