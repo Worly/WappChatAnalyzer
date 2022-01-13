@@ -66,7 +66,7 @@ namespace WappChatAnalyzer.Services
 
                 statistic.Total = calculatePer(statistic.Total, perStatistic.Total);
 
-                foreach (var senderId in statistic.TotalBySenders.Keys)
+                foreach (var senderId in statistic.TotalBySenders.Keys.ToList())
                 {
                     if (perStatistic.TotalBySenders.TryGetValue(senderId, out float value))
                         statistic.TotalBySenders[senderId] = calculatePer(statistic.TotalBySenders[senderId], value);
