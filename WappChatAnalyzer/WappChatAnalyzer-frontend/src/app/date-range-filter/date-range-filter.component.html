@@ -9,6 +9,7 @@
         <div [ngClass]="{selected: dateLastDaysRange == 12 * 7}" (click)="onDaysRangeSelected(12 * 7)">12W</div>
         <div [ngClass]="{selected: dateLastDaysRange == 364 / 2}" (click)="onDaysRangeSelected(364 / 2)">6M</div>
         <div [ngClass]="{selected: dateLastDaysRange == 365}" (click)="onDaysRangeSelected(365)">1Y</div>
+        <div [ngClass]="{selected: dateLastDaysRange == -1}" (click)="onDaysRangeSelected(-1)">All</div>
     </div>
     <div *ngIf="dateRangeType == dateRangeTypes.PERIOD" class="type-period">
         <div class="left button no-select" (click)="onPeriodDecreaseIndex()"><i class="fas fa-angle-left"></i></div>

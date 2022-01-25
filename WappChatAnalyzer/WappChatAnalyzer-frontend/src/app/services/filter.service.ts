@@ -222,7 +222,7 @@ export class FilterService {
       var today = new Date();
       today.setDate(today.getDate() - dateLastDaysRange + 1);
       return {
-        from: today,
+        from: dateLastDaysRange == -1 ? null : today,
         to: new Date()
       };
     }
