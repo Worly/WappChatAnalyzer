@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ChatComponent } from './chat/chat.component';
-import { EventListComponent } from './event-list/event-list.component';
-import { HomeComponent } from './home/home.component';
-import { ImportComponent } from './import/import.component';
-import { StatisticDisplayCustomComponent } from './statistic-display-custom/statistic-display-custom.component';
-import { StatisticDisplayEmojisComponent } from './statistic-display-emojis/statistic-display-emojis.component';
-import { StatisticDisplaySingleEmojiComponent } from './statistic-display-single-emoji/statistic-display-single-emoji.component';
-import { StatisticDisplayComponent } from './statistic-display/statistic-display.component';
+import { ChatComponent } from './pages/chat/chat.component';
+import { EventListComponent } from './pages/event-list/event-list.component';
+import { HomeComponent } from './pages/home/home.component';
+import { ImportComponent } from './pages/import/import.component';
+import { StatisticDisplayCustomComponent } from './pages/statistic-display-custom/statistic-display-custom.component';
+import { StatisticDisplayEmojisComponent } from './pages/statistic-display-emojis/statistic-display-emojis.component';
+import { StatisticDisplaySingleEmojiComponent } from './pages/statistic-display-single-emoji/statistic-display-single-emoji.component';
+import { StatisticDisplayComponent } from './pages/statistic-display/statistic-display.component';
 
 const routes: Routes = [
   { path: "home", component: HomeComponent },
