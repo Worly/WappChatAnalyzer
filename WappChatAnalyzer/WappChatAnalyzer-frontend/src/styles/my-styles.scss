@@ -1,5 +1,8 @@
 * {
-    --card-background-color: #FEE9E1;
+    --card-background-color: #fee9e1;
+
+    --input-background-color: white;
+    --input-border-color: rgb(179, 179, 179);
 }
 
 .w-card {
@@ -9,7 +12,7 @@
     border-radius: 8px;
 }
 
-.w-overlay {
+.w-overlay, .w-overlay-dark {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -20,11 +23,30 @@
     &:hover {
         background-color: rgba(255, 255, 255, 0.2);
     }
+
+    &-dark:hover{
+        background-color: rgba(0, 0, 0, 0.1);
+    }
 }
 
 .w-clickable {
     cursor: pointer;
     & .w-overlay:active {
         background-color: rgba(0, 0, 0, 0.1);
+    }
+    & .w-overlay-dark:active {
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+}
+
+.w-input {
+    font-size: 1.3rem;
+    background-color: var(--input-background-color);
+    padding: 6px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--input-border-color);
+
+    &:focus {
+        outline: none;
     }
 }
