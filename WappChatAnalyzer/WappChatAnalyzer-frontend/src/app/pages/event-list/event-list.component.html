@@ -10,7 +10,7 @@
 
         <div *ngIf="!addingNew" class="button-new" (click)="onNewClick()">＋ Add new</div>
 
-        <div *ngIf="addingNew" class="item-wrapper">
+        <div *ngIf="addingNew" class="w-card item-wrapper">
             <div class="item">
                 <app-event-edit style="width: 100%;" [isNew]="true" (onDone)="onNewDone($event)"></app-event-edit>
             </div>
