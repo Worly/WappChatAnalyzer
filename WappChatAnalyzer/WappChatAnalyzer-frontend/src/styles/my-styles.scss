@@ -3,6 +3,8 @@
 
     --input-background-color: white;
     --input-border-color: rgb(179, 179, 179);
+
+    --focus-outline-color: rgb(104, 104, 104);
 }
 
 .w-card {
@@ -12,7 +14,8 @@
     border-radius: 8px;
 }
 
-.w-overlay, .w-overlay-dark {
+.w-overlay,
+.w-overlay-dark {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -24,7 +27,7 @@
         background-color: rgba(255, 255, 255, 0.2);
     }
 
-    &-dark:hover{
+    &-dark:hover {
         background-color: rgba(0, 0, 0, 0.1);
     }
 }
@@ -47,6 +50,63 @@
     border: 1px solid var(--input-border-color);
 
     &:focus {
-        outline: none;
+        outline: 1px solid var(--focus-outline-color);
+    }
+}
+
+.w-button {
+    font-size: 1.4rem;
+    display: inline-block;
+    position: relative;
+    background-color: transparent;
+    border: none;
+    border-radius: 8px;
+    padding: 3px 15px;
+    margin-right: 15px;
+    outline: none;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    
+    color: black;
+    background-color: white;
+
+    &:focus {
+        outline: 2px solid var(--focus-outline-color);
+    }
+
+    &.w-danger {
+        color: white;
+        background-color: #D05353;
+    }
+
+    &.w-success {
+        color: white;
+        background-color: rgb(90, 172, 90);
+    }
+
+    &.disabled {
+        background-color: rgb(155, 161, 155);
+        cursor: default;
+    }
+    &:not(.disabled) {
+        &::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+        }
+        &:hover::before {
+            background-color: white;
+            opacity: 0.2;
+        }
+        &:active::before {
+            background-color: black;
+            opacity: 0.2;
+        }
     }
 }
