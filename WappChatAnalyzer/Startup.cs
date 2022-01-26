@@ -82,7 +82,7 @@ namespace WappChatAnalyzer
             {
                 spa.Options.SourcePath = "WappChatAnalyzer-frontend";
 
-                if(env.IsDevelopment())
+                if(env.IsDevelopment() && Environment.GetEnvironmentVariable("NO_FRONTEND") != "true")
                 {
                     spa.UseAngularCliServer(npmScript: "start");
                 }
