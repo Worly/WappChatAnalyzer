@@ -1,8 +1,8 @@
-<div class="wrapper" (click)="onClick()">
+<div class="w-card w-clickable" (click)="onClick()">
     <div class="name"><b>{{displayName}}</b>: {{statisticTotal != null ? (statisticTotal.total | number) : ""}}</div>
     <div>
         <app-ratio-bar *ngIf="statisticTotal != null" [items]="getForRatioBar()" [height]="70"></app-ratio-bar>
         <div *ngIf="statisticTotal == null" class="loading">Loading...</div>
     </div>
-    <div class="overlay"></div>
+    <div class="w-overlay"></div>
 </div>

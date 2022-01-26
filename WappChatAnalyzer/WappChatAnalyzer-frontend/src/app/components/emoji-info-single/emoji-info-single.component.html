@@ -1,4 +1,4 @@
-<div class="wrapper">
+<div class="w-card w-clickable" [style.margin-bottom]="'10px'" (click)="onClick()">
     <div class="my-container">
         <div class="emoji-container">
             <app-emoji style="margin:auto" [codePoints]="_emojiInfo.emojiCodePoints"></app-emoji>
@@ -10,5 +10,5 @@
             <app-ratio-bar [items]="getForRatioBar()" [height]="60"></app-ratio-bar>
         </div>
     </div>
-    <div class="overlay" (click)="onClick()"></div>
+    <div class="w-overlay"></div>
 </div>

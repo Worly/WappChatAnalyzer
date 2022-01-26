@@ -61,10 +61,7 @@
 }
 
 .item-wrapper {
-    position: relative;
     min-height: 90px;
-    background-color: #FEE9E1;
-    border-radius: 8px;
     margin-bottom: 10px;
     padding: 15px;
     font-size: 1.4rem;
@@ -100,24 +97,6 @@
 
 .eventDate {
     color: rgb(146, 146, 146);
-}
-
-.overlay {
-    cursor: pointer;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    border-radius: 8px;
-}
-
-.overlay:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-.overlay:active {
-    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .button-new {
