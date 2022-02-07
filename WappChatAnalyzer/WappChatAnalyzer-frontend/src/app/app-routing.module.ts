@@ -10,21 +10,86 @@ import { StatisticDisplayCustomComponent } from './pages/statistic-display-custo
 import { StatisticDisplayEmojisComponent } from './pages/statistic-display-emojis/statistic-display-emojis.component';
 import { StatisticDisplaySingleEmojiComponent } from './pages/statistic-display-single-emoji/statistic-display-single-emoji.component';
 import { StatisticDisplayComponent } from './pages/statistic-display/statistic-display.component';
+import { LoggedInGuard, NotLoggedInGuard } from './services/auth/auth.guard';
 
 const routes: Routes = [
-  { path: "login", component: LoginComponent },
-  { path: "register", component: RegisterComponent },
-  { path: "home", component: HomeComponent },
-  { path: "statistic-display/emoji/:codePoints", component: StatisticDisplaySingleEmojiComponent },
-  { path: "statistic-display/messages", component: StatisticDisplayComponent, data: { statisticUrl: "statistic/getStatistic/numberOfMessages", displayName: "Number of messages" } },
-  { path: "statistic-display/words", component: StatisticDisplayComponent, data: { statisticUrl: "statistic/getStatistic/numberOfWords", displayName: "Number of words" } },
-  { path: "statistic-display/characters", component: StatisticDisplayComponent, data: { statisticUrl: "statistic/getStatistic/numberOfCharacters", displayName: "Number of characters" } },
-  { path: "statistic-display/media", component: StatisticDisplayComponent, data: { statisticUrl: "statistic/getStatistic/numberOfMedia", displayName: "Number of media" } },
-  { path: "statistic-display/emojis", component: StatisticDisplayEmojisComponent, data: { shouldDetach: true } },
-  { path: "statistic-display/custom/:id", component: StatisticDisplayCustomComponent },
-  { path: "events", component: EventListComponent },
-  { path: "import", component: ImportComponent },
-  { path: "chat", component: ChatComponent },
+  { path: "login", component: LoginComponent, canActivate: [NotLoggedInGuard] },
+  { path: "register", component: RegisterComponent, canActivate: [NotLoggedInGuard] },
+
+  {
+    path: "home",
+    component: HomeComponent,
+    canActivate: [LoggedInGuard]
+  },
+  {
+    path: "statistic-display/emoji/:codePoints",
+    component: StatisticDisplaySingleEmojiComponent,
+    canActivate: [LoggedInGuard]
+  },
+  {
+    path: "statistic-display/messages",
+    component: StatisticDisplayComponent,
+    canActivate: [LoggedInGuard],
+    data: {
+      statisticUrl: "statistic/getStatistic/numberOfMessages",
+      displayName: "Number of messages"
+    }
+  },
+  {
+    path: "statistic-display/words",
+    component: StatisticDisplayComponent,
+    canActivate: [LoggedInGuard],
+    data: {
+      statisticUrl: "statistic/getStatistic/numberOfWords",
+      displayName: "Number of words"
+    }
+  },
+  {
+    path: "statistic-display/characters",
+    component: StatisticDisplayComponent,
+    canActivate: [LoggedInGuard],
+    data: {
+      statisticUrl: "statistic/getStatistic/numberOfCharacters",
+      displayName: "Number of characters"
+    }
+  },
+  {
+    path: "statistic-display/media",
+    component: StatisticDisplayComponent,
+    canActivate: [LoggedInGuard],
+    data: {
+      statisticUrl: "statistic/getStatistic/numberOfMedia",
+      displayName: "Number of media"
+    }
+  },
+  {
+    path: "statistic-display/emojis",
+    component: StatisticDisplayEmojisComponent,
+    canActivate: [LoggedInGuard],
+    data: {
+      shouldDetach: true
+    }
+  },
+  {
+    path: "statistic-display/custom/:id",
+    component: StatisticDisplayCustomComponent,
+    canActivate: [LoggedInGuard]
+  },
+  {
+    path: "events",
+    component: EventListComponent,
+    canActivate: [LoggedInGuard]
+  },
+  {
+    path: "import",
+    component: ImportComponent,
+    canActivate: [LoggedInGuard]
+  },
+  {
+    path: "chat",
+    component: ChatComponent,
+    canActivate: [LoggedInGuard]
+  },
   { path: "**", redirectTo: "/home" }
 ];
 

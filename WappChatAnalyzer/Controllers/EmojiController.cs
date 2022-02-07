@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using WappChatAnalyzer.Auth;
 using WappChatAnalyzer.Domain;
 using WappChatAnalyzer.DTOs;
 using WappChatAnalyzer.Services;
@@ -16,6 +14,7 @@ namespace WappChatAnalyzer.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class EmojiController : ControllerBase
     {
         private IEmojiService emojiService;

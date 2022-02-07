@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using WappChatAnalyzer.Auth;
 using WappChatAnalyzer.Domain;
 using WappChatAnalyzer.DTOs;
 using WappChatAnalyzer.Services;
@@ -14,6 +11,7 @@ namespace WappChatAnalyzer.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class StatisticController : ControllerBase
     {
         private IMessageService messageService;

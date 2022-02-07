@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using WappChatAnalyzer.Auth;
 using WappChatAnalyzer.Domain;
 using WappChatAnalyzer.DTOs;
 using WappChatAnalyzer.Services;
@@ -13,6 +13,7 @@ namespace WappChatAnalyzer.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class MessagesController : ControllerBase
     {
         private IMessageService messageService;

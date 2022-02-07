@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 import { appConfig } from "src/app/app.config";
+import jwt_decode from "jwt-decode";
 
 @Injectable({ providedIn: "root" })
 export class AuthService {
@@ -51,5 +52,13 @@ export class AuthService {
         this.token = null;
         localStorage.removeItem(this.TOKEN_KEY);
         this.router.navigate(["login"]);
+    }
+
+    public getUsername(): string {
+        if (!this.isLoggedIn())
+            return null;
+
+        var decoded = <any>jwt_decode(this.token);
+        return decoded.username;
     }
 }

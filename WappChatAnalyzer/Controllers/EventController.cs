@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using WappChatAnalyzer.Auth;
 using WappChatAnalyzer.DTOs;
 using WappChatAnalyzer.Services;
 
@@ -11,6 +9,7 @@ namespace WappChatAnalyzer.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class EventController : ControllerBase
     {
         private IEventService eventService;
