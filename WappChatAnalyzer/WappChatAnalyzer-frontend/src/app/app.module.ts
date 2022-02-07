@@ -38,12 +38,17 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
 import { CustomDateAdapter } from './services/custom-date-adapter';
 import { AuthHttpInterceptor } from './services/auth/auth-http-interceptor.service';
+import { LoginComponent } from './pages/login/login.component';
+import { ErrorTranslateInterceptor } from './services/error-translate.service';
+import { RegisterComponent } from './pages/register/register.component';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
+    LoginComponent,
+    RegisterComponent,
     InvokeDirective,
     StatisticDisplayComponent,
     HomeComponent,
@@ -89,7 +94,8 @@ import { AuthHttpInterceptor } from './services/auth/auth-http-interceptor.servi
       deps: [Router, RouteReuseStrategy], multi: true
     },
     { provide: DateAdapter, useClass: CustomDateAdapter },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorTranslateInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

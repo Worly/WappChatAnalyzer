@@ -9,6 +9,7 @@ namespace WappChatAnalyzer.Domain
 {
     public class MainDbContext : DbContext
     {
+        public DbSet<User> Users { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<EventGroup> EventGroups { get; set; }
         public DbSet<Sender> Senders { get; set; }

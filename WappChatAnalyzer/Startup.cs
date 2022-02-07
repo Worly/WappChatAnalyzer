@@ -33,6 +33,8 @@ namespace WappChatAnalyzer
             services.AddDbContext<MainDbContext>();
 
             //services.AddSingleton<IMessageService, LocalMessageService>();
+            services.AddSingleton<IJwtService, JwtService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IStatisticCacheService, StatisticCacheService>();
 
@@ -64,14 +66,17 @@ namespace WappChatAnalyzer
 
             app.UseRouting();
 
-            // global cors policy
-            app.UseCors(x => x
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .SetIsOriginAllowed(origin => true) // allow any origin
-                .AllowCredentials()); // allow credentials
+            app.UseMiddleware<Auth.JwtMiddleware>();
 
-            app.UseAuthorization();
+            // global cors policy
+            if (env.IsDevelopment())
+            {
+                app.UseCors(x => x
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .SetIsOriginAllowed(origin => true) // allow any origin
+                    .AllowCredentials()); // allow credentials
+            }
 
             app.UseEndpoints(endpoints =>
             {

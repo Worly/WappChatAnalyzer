@@ -1,27 +1,39 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpEvent, HttpResponse, HttpRequest, HttpHandler, HttpErrorResponse, HttpEventType } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class AuthHttpInterceptor implements HttpInterceptor {
-  
-  constructor(private router: Router) {
+
+  constructor(private authService: AuthService, private router: Router) {
 
   }
 
   intercept(httpRequest: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    if (this.authService.isLoggedIn()) {
+      httpRequest = httpRequest.clone({
+        setHeaders: { "Authorization": "Bearer " + this.authService.getToken() }
+      });
+    }
+
     return next.handle(httpRequest).pipe(
       catchError((e: HttpEvent<any>) => {
         if (e instanceof HttpErrorResponse) {
           if (e.status == 401) // Unauthorized
           {
             console.log("Unauthorized");
-            this.router.navigate(["login"]);
+            this.authService.logOut();
+          }
+          else if (e.status == 0) // Connection refused
+          {
+            console.log("Connection refused");
+            this.router.navigate(["error"]);
           }
         }
-        return of(e);
+        return throwError(e);
       })
     );
   }
