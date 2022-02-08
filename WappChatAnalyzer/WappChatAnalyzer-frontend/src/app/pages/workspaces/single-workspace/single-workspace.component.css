@@ -1,0 +1,9 @@
+.my-card {
+    padding: 20px;
+    max-width: 600px;
+}
+
+.workspace-name {
+    font-size: 1.8em;
+    font-weight: bold;
+}

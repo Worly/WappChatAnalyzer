@@ -43,6 +43,9 @@ import { ErrorTranslateInterceptor } from './services/errors/error-translate.ser
 import { RegisterComponent } from './pages/register/register.component';
 import { ErrorComponent } from './pages/error/error.component';
 import { ErrorInterceptor } from './services/errors/error-interceptor.service';
+import { WorkspacesComponent } from './pages/workspaces/workspaces.component';
+import { SingleWorkspaceComponent } from './pages/workspaces/single-workspace/single-workspace.component';
+import { AppInitializerService } from './services/app-initializer.service';
 
 
 
@@ -51,6 +54,7 @@ import { ErrorInterceptor } from './services/errors/error-interceptor.service';
     AppComponent,
     LoginComponent,
     RegisterComponent,
+    WorkspacesComponent,
     ErrorComponent,
     InvokeDirective,
     StatisticDisplayComponent,
@@ -75,7 +79,8 @@ import { ErrorInterceptor } from './services/errors/error-interceptor.service';
     ChatComponent,
     StatisticDisplayCustomComponent,
     EventSearchComponent,
-    PerPickerComponent
+    PerPickerComponent,
+    SingleWorkspaceComponent
   ],
   imports: [
     BrowserModule,
@@ -97,6 +102,7 @@ import { ErrorInterceptor } from './services/errors/error-interceptor.service';
       deps: [Router, RouteReuseStrategy], multi: true
     },
     { provide: DateAdapter, useClass: CustomDateAdapter },
+    { provide: APP_INITIALIZER, useFactory: appInitializerFactory, deps: [AppInitializerService], multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorTranslateInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
@@ -104,4 +110,8 @@ import { ErrorInterceptor } from './services/errors/error-interceptor.service';
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+export function appInitializerFactory(appInitializerService: AppInitializerService) {
+  return () => appInitializerService.initialize();
+}
 

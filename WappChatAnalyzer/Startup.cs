@@ -35,6 +35,7 @@ namespace WappChatAnalyzer
             //services.AddSingleton<IMessageService, LocalMessageService>();
             services.AddSingleton<IJwtService, JwtService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IWorkspaceService, WorkspaceService>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IStatisticCacheService, StatisticCacheService>();
 

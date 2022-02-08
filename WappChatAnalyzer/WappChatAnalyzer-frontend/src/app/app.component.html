@@ -9,21 +9,24 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item" *ngIf="authService.isLoggedIn()">
+          <li class="nav-item" *ngIf="authService.isLoggedIn() && workspaceService.getSelected()">
             <a [routerLink]="'/home'" class="nav-link" [routerLinkActive]="'active'" href="#">Home</a>
           </li>
-          <li class="nav-item" *ngIf="authService.isLoggedIn()">
+          <li class="nav-item" *ngIf="authService.isLoggedIn() && workspaceService.getSelected()">
             <a [routerLink]="'/chat'" class="nav-link" [routerLinkActive]="'active'" href="#">Chat</a>
           </li>
-          <li class="nav-item" *ngIf="authService.isLoggedIn()">
+          <li class="nav-item" *ngIf="authService.isLoggedIn() && workspaceService.getSelected()">
             <a [routerLink]="'/events'" class="nav-link" [routerLinkActive]="'active'" href="#">Events</a>
           </li>
-          <li class="nav-item" *ngIf="authService.isLoggedIn()">
+          <li class="nav-item" *ngIf="authService.isLoggedIn() && workspaceService.getSelected()">
             <a [routerLink]="'/import'" class="nav-link" [routerLinkActive]="'active'" href="#">Import</a>
           </li>
           <span class="navbar-text welcome-text" *ngIf="authService.isLoggedIn()">
             {{'Welcome, ' + authService.getUsername()}}
           </span>
+          <li class="nav-item" *ngIf="authService.isLoggedIn() && workspaceService.getSelected()">
+            <a [routerLink]="'/workspaces'" class="nav-link" [routerLinkActive]="'active'" href="#">{{'Workspace - ' + workspaceService.getSelected().name}}</a>
+          </li>
           <li class="nav-item" *ngIf="authService.isLoggedIn()">
             <a class="nav-link" (click)="logOut()">Logout</a>
           </li>

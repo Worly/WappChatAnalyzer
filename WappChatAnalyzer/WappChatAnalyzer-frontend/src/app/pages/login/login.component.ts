@@ -2,6 +2,7 @@ import { ViewportRuler } from '@angular/cdk/scrolling';
 import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { WorkspaceService } from 'src/app/services/workspaces/workspace.service';
 
 @Component({
   selector: 'app-login',
@@ -27,6 +28,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private workspaceService: WorkspaceService,
     private router: Router,
     private readonly viewportRuler: ViewportRuler,
     private readonly ngZone: NgZone
@@ -65,7 +67,10 @@ export class LoginComponent implements OnInit {
         next: o => {
           this.isLoading = false;
           
-          this.router.navigate(["home"]);
+          if (this.workspaceService.getSelected() == null)
+            this.router.navigate(["workspaces"]);
+          else
+            this.router.navigate(["home"]);
         },
         error: e => {
           this.isLoading = false;

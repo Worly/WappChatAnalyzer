@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WappChatAnalyzer.Domain;
 
 namespace WappChatAnalyzer.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220208125447_AddWorkspaces")]
+    partial class AddWorkspaces
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -207,9 +209,6 @@ namespace WappChatAnalyzer.Migrations
 
                     b.Property<byte[]>("Salt")
                         .HasColumnType("longblob");
-
-                    b.Property<int?>("SelectedWorkspaceId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Username")
                         .HasColumnType("longtext");

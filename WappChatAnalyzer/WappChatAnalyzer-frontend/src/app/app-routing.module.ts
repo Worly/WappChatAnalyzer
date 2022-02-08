@@ -11,26 +11,33 @@ import { StatisticDisplayCustomComponent } from './pages/statistic-display-custo
 import { StatisticDisplayEmojisComponent } from './pages/statistic-display-emojis/statistic-display-emojis.component';
 import { StatisticDisplaySingleEmojiComponent } from './pages/statistic-display-single-emoji/statistic-display-single-emoji.component';
 import { StatisticDisplayComponent } from './pages/statistic-display/statistic-display.component';
+import { WorkspacesComponent } from './pages/workspaces/workspaces.component';
 import { LoggedInGuard, NotLoggedInGuard } from './services/auth/auth.guard';
+import { SelectedWorkspaceGuard } from './services/workspaces/workspace.guard';
 
 const routes: Routes = [
   { path: "login", component: LoginComponent, canActivate: [NotLoggedInGuard] },
   { path: "register", component: RegisterComponent, canActivate: [NotLoggedInGuard] },
 
   {
+    path: "workspaces",
+    component: WorkspacesComponent,
+    canActivate: [LoggedInGuard]
+  },
+  {
     path: "home",
     component: HomeComponent,
-    canActivate: [LoggedInGuard]
+    canActivate: [LoggedInGuard, SelectedWorkspaceGuard]
   },
   {
     path: "statistic-display/emoji/:codePoints",
     component: StatisticDisplaySingleEmojiComponent,
-    canActivate: [LoggedInGuard]
+    canActivate: [LoggedInGuard, SelectedWorkspaceGuard]
   },
   {
     path: "statistic-display/messages",
     component: StatisticDisplayComponent,
-    canActivate: [LoggedInGuard],
+    canActivate: [LoggedInGuard, SelectedWorkspaceGuard],
     data: {
       statisticUrl: "statistic/getStatistic/numberOfMessages",
       displayName: "Number of messages"
@@ -39,7 +46,7 @@ const routes: Routes = [
   {
     path: "statistic-display/words",
     component: StatisticDisplayComponent,
-    canActivate: [LoggedInGuard],
+    canActivate: [LoggedInGuard, SelectedWorkspaceGuard],
     data: {
       statisticUrl: "statistic/getStatistic/numberOfWords",
       displayName: "Number of words"
@@ -48,7 +55,7 @@ const routes: Routes = [
   {
     path: "statistic-display/characters",
     component: StatisticDisplayComponent,
-    canActivate: [LoggedInGuard],
+    canActivate: [LoggedInGuard, SelectedWorkspaceGuard],
     data: {
       statisticUrl: "statistic/getStatistic/numberOfCharacters",
       displayName: "Number of characters"
@@ -57,7 +64,7 @@ const routes: Routes = [
   {
     path: "statistic-display/media",
     component: StatisticDisplayComponent,
-    canActivate: [LoggedInGuard],
+    canActivate: [LoggedInGuard, SelectedWorkspaceGuard],
     data: {
       statisticUrl: "statistic/getStatistic/numberOfMedia",
       displayName: "Number of media"
@@ -66,7 +73,7 @@ const routes: Routes = [
   {
     path: "statistic-display/emojis",
     component: StatisticDisplayEmojisComponent,
-    canActivate: [LoggedInGuard],
+    canActivate: [LoggedInGuard, SelectedWorkspaceGuard],
     data: {
       shouldDetach: true
     }
@@ -74,22 +81,22 @@ const routes: Routes = [
   {
     path: "statistic-display/custom/:id",
     component: StatisticDisplayCustomComponent,
-    canActivate: [LoggedInGuard]
+    canActivate: [LoggedInGuard, SelectedWorkspaceGuard]
   },
   {
     path: "events",
     component: EventListComponent,
-    canActivate: [LoggedInGuard]
+    canActivate: [LoggedInGuard, SelectedWorkspaceGuard]
   },
   {
     path: "import",
     component: ImportComponent,
-    canActivate: [LoggedInGuard]
+    canActivate: [LoggedInGuard, SelectedWorkspaceGuard]
   },
   {
     path: "chat",
     component: ChatComponent,
-    canActivate: [LoggedInGuard]
+    canActivate: [LoggedInGuard, SelectedWorkspaceGuard]
   },
   {
     path: "error",
