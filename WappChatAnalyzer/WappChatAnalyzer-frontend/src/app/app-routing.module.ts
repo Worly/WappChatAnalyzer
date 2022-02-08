@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ChatComponent } from './pages/chat/chat.component';
+import { ErrorComponent } from './pages/error/error.component';
 import { EventListComponent } from './pages/event-list/event-list.component';
 import { HomeComponent } from './pages/home/home.component';
 import { ImportComponent } from './pages/import/import.component';
@@ -89,6 +90,10 @@ const routes: Routes = [
     path: "chat",
     component: ChatComponent,
     canActivate: [LoggedInGuard]
+  },
+  {
+    path: "error",
+    component: ErrorComponent,
   },
   { path: "**", redirectTo: "/home" }
 ];

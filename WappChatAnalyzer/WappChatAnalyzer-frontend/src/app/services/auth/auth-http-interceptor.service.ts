@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 @Injectable()
 export class AuthHttpInterceptor implements HttpInterceptor {
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private authService: AuthService) {
 
   }
 
@@ -26,11 +26,6 @@ export class AuthHttpInterceptor implements HttpInterceptor {
           {
             console.log("Unauthorized");
             this.authService.logOut();
-          }
-          else if (e.status == 0) // Connection refused
-          {
-            console.log("Connection refused");
-            this.router.navigate(["error"]);
           }
         }
         return throwError(e);

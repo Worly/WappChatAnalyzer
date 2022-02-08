@@ -39,8 +39,10 @@ import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
 import { CustomDateAdapter } from './services/custom-date-adapter';
 import { AuthHttpInterceptor } from './services/auth/auth-http-interceptor.service';
 import { LoginComponent } from './pages/login/login.component';
-import { ErrorTranslateInterceptor } from './services/error-translate.service';
+import { ErrorTranslateInterceptor } from './services/errors/error-translate.service';
 import { RegisterComponent } from './pages/register/register.component';
+import { ErrorComponent } from './pages/error/error.component';
+import { ErrorInterceptor } from './services/errors/error-interceptor.service';
 
 
 
@@ -49,6 +51,7 @@ import { RegisterComponent } from './pages/register/register.component';
     AppComponent,
     LoginComponent,
     RegisterComponent,
+    ErrorComponent,
     InvokeDirective,
     StatisticDisplayComponent,
     HomeComponent,
@@ -95,7 +98,8 @@ import { RegisterComponent } from './pages/register/register.component';
     },
     { provide: DateAdapter, useClass: CustomDateAdapter },
     { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorTranslateInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorTranslateInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
