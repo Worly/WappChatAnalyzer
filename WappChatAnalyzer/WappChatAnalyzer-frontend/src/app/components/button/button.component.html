@@ -1,0 +1,7 @@
+<div class="my-button" [class.curved]="curved" [class.curved-top-left]="curvedTopLeft"
+    [class.curved-top-right]="curvedTopRight" [class.curved-bottom-left]="curvedBottomLeft"
+    [class.curved-bottom-right]="curvedBottomRight" [class.my-disabled]="disabled" [class.icon-only]="text == null || text == ''"
+    [ngClass]="['color-' + color, 'look-' + look]" [style.width]="width" (click)="onClicked()" tabindex="0">
+    <fa-icon *ngIf="icon != null" class="my-icon" [icon]="[iconPrefix, icon]" [fixedWidth]="true" [style.font-size]="'0.8em'"></fa-icon>
+    {{text}}
+</div>

@@ -5,6 +5,14 @@
     --input-border-color: rgb(179, 179, 179);
 
     --focus-outline-color: rgb(104, 104, 104);
+
+    --text: black;
+    --anti-text: white;
+
+    --success: rgb(90, 172, 90);
+    --danger: #d05353;
+    --normal: black;
+    --disabled: rgb(177, 177, 177);
 }
 
 .w-card {
@@ -68,7 +76,7 @@
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
-    
+
     color: black;
     background-color: white;
 
@@ -78,7 +86,7 @@
 
     &.w-danger {
         color: white;
-        background-color: #D05353;
+        background-color: #d05353;
     }
 
     &.w-success {
@@ -109,4 +117,8 @@
             opacity: 0.2;
         }
     }
+}
+
+.overflow-visible {
+    overflow: visible !important;
 }

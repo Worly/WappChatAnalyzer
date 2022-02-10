@@ -46,6 +46,12 @@ import { ErrorInterceptor } from './services/errors/error-interceptor.service';
 import { WorkspacesComponent } from './pages/workspaces/workspaces.component';
 import { SingleWorkspaceComponent } from './pages/workspaces/single-workspace/single-workspace.component';
 import { AppInitializerService } from './services/app-initializer.service';
+import { ContextMenuComponent } from './components/context-menu/context-menu.component';
+import { ButtonComponent } from './components/button/button.component';
+import { ToppyModule } from 'toppy';
+import { ElementRefDirective } from './directives/element-ref.directive';
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { fas } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -80,7 +86,10 @@ import { AppInitializerService } from './services/app-initializer.service';
     StatisticDisplayCustomComponent,
     EventSearchComponent,
     PerPickerComponent,
-    SingleWorkspaceComponent
+    SingleWorkspaceComponent,
+    ContextMenuComponent,
+    ButtonComponent,
+    ElementRefDirective
   ],
   imports: [
     BrowserModule,
@@ -90,7 +99,9 @@ import { AppInitializerService } from './services/app-initializer.service';
     OrderModule,
     NoopAnimationsModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    ToppyModule,
+    FontAwesomeModule
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
@@ -109,7 +120,12 @@ import { AppInitializerService } from './services/app-initializer.service';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule { 
+  constructor(library: FaIconLibrary) {
+    library.addIconPacks(fas);
+  }
+
+}
 
 export function appInitializerFactory(appInitializerService: AppInitializerService) {
   return () => appInitializerService.initialize();
