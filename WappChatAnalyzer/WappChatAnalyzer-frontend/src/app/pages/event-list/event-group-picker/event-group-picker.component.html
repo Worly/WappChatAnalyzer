@@ -5,10 +5,9 @@
     </div>
     <div *ngIf="pickerVisible" class="picker">
         <div *ngIf="isLoading">Loading...</div>
-        <div *ngIf="!isLoading">
-            <div *ngFor="let item of eventGroups" class="item no-select" (click)="select(item)">
-                {{item.name}}
-            </div>
+        <div *ngIf="!isLoading" class="items-container">
+            <app-button *ngFor="let item of eventGroups" [text]="item.name" [curved]="false" width="100%" (onClick)="select(item)">
+            </app-button>
         </div>
     </div>
 </div>
