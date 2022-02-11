@@ -29,7 +29,10 @@
 </div>
 <hr />
 <div class="buttons">
-    <div class="w-button w-success" [ngClass]="{'disabled': !isDirty}" (click)="onSaveClick()">Save</div>
-    <div class="w-button w-danger" (click)="onCancelClick()">Cancel</div>
-    <div *ngIf="!isNew" class="w-button w-danger" style="float: right;" (click)="onDeleteClick()">Delete</div>
+    <app-button text="Save" color="success" look="solid" [disabled]="!isDirty || isSaving" [isLoading]="isSaving"
+        (onClick)="onSaveClick()"></app-button>
+    &nbsp;
+    <app-button text="Cancel" color="danger" look="solid" (onClick)="onCancelClick()"></app-button>
+    <app-button *ngIf="!isNew" text="Delete" color="danger" look="solid" [style.float]="'right'" [disabled]="isDeleting"
+        [isLoading]="isDeleting" (onClick)="onDeleteClick()"></app-button>
 </div>

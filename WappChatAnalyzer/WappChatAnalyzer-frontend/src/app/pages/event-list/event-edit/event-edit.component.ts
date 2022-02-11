@@ -29,6 +29,9 @@ export class EventEditComponent implements OnInit {
 
   isDirty: boolean = false;
 
+  isSaving: boolean;
+  isDeleting: boolean;
+
   dayPickerConfig = {
     format: "YYYY-MM-DD",
     firstDayOfWeek: "mo",
@@ -89,8 +92,11 @@ export class EventEditComponent implements OnInit {
     if (!this.isDirty)
       return;
 
+    this.isSaving = true;
     this.eventService.saveEvent(this.newEvent).subscribe(e => {
       this.loadedEvent(e);
+
+      this.isSaving = false;
 
       this.onDone.emit({
         saved: true,
@@ -109,7 +115,9 @@ export class EventEditComponent implements OnInit {
   }
 
   onDeleteClick() {
+    this.isDeleting = true;
     this.eventService.deleteEvent(this.originalEvent.id).subscribe(() => {
+      this.isDeleting = false;
       this.onDone.emit({
         saved: false,
         deleted: true,
