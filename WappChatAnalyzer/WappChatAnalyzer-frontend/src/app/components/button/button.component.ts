@@ -20,7 +20,7 @@ export class ButtonComponent implements OnInit {
   @Input() curvedBottomRight: boolean = false;
 
   @Input()
-  look: "solid" | "outlined" | "text" = "text";
+  look: "solid" | "outlined" | "normal" | "transparent" = "normal";
 
   @Input()
   color: "success" | "danger" | "normal" = "normal";
@@ -45,9 +45,11 @@ export class ButtonComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onClicked(): void {
+  onClicked(event: Event): void {
     if (this.disabled)
       return;
+
+    event.stopPropagation();
 
     this.onClick.emit();
   }

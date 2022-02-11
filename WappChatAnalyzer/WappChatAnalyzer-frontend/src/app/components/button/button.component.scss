@@ -153,8 +153,12 @@
     border-style: solid;
 }
 
-.look-text {
+.look-normal {
     background-color: var(--input-background-color);
+}
+
+.look-transparent {
+    background-color: transparent;
 }
 
 .my-icon {
