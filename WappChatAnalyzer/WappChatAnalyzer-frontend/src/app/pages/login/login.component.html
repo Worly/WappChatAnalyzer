@@ -15,9 +15,8 @@
             <div class="validation-message">{{ validationErrors['other'] }}</div>
         </div>
 
-
-        <div tabindex="0" class="w-button w-success login-button" [ngClass]="{'disabled': isLoading}" (click)="login()">
-            Login</div>
+        <app-button text="Login" color="success" look="solid" width="100%" alignContent="center" [disabled]="isLoading"
+            [isLoading]="isLoading" (onClick)="login()"></app-button>
 
         <div class="register">New here? <a routerLink="/register">Register</a></div>
     </div>
