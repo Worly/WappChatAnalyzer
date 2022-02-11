@@ -26,6 +26,12 @@ export class ButtonComponent implements OnInit {
   color: "success" | "danger" | "normal" = "normal";
 
   @Input()
+  borderStyle: "solid" | "dashed" | "dotted" | "double" = "solid";
+
+  @Input()
+  alignContent: "left" | "center" | "right" = "left";
+
+  @Input()
   disabled: boolean = false;
 
   @Input()
@@ -36,6 +42,15 @@ export class ButtonComponent implements OnInit {
 
   @Input()
   icon: IconName;
+
+  @Input()
+  loadingIcon: IconName = "spinner";
+
+  @Input()
+  spinIcon: boolean = false;
+
+  @Input()
+  isLoading: boolean = false;
 
   @Output()
   onClick = new EventEmitter();

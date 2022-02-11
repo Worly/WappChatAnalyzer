@@ -1,5 +1,8 @@
 .my-button {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
     position: relative;
 
     font-size: 1.4rem;
@@ -9,11 +12,6 @@
     }
     &.icon-only {
         padding: 0px;
-
-        width: 33.61px;
-        &.look-outlined {
-            width: 33.61 + 4px;
-        }
     }
 
     cursor: pointer;
@@ -119,22 +117,22 @@
     }
 }
 
-.color-success {
-    background-color: var(--success);
-    color: var(--success);
-    border-color: var(--success);
-}
-
-.color-danger {
-    background-color: var(--danger);
-    color: var(--danger);
-    border-color: var(--danger);
-}
-
-.color-normal {
-    background-color: var(--normal);
-    color: var(--normal);
-    border-color: var(--normal);
+.color {
+    &-success {
+        background-color: var(--success);
+        color: var(--success);
+        border-color: var(--success);
+    }
+    &-danger {
+        background-color: var(--danger);
+        color: var(--danger);
+        border-color: var(--danger);
+    }
+    &-normal {
+        background-color: var(--normal);
+        color: var(--normal);
+        border-color: var(--normal);
+    }
 }
 
 .my-disabled {
@@ -143,22 +141,50 @@
     border-color: var(--disabled);
 }
 
-.look-solid {
-    color: var(--anti-text);
+.look {
+    &-solid {
+        color: var(--anti-text);
+        border-width: 0px;
+    }
+    &-outlined {
+        background-color: var(--input-background-color);
+        border-width: 2px;
+    }
+    &-normal {
+        background-color: var(--input-background-color);
+        border-width: 0px;
+    }
+    &-transparent {
+        background-color: transparent;
+        border-width: 0px;
+    }
 }
 
-.look-outlined {
-    background-color: var(--input-background-color);
-    border-width: 2px;
-    border-style: solid;
+.border {
+    &-solid {
+        border-style: solid;
+    }
+    &-dashed {
+        border-style: dashed;
+    }
+    &-dotted {
+        border-style: dotted;
+    }
+    &-double {
+        border-style: double;
+    }
 }
 
-.look-normal {
-    background-color: var(--input-background-color);
-}
-
-.look-transparent {
-    background-color: transparent;
+.align {
+    &-left {
+        justify-content: flex-start;
+    }
+    &-center {
+        justify-content: center;
+    }
+    &-right {
+        justify-content: right;
+    }
 }
 
 .my-icon {
@@ -166,10 +192,6 @@
     vertical-align: middle;
 }
 
-.my-button:not(.icon-only) > .my-icon {
-    margin-right: 4px;
-}
-
 .my-button.icon-only > .my-icon {
-    margin: 0px 6px;
+    margin: 4px 6px;
 }
