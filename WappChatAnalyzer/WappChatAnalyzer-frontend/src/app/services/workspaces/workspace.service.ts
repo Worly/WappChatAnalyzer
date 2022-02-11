@@ -37,6 +37,18 @@ export class WorkspaceService {
             .pipe(tap(() => this.selectedWorkspaceId = workspace.id));
     }
 
+    public deleteWorkspace(workspace: Workspace): Observable<void> {
+        return this.http.delete<void>(appConfig.apiUrl + "workspace/delete/" + workspace.id)
+            .pipe(tap(() => {
+                var index = this.myWorkspaces.indexOf(workspace);
+                if (index > -1)
+                    this.myWorkspaces.splice(index, 1);
+                
+                if (this.selectedWorkspaceId == workspace.id)
+                    this.selectedWorkspaceId = null;
+            }));
+    }
+
     public clear() {
         this.myWorkspaces = null;
     }

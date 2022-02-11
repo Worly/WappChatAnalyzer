@@ -29,6 +29,17 @@ namespace WappChatAnalyzer.Controllers
             return Ok(result);
         }
 
+        [HttpPut("edit/{id}")]
+        [Authorize]
+        public ActionResult<WorkspaceDTO> Edit(int id, WorkspaceDTO dto)
+        {
+            var result = this.workspaceService.Edit(HttpContext.CurrentUser().Id, id, dto);
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
         [HttpGet("getMy")]
         [Authorize]
         public ActionResult<List<WorkspaceDTO>> GetMy()
@@ -36,6 +47,16 @@ namespace WappChatAnalyzer.Controllers
             var result = this.workspaceService.GetMy(HttpContext.CurrentUser().Id);
 
             return Ok(result.Select(o => o.GetDTO()));
+        }
+
+        [HttpDelete("delete/{id}")]
+        [Authorize]
+        public IActionResult Delete(int id)
+        {
+            if (this.workspaceService.TryDelete(HttpContext.CurrentUser().Id, id))
+                return Ok();
+            else
+                return NotFound();
         }
 
         [HttpPut("selectWorkspace")]
