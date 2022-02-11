@@ -21,9 +21,12 @@ export class ContextMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private changeDetector: ChangeDetectorRef, private toppy: Toppy) { }
 
   ngOnInit(): void {
+    document.addEventListener("click", this.hideDropdown, true);
   }
 
   ngOnDestroy(): void {
+    document.removeEventListener("click", this.hideDropdown, true);
+
     if (this.toppyControl != null)
       this.toppyControl.close();
   }
@@ -62,8 +65,7 @@ export class ContextMenuComponent implements OnInit, OnDestroy, AfterViewInit {
     setTimeout(() => this.keepOpen = false, 10);
   }
 
-  @HostListener('document:click', ['$event'])
-  public hideDropdown(event: any) {
+  hideDropdown = (event: any) => {
     if (this.toppyControl?.compRef?.instance?.wrapperEl?.firstElementChild == null)
       return;
 
