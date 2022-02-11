@@ -52,6 +52,7 @@ import { ToppyModule } from 'toppy';
 import { ElementRefDirective } from './directives/element-ref.directive';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
+import { DialogComponent } from './components/dialog/dialog.component';
 
 
 
@@ -89,7 +90,8 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
     SingleWorkspaceComponent,
     ContextMenuComponent,
     ButtonComponent,
-    ElementRefDirective
+    ElementRefDirective,
+    DialogComponent
   ],
   imports: [
     BrowserModule,
