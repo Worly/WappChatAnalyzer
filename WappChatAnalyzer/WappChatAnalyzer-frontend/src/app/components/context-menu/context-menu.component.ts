@@ -33,6 +33,7 @@ export class ContextMenuComponent implements OnInit, OnDestroy, AfterViewInit {
       for (let button of this.buttons) {
         button.curved = false;
         button.width = "100%"
+        button.onClick.subscribe(() => this.toppyControl.close());
       }
 
       this.buttons.first.curvedTopLeft = true;
@@ -41,8 +42,6 @@ export class ContextMenuComponent implements OnInit, OnDestroy, AfterViewInit {
       this.buttons.last.curvedBottomLeft = true;
       this.buttons.last.curvedBottomRight = true;
     });
-
-    console.log(this.relativeTo);
 
     this.toppyControl = this.toppy
       .position(new RelativePosition({
