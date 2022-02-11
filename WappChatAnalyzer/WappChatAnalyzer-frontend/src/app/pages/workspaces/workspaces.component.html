@@ -1,4 +1,12 @@
 <div class="title">Workspaces</div>
+
+
 <div class="workspaces-container">
-    <app-single-workspace *ngFor="let workspace of workspaceService.myWorkspaces" [workspace]="workspace"></app-single-workspace>
+    <app-button width="100%" text="New workspace" icon="plus" color="success" look="outlined" borderStyle="dashed"
+        alignContent="center" (onClick)="workspaceEdit.startAddNew()"></app-button>
+
+    <app-single-workspace *ngFor="let workspace of workspaceService.myWorkspaces" [workspace]="workspace">
+    </app-single-workspace>
 </div>
+
+<app-workspace-edit #workspaceEdit></app-workspace-edit>

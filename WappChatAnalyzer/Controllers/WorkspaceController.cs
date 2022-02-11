@@ -26,7 +26,7 @@ namespace WappChatAnalyzer.Controllers
         {
             var result = this.workspaceService.AddNew(dto, HttpContext.CurrentUser().Id);
 
-            return Ok(result);
+            return Ok(result.GetDTO());
         }
 
         [HttpPut("edit/{id}")]
@@ -37,7 +37,7 @@ namespace WappChatAnalyzer.Controllers
             if (result == null)
                 return NotFound();
 
-            return Ok(result);
+            return Ok(result.GetDTO());
         }
 
         [HttpGet("getMy")]

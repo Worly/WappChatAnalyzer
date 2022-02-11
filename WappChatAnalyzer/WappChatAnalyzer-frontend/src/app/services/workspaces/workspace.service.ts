@@ -43,10 +43,27 @@ export class WorkspaceService {
                 var index = this.myWorkspaces.indexOf(workspace);
                 if (index > -1)
                     this.myWorkspaces.splice(index, 1);
-                
+
                 if (this.selectedWorkspaceId == workspace.id)
                     this.selectedWorkspaceId = null;
             }));
+    }
+
+    public addNew(name: string): Observable<Workspace> {
+        return this.http.post<Workspace>(appConfig.apiUrl + "workspace/addNew", {
+            name: name
+        }).pipe(tap(w => {
+            this.myWorkspaces.push(w);
+        }));
+    }
+
+    public edit(workspaceId: number, newName: string): Observable<Workspace> {
+        return this.http.put<Workspace>(appConfig.apiUrl + "workspace/edit/" + workspaceId, {
+            name: newName
+        }).pipe(tap(w => {
+            var oldWorkspace = this.myWorkspaces.find(o => o.id == w.id);
+            oldWorkspace.name = w.name;
+        }));
     }
 
     public clear() {

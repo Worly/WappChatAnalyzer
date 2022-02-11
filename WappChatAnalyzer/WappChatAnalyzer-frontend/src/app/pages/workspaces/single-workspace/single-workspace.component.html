@@ -10,7 +10,7 @@
 </div>
 
 <app-context-menu #contextMenu [relativeTo]="optionsButton.elementRef">
-    <app-button text="Edit" icon="pen"></app-button>
+    <app-button text="Edit" icon="pen" (onClick)="workspaceEdit.startEdit()"></app-button>
     <app-button text="Delete" color="danger" icon="trash" (onClick)="openDeleteDialog()"></app-button>
 </app-context-menu>
 
@@ -24,3 +24,5 @@
         <app-button text="Delete" color="danger" look="solid" [disabled]="deleteName != workspace.name || isDeleting" (onClick)="deleteWorkspace()"></app-button>
     </div>
 </app-dialog>
+
+<app-workspace-edit #workspaceEdit [workspace]="workspace"></app-workspace-edit>

@@ -53,6 +53,7 @@ import { ElementRefDirective } from './directives/element-ref.directive';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { DialogComponent } from './components/dialog/dialog.component';
+import { WorkspaceEditComponent } from './pages/workspaces/single-workspace/workspace-edit/workspace-edit.component';
 
 
 
@@ -91,7 +92,8 @@ import { DialogComponent } from './components/dialog/dialog.component';
     ContextMenuComponent,
     ButtonComponent,
     ElementRefDirective,
-    DialogComponent
+    DialogComponent,
+    WorkspaceEditComponent
   ],
   imports: [
     BrowserModule,
