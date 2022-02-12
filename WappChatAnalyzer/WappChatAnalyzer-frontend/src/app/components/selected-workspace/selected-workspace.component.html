@@ -1,0 +1,11 @@
+<!-- <div class="my-container" [routerLink]="'/workspaces'">
+    
+</div> -->
+
+<app-button class="my-button" look="transparent" [curved]="false" (onClick)="navigateToWorkspaces()"
+    routerLink="/workspaces" routerLinkActive="link-active">
+    <div class="my-container">
+        <div class="workspace-text">WORKSPACE</div>
+        <div class="workspace-name">{{workspaceService.getSelected()?.name}}</div>
+    </div>
+</app-button>

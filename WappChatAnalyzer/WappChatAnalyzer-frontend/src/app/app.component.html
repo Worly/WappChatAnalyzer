@@ -24,9 +24,8 @@
           <span class="navbar-text welcome-text" *ngIf="authService.isLoggedIn()">
             {{'Welcome, ' + authService.getUsername()}}
           </span>
-          <li class="nav-item" *ngIf="authService.isLoggedIn() && workspaceService.getSelected()">
-            <a [routerLink]="'/workspaces'" class="nav-link" [routerLinkActive]="'active'" href="#">{{'Workspace - ' + workspaceService.getSelected().name}}</a>
-          </li>
+          <app-selected-workspace *ngIf="authService.isLoggedIn() && workspaceService.getSelected()">
+          </app-selected-workspace>
           <li class="nav-item" *ngIf="authService.isLoggedIn()">
             <a class="nav-link" (click)="logOut()">Logout</a>
           </li>

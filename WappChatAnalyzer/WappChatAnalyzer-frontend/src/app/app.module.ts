@@ -54,6 +54,7 @@ import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontaweso
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { DialogComponent } from './components/dialog/dialog.component';
 import { WorkspaceEditComponent } from './pages/workspaces/single-workspace/workspace-edit/workspace-edit.component';
+import { SelectedWorkspaceComponent } from './components/selected-workspace/selected-workspace.component';
 
 
 
@@ -93,7 +94,8 @@ import { WorkspaceEditComponent } from './pages/workspaces/single-workspace/work
     ButtonComponent,
     ElementRefDirective,
     DialogComponent,
-    WorkspaceEditComponent
+    WorkspaceEditComponent,
+    SelectedWorkspaceComponent
   ],
   imports: [
     BrowserModule,

@@ -1,9 +1,15 @@
+:host {
+    display: inline-block;
+}
+
 .my-button {
     display: inline-flex;
     align-items: center;
     gap: 4px;
 
     position: relative;
+
+    width: 100%;
 
     font-size: 1.4rem;
 
@@ -56,7 +62,7 @@
 .curved {
     --border-radius: 8px;
     --inside-border-radius: 6px;
-    &.icon-only {
+    &.icon-only.circle {
         --border-radius: 1000px;
         --inside-border-radius: 1000px;
     }

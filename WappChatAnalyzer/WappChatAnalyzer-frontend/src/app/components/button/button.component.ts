@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IconName, IconPrefix } from '@fortawesome/fontawesome-svg-core';
 
 @Component({
@@ -38,7 +38,9 @@ export class ButtonComponent implements OnInit {
   disabled: boolean = false;
 
   @Input()
-  width: string;
+  set width(width: string) {
+    this.elementRef.nativeElement.style.width = width;
+  }
 
   @Input()
   iconPrefix: IconPrefix = "fas";
@@ -56,12 +58,15 @@ export class ButtonComponent implements OnInit {
   spinIcon: boolean = false;
 
   @Input()
+  isCircle: boolean = true;
+
+  @Input()
   isLoading: boolean = false;
 
   @Output()
   onClick = new EventEmitter();
 
-  constructor() { }
+  constructor(private elementRef: ElementRef) { }
 
   ngOnInit(): void {
   }
