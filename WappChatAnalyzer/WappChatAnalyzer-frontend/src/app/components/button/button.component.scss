@@ -131,7 +131,7 @@
     &-normal {
         background-color: var(--normal);
         color: var(--normal);
-        border-color: var(--normal);
+        border-color: var(--input-border-color);
     }
 }
 
@@ -148,7 +148,7 @@
     }
     &-outlined {
         background-color: var(--input-background-color);
-        border-width: 2px;
+        border-width: var(--border-width);
     }
     &-normal {
         background-color: var(--input-background-color);
@@ -177,13 +177,22 @@
 
 .align {
     &-left {
-        justify-content: flex-start;
+        justify-content: left;
     }
     &-center {
         justify-content: center;
     }
     &-right {
         justify-content: right;
+    }
+}
+
+.icon-placement {
+    &-left {
+        flex-direction: row;
+    }
+    &-right {
+        flex-direction: row-reverse;
     }
 }
 

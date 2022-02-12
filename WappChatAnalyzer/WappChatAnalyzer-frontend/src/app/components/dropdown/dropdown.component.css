@@ -3,13 +3,6 @@
     display: inline-block;
 }
 
-.my-button {
-    display: flex;
-    align-items: center;
-    font-size: inherit;
-    padding: 5px 15px;
-}
-
 .picker {
     position: absolute;
     left: 0px;
@@ -22,14 +15,10 @@
     z-index: 5000;
 }
 
-.item {
-    position: relative;
-    font-size: 1.3rem;
-    margin: 2px 0px;
-    padding: 5px 15px;
-    white-space: nowrap;
-}
-
 .selected {
     font-weight: bold;
+}
+
+app-button {
+    white-space: nowrap;
 }

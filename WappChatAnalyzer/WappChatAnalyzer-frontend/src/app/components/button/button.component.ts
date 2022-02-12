@@ -29,6 +29,9 @@ export class ButtonComponent implements OnInit {
   borderStyle: "solid" | "dashed" | "dotted" | "double" = "solid";
 
   @Input()
+  borderWidth: string = "2px";
+
+  @Input()
   alignContent: "left" | "center" | "right" = "left";
 
   @Input()
@@ -42,6 +45,9 @@ export class ButtonComponent implements OnInit {
 
   @Input()
   icon: IconName;
+
+  @Input()
+  iconPlacement: "left" | "right" = "left";
 
   @Input()
   loadingIcon: IconName = "spinner";

@@ -1,9 +1,12 @@
 <div class="my-button" [class.curved]="curved" [class.curved-top-left]="curvedTopLeft"
     [class.curved-top-right]="curvedTopRight" [class.curved-bottom-left]="curvedBottomLeft"
-    [class.curved-bottom-right]="curvedBottomRight" [class.my-disabled]="disabled" [class.icon-only]="text == null || text == ''"
-    [ngClass]="['color-' + color, 'look-' + look, 'border-' + borderStyle, 'align-' + alignContent]" [style.width]="width" (click)="onClicked($event)" tabindex="0">
+    [class.curved-bottom-right]="curvedBottomRight" [class.my-disabled]="disabled"
+    [class.icon-only]="text == null || text == ''"
+    [ngClass]="['color-' + color, 'look-' + look, 'border-' + borderStyle, 'align-' + alignContent, 'icon-placement-' + iconPlacement]" [style]="'--border-width: ' + borderWidth"
+    [style.width]="width" (click)="onClicked($event)" tabindex="0">
 
-    <fa-icon *ngIf="isLoading || icon != null" class="my-icon" [icon]="[iconPrefix, isLoading ? loadingIcon : icon]" [fixedWidth]="true" [style.font-size]="'0.8em'" [spin]="spinIcon || isLoading"></fa-icon>
+    <fa-icon *ngIf="isLoading || icon != null" class="my-icon" [icon]="[iconPrefix, isLoading ? loadingIcon : icon]"
+        [fixedWidth]="true" [style.font-size]="'0.8em'" [spin]="spinIcon || isLoading"></fa-icon>
     {{text}}
 
 </div>
