@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WappChatAnalyzer.Domain
 {
@@ -17,5 +14,8 @@ namespace WappChatAnalyzer.Domain
         public int ToMessageId { get; set; }
 
         public int Overlap { get; set; }
+
+        public int WorkspaceId { get; set; }
+        public Workspace Workspace { get; set; }
     }
 }

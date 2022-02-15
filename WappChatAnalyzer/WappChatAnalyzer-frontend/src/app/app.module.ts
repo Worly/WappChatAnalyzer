@@ -55,6 +55,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { DialogComponent } from './components/dialog/dialog.component';
 import { WorkspaceEditComponent } from './pages/workspaces/single-workspace/workspace-edit/workspace-edit.component';
 import { SelectedWorkspaceComponent } from './components/selected-workspace/selected-workspace.component';
+import { WorkspaceInterceptor } from './services/workspaces/workspace-interceptor.service';
 
 
 
@@ -121,6 +122,7 @@ import { SelectedWorkspaceComponent } from './components/selected-workspace/sele
     { provide: DateAdapter, useClass: CustomDateAdapter },
     { provide: APP_INITIALIZER, useFactory: appInitializerFactory, deps: [AppInitializerService], multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: WorkspaceInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorTranslateInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],

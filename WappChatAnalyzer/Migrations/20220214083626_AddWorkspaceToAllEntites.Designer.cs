@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WappChatAnalyzer.Domain;
 
 namespace WappChatAnalyzer.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220214083626_AddWorkspaceToAllEntites")]
+    partial class AddWorkspaceToAllEntites
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -129,9 +131,6 @@ namespace WappChatAnalyzer.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("WorkspaceId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsMedia")
                         .HasColumnType("tinyint(1)");
 
@@ -144,7 +143,10 @@ namespace WappChatAnalyzer.Migrations
                     b.Property<string>("Text")
                         .HasColumnType("longtext");
 
-                    b.HasKey("Id", "WorkspaceId");
+                    b.Property<int>("WorkspaceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("SenderId");
 

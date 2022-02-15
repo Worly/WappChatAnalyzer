@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WappChatAnalyzer.Domain
 {
@@ -12,6 +10,10 @@ namespace WappChatAnalyzer.Domain
         public int Id { get; set; }
         public string StatisticName { get; set; }
         public DateTime ForDate { get; set; }
+
+        public int WorkspaceId { get; set; }
+        public Workspace Workspace { get; set; }
+
         public List<StatisticCacheForSender> ForSenders { get; set; }
     }
 }

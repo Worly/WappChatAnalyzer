@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Threading.Tasks;
 using WappChatAnalyzer.Services;
 
 namespace WappChatAnalyzer.Domain
@@ -15,7 +14,6 @@ namespace WappChatAnalyzer.Domain
     {
         public static readonly int NORMALIZED_HOURS = -7;
 
-        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
         public DateTime SentDateTime { get; set; }
@@ -26,6 +24,16 @@ namespace WappChatAnalyzer.Domain
         public Sender Sender { get; set; }
         public string Text { get; set; }
         public bool IsMedia { get; set; }
+
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int WorkspaceId { get; set; }
+        public Workspace Workspace { get; set; }
+
+        public static void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Message>()
+                .HasKey(o => new { o.Id, o.WorkspaceId });
+        }
     }
 
     public static class MessageExtensions

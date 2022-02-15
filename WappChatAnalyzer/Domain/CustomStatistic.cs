@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace WappChatAnalyzer.Domain
 {
@@ -12,5 +8,8 @@ namespace WappChatAnalyzer.Domain
         [MaxLength(60)]
         public string Name { get; set; }
         public string Regex { get; set; }
+
+        public int WorkspaceId { get; set; }
+        public Workspace Workspace { get; set; }
     }
 }

@@ -1,20 +1,13 @@
 using WappChatAnalyzer.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Encodings.Web;
-using System.Text.Unicode;
-using System.Threading.Tasks;
 using WappChatAnalyzer.Services;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using WappChatAnalyzer.Services.Workspaces;
 
 namespace WappChatAnalyzer
 {
@@ -68,6 +61,7 @@ namespace WappChatAnalyzer
             app.UseRouting();
 
             app.UseMiddleware<Auth.JwtMiddleware>();
+            app.UseMiddleware<WorkspaceMiddleware>();
 
             // global cors policy
             if (env.IsDevelopment())
@@ -88,7 +82,7 @@ namespace WappChatAnalyzer
             {
                 spa.Options.SourcePath = "WappChatAnalyzer-frontend";
 
-                if(env.IsDevelopment() && Environment.GetEnvironmentVariable("NO_FRONTEND") != "true")
+                if (env.IsDevelopment() && Environment.GetEnvironmentVariable("NO_FRONTEND") != "true")
                 {
                     spa.UseAngularCliServer(npmScript: "start");
                 }

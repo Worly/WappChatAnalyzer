@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 using WappChatAnalyzer.Auth;
 using WappChatAnalyzer.DTOs;
 using WappChatAnalyzer.Services;
+using WappChatAnalyzer.Services.Workspaces;
 
 namespace WappChatAnalyzer.Controllers
 {
@@ -19,19 +21,23 @@ namespace WappChatAnalyzer.Controllers
         }
 
         [HttpGet("getEvents")]
+        [SelectedWorkspace]
         public List<EventInfoDTO> GetEvents([FromQuery] int? skip, [FromQuery] int? take, [FromQuery] string notSelectedGroupsJSON, [FromQuery] string searchTerm, [FromQuery] Filter filter)
         {
             var notSelectedGroups = JsonConvert.DeserializeObject<int[]>(notSelectedGroupsJSON);
 
-            return eventService.GetEvents(notSelectedGroups, searchTerm, filter.FromDate, filter.ToDate, skip, take);
+            return eventService.GetEvents(HttpContext.SelectedWorkspace(), notSelectedGroups, searchTerm, filter.FromDate, filter.ToDate, skip, take)
+                .Select(o => o.GetInfoDTO())
+                .ToList();
         }
 
         [HttpGet("getEventCount")]
+        [SelectedWorkspace]
         public int GetEventCount([FromQuery] string notSelectedGroupsJSON, [FromQuery] string searchTerm, [FromQuery] Filter filter)
         {
             var notSelectedGroups = JsonConvert.DeserializeObject<int[]>(notSelectedGroupsJSON);
 
-            return eventService.GetEventCount(notSelectedGroups, searchTerm, filter.FromDate, filter.ToDate);
+            return eventService.GetEventCount(HttpContext.SelectedWorkspace(), notSelectedGroups, searchTerm, filter.FromDate, filter.ToDate);
         }
 
         [HttpGet("getEventGroups")]
@@ -41,30 +47,42 @@ namespace WappChatAnalyzer.Controllers
         }
 
         [HttpGet("getEvent/{id}")]
-        public EventDTO GetEvent([FromRoute] int id)
+        [SelectedWorkspace]
+        public ActionResult<EventDTO> GetEvent([FromRoute] int id)
         {
-            return eventService.GetEvent(id);
+            var e = eventService.GetEvent(id, HttpContext.SelectedWorkspace());
+            if (e == null)
+                return NotFound();
+
+            return e.GetDTO();
         }
 
         [HttpPost("saveEvent/{id}")]
-        public EventDTO SaveEvent([FromBody] EventDTO eventDTO)
+        [SelectedWorkspace]
+        public ActionResult<EventDTO> SaveEvent([FromBody] EventDTO eventDTO)
         {
             if (eventDTO.Id != 0)
             {
-                eventService.SaveEvent(eventDTO);
-                return eventService.GetEvent(eventDTO.Id);
+                var e = eventService.SaveEvent(eventDTO, HttpContext.SelectedWorkspace());
+                if (e == null)
+                    return NotFound();
+                return e.GetDTO();
             }
             else
             {
-                var id = eventService.AddEvent(eventDTO);
-                return eventService.GetEvent(id);
+                var e = eventService.AddEvent(eventDTO, HttpContext.SelectedWorkspace());
+                return e.GetDTO();
             }
         }
 
         [HttpDelete("deleteEvent/{id}")]
-        public void DeleteEvent([FromRoute] int id)
+        [SelectedWorkspace]
+        public ActionResult DeleteEvent([FromRoute] int id)
         {
-            eventService.DeleteEvent(id);
+            if (!eventService.DeleteEvent(id, HttpContext.SelectedWorkspace()))
+                return NotFound();
+
+            return Ok();
         }
     }
 }

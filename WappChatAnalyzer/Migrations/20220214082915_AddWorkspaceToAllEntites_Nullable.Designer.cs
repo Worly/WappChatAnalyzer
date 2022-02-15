@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WappChatAnalyzer.Domain;
 
 namespace WappChatAnalyzer.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220214082915_AddWorkspaceToAllEntites_Nullable")]
+    partial class AddWorkspaceToAllEntites_Nullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,7 +32,7 @@ namespace WappChatAnalyzer.Migrations
                     b.Property<string>("Regex")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("WorkspaceId")
+                    b.Property<int?>("WorkspaceId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -61,7 +63,7 @@ namespace WappChatAnalyzer.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("int");
 
-                    b.Property<int>("WorkspaceId")
+                    b.Property<int?>("WorkspaceId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -114,7 +116,7 @@ namespace WappChatAnalyzer.Migrations
                     b.Property<int>("ToMessageId")
                         .HasColumnType("int");
 
-                    b.Property<int>("WorkspaceId")
+                    b.Property<int?>("WorkspaceId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -129,9 +131,6 @@ namespace WappChatAnalyzer.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("WorkspaceId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsMedia")
                         .HasColumnType("tinyint(1)");
 
@@ -144,7 +143,10 @@ namespace WappChatAnalyzer.Migrations
                     b.Property<string>("Text")
                         .HasColumnType("longtext");
 
-                    b.HasKey("Id", "WorkspaceId");
+                    b.Property<int?>("WorkspaceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("SenderId");
 
@@ -164,7 +166,7 @@ namespace WappChatAnalyzer.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("WorkspaceId")
+                    b.Property<int?>("WorkspaceId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -186,7 +188,7 @@ namespace WappChatAnalyzer.Migrations
                     b.Property<string>("StatisticName")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<int>("WorkspaceId")
+                    b.Property<int?>("WorkspaceId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -272,9 +274,7 @@ namespace WappChatAnalyzer.Migrations
                 {
                     b.HasOne("WappChatAnalyzer.Domain.Workspace", "Workspace")
                         .WithMany()
-                        .HasForeignKey("WorkspaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("WorkspaceId");
 
                     b.Navigation("Workspace");
                 });
@@ -289,9 +289,7 @@ namespace WappChatAnalyzer.Migrations
 
                     b.HasOne("WappChatAnalyzer.Domain.Workspace", "Workspace")
                         .WithMany()
-                        .HasForeignKey("WorkspaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("WorkspaceId");
 
                     b.Navigation("EventGroup");
 
@@ -302,9 +300,7 @@ namespace WappChatAnalyzer.Migrations
                 {
                     b.HasOne("WappChatAnalyzer.Domain.Workspace", "Workspace")
                         .WithMany()
-                        .HasForeignKey("WorkspaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("WorkspaceId");
 
                     b.Navigation("Workspace");
                 });
@@ -319,9 +315,7 @@ namespace WappChatAnalyzer.Migrations
 
                     b.HasOne("WappChatAnalyzer.Domain.Workspace", "Workspace")
                         .WithMany()
-                        .HasForeignKey("WorkspaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("WorkspaceId");
 
                     b.Navigation("Sender");
 
@@ -332,9 +326,7 @@ namespace WappChatAnalyzer.Migrations
                 {
                     b.HasOne("WappChatAnalyzer.Domain.Workspace", "Workspace")
                         .WithMany()
-                        .HasForeignKey("WorkspaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("WorkspaceId");
 
                     b.Navigation("Workspace");
                 });
@@ -343,9 +335,7 @@ namespace WappChatAnalyzer.Migrations
                 {
                     b.HasOne("WappChatAnalyzer.Domain.Workspace", "Workspace")
                         .WithMany()
-                        .HasForeignKey("WorkspaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("WorkspaceId");
 
                     b.Navigation("Workspace");
                 });

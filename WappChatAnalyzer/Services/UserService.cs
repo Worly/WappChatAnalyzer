@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,7 +73,7 @@ namespace WappChatAnalyzer.Services
 
         public User GetById(int id)
         {
-            return context.Users.FirstOrDefault(x => x.Id == id);
+            return context.Users.Include(o => o.Workspaces).FirstOrDefault(x => x.Id == id);
         }
 
         private byte[] GenerateSalt()
