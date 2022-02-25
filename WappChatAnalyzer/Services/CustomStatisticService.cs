@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WappChatAnalyzer.Domain;
+using WappChatAnalyzer.DTOs;
 
 namespace WappChatAnalyzer.Services
 {
     public interface ICustomStatisticService
     {
-        public CustomStatistic GetCustomStatistic(int id);
-        public List<CustomStatistic> GetCustomStatistics();
-        public CustomStatistic SaveCustomStatistic(CustomStatistic customStatistic);
+        public CustomStatistic GetCustomStatistic(int id, int workspaceId);
+        public List<CustomStatistic> GetCustomStatistics(int workspaceId);
+        public CustomStatistic SaveCustomStatistic(CustomStatisticDTO customStatistic, int workspaceId);
     }
 
     public class CustomStatisticService : ICustomStatisticService
@@ -22,27 +23,39 @@ namespace WappChatAnalyzer.Services
             this.mainDbContext = mainDbContext;
         }
 
-        public CustomStatistic GetCustomStatistic(int id)
+        public CustomStatistic GetCustomStatistic(int id, int workspaceId)
         {
-            return mainDbContext.CustomStatistics.FirstOrDefault(o => o.Id == id);
+            return mainDbContext.CustomStatistics
+                .Where(o => o.WorkspaceId == workspaceId)
+                .FirstOrDefault(o => o.Id == id);
         }
 
-        public List<CustomStatistic> GetCustomStatistics()
+        public List<CustomStatistic> GetCustomStatistics(int workspaceId)
         {
-            return mainDbContext.CustomStatistics.ToList();
+            return mainDbContext.CustomStatistics.Where(o => o.WorkspaceId == workspaceId).ToList();
         }
 
-        public CustomStatistic SaveCustomStatistic(CustomStatistic customStatistic)
+        public CustomStatistic SaveCustomStatistic(CustomStatisticDTO customStatistic, int workspaceId)
         {
             if (customStatistic.Id == 0)
             {
-                mainDbContext.CustomStatistics.Add(customStatistic);
+                var newStat = new CustomStatistic()
+                {
+                    Name = customStatistic.Name,
+                    Regex = customStatistic.Regex,
+                    WorkspaceId = workspaceId
+                };
+
+                mainDbContext.CustomStatistics.Add(newStat);
                 mainDbContext.SaveChanges();
-                return customStatistic;
+                return newStat;
             }
             else
             {
-                var stat = mainDbContext.CustomStatistics.FirstOrDefault(o => o.Id == customStatistic.Id);
+                var stat = mainDbContext.CustomStatistics.Where(o => o.WorkspaceId == workspaceId).FirstOrDefault(o => o.Id == customStatistic.Id);
+                if (stat == null)
+                    return null;
+
                 stat.Name = customStatistic.Name;
                 stat.Regex = customStatistic.Regex;
                 mainDbContext.SaveChanges();

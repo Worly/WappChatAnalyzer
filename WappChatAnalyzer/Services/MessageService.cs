@@ -9,13 +9,13 @@ namespace WappChatAnalyzer.Services
 {
     public interface IMessageService
     {
-        List<Sender> GetAllSenders();
-        IQueryable<Message> GetAllMessages();
-        int ImportMessages(List<Message> messages, out Message firstImportedMessage);
-        List<ImportHistory> GetImportHistory();
-        List<Message> GetMessages(int fromId, int toId);
-        Message GetFirstMessageOfDayBefore(DateTime dateTime);
-        Message GetFirstMessageOfDayAfter(DateTime dateTime);
+        List<Sender> GetAllSenders(int workspaceId);
+        IQueryable<Message> GetAllMessages(int workspaceId);
+        int ImportMessages(int workspaceId, List<Message> messages, out Message firstImportedMessage);
+        List<ImportHistory> GetImportHistory(int workspaceId);
+        List<Message> GetMessages(int workspaceId, int fromId, int toId);
+        Message GetFirstMessageOfDayBefore(int workspaceId, DateTime dateTime);
+        Message GetFirstMessageOfDayAfter(int workspaceId, DateTime dateTime);
     }
 
     public class MessageService : IMessageService
@@ -27,19 +27,31 @@ namespace WappChatAnalyzer.Services
             this.context = context;
         }
 
-        public List<Sender> GetAllSenders()
+        public List<Sender> GetAllSenders(int workspaceId)
         {
-            return context.Senders.ToList();
+            return context.Senders
+                .Where(o => o.WorkspaceId == workspaceId)
+                .ToList();
         }
 
-        public IQueryable<Message> GetAllMessages()
+        public IQueryable<Message> GetAllMessages(int workspaceId)
         {
-            return context.Messages;
+            return context.Messages.Where(o => o.WorkspaceId == workspaceId);
         }
 
-        public int ImportMessages(List<Message> messages, out Message firstImportedMessage)
+        public int ImportMessages(int workspaceId, List<Message> messages, out Message firstImportedMessage)
         {
-            var lastMessage = context.Messages.OrderBy(o => o.Id).LastOrDefault();
+            foreach (var m in messages)
+            {
+                m.WorkspaceId = workspaceId;
+                m.Sender.WorkspaceId = workspaceId;
+            }
+
+            var lastMessage = context.Messages
+                .Where(o => o.WorkspaceId == workspaceId)
+                .OrderBy(o => o.Id)
+                .LastOrDefault();
+
             var nextMessageId = lastMessage != null ? lastMessage.Id + 1 : 1;
 
             Func<Message, Message, bool> messagesEquals = (Message f, Message s) => f.SentDateTime == s.SentDateTime && f.Sender == s.Sender && f.Text == s.Text;
@@ -61,7 +73,8 @@ namespace WappChatAnalyzer.Services
                     MessageCount = messages.Count,
                     FromMessageId = 1,
                     ToMessageId = messages.Count,
-                    Overlap = 0
+                    Overlap = 0,
+                    WorkspaceId = workspaceId
                 });
 
                 context.SaveChanges();
@@ -71,15 +84,15 @@ namespace WappChatAnalyzer.Services
             else
             {
                 var messagesToFetch = messages.Where(o => o.SentDateTime == lastMessage.SentDateTime).Count();
-                var messagesInDatabase = context.Messages.OrderByDescending(o => o.Id).Take(messagesToFetch).ToList();
+                var messagesInDatabase = context.Messages.Where(o => o.WorkspaceId == workspaceId).OrderByDescending(o => o.Id).Take(messagesToFetch).ToList();
 
                 var newMessagesStartIndex = -1;
 
                 int matchingMessageIndex = messages.FindLastIndex(o => messagesEquals(o, lastMessage));
-                for(int i = matchingMessageIndex; i >= 0; i--)
+                for (int i = matchingMessageIndex; i >= 0; i--)
                 {
                     var ok = true;
-                    for(int j = 0; j < messagesInDatabase.Count && i >= j; j++)
+                    for (int j = 0; j < messagesInDatabase.Count && i >= j; j++)
                     {
                         var inDatabaseMessage = messagesInDatabase[j];
                         var newMessage = messages[i - j];
@@ -101,11 +114,10 @@ namespace WappChatAnalyzer.Services
 
                 firstImportedMessage = messages[newMessagesStartIndex];
 
-                for(int i = newMessagesStartIndex; i < messages.Count; i++)
-                {
+                for (int i = newMessagesStartIndex; i < messages.Count; i++)
                     messages[i].Id = nextMessageId + (i - newMessagesStartIndex);
-                    context.Messages.Add(messages[i]);
-                }
+
+                context.Messages.AddRange(messages.Skip(newMessagesStartIndex));
 
                 context.ImportHistories.Add(new ImportHistory()
                 {
@@ -115,7 +127,8 @@ namespace WappChatAnalyzer.Services
                     MessageCount = messages.Count,
                     FromMessageId = nextMessageId,
                     ToMessageId = nextMessageId + (messages.Count - 1 - newMessagesStartIndex),
-                    Overlap = newMessagesStartIndex
+                    Overlap = newMessagesStartIndex,
+                    WorkspaceId = workspaceId
                 });
 
                 context.SaveChanges();
@@ -124,19 +137,27 @@ namespace WappChatAnalyzer.Services
             }
         }
 
-        public List<ImportHistory> GetImportHistory()
+        public List<ImportHistory> GetImportHistory(int workspaceId)
         {
-            return context.ImportHistories.ToList();
+            return context.ImportHistories
+                .Where(o => o.WorkspaceId == workspaceId)
+                .ToList();
         }
 
-        public List<Message> GetMessages(int fromId, int toId)
+        public List<Message> GetMessages(int workspaceId, int fromId, int toId)
         {
-            return context.Messages.Include(o => o.Sender).Where(o => o.Id >= fromId && o.Id <= toId).OrderBy(o => o.Id).ToList();
+            return context.Messages
+                .Include(o => o.Sender)
+                .Where(o => o.WorkspaceId == workspaceId)
+                .Where(o => o.Id >= fromId && o.Id <= toId)
+                .OrderBy(o => o.Id)
+                .ToList();
         }
 
-        public Message GetFirstMessageOfDayBefore(DateTime dateTime)
+        public Message GetFirstMessageOfDayBefore(int workspaceId, DateTime dateTime)
         {
-            return this.context.Messages
+            return context.Messages
+                .Where(o => o.WorkspaceId == workspaceId)
                 .Where(o => o.SentDateTime < dateTime)
                 .OrderByDescending(o => o.SentDateTime.Date)
                 .ThenBy(o => o.SentDateTime.TimeOfDay)
@@ -144,9 +165,10 @@ namespace WappChatAnalyzer.Services
                 .FirstOrDefault();
         }
 
-        public Message GetFirstMessageOfDayAfter(DateTime dateTime)
+        public Message GetFirstMessageOfDayAfter(int workspaceId, DateTime dateTime)
         {
-            return this.context.Messages
+            return context.Messages
+                .Where(o => o.WorkspaceId == workspaceId)
                 .OrderBy(o => o.Id)
                 .Where(o => o.SentDateTime >= dateTime)
                 .FirstOrDefault();

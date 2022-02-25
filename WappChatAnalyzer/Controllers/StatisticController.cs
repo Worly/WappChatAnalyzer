@@ -6,6 +6,7 @@ using WappChatAnalyzer.Auth;
 using WappChatAnalyzer.Domain;
 using WappChatAnalyzer.DTOs;
 using WappChatAnalyzer.Services;
+using WappChatAnalyzer.Services.Workspaces;
 
 namespace WappChatAnalyzer.Controllers
 {
@@ -29,128 +30,163 @@ namespace WappChatAnalyzer.Controllers
             this.statisticCacheService = statisticCacheService;
         }
 
-        private StatisticTotal GetStatisticTotal(StatisticFunc statisticFunc, DateTime? from, DateTime? to)
+        private StatisticTotal GetStatisticTotal(StatisticFunc statisticFunc, int workspaceId, DateTime? from, DateTime? to)
         {
-            var caches = statisticCacheService.GetStatisticCaches(statisticFunc, from, to);
-            var senders = messageService.GetAllSenders();
+            var caches = statisticCacheService.GetStatisticCaches(statisticFunc, workspaceId, from, to);
+            var senders = messageService.GetAllSenders(workspaceId);
             return new StatisticTotal()
             {
                 Total = caches.Sum(o => o.TotalsForSenders.Sum(o => o.Value)),
-                Senders = senders.ToDictionary(s => s.Id, s => SenderDTO.From(s)),
+                Senders = senders.ToDictionary(s => s.Id, s => s.GetDTO()),
                 TotalForSenders = senders.ToDictionary(s => s.Id, s => caches.Sum(o => o.TotalsForSenders[s.Id]))
             };
         }
 
         [HttpGet("getStatisticTotal/numberOfMessages")]
+        [SelectedWorkspace]
         public ActionResult<StatisticTotal> GetStatisticTotalNumberOfMessages([FromQuery] Filter filter)
         {
-            return GetStatisticTotal(statisticFuncsService.TotalNumberOfMessages(), filter.FromDate, filter.ToDate);
+            return GetStatisticTotal(statisticFuncsService.TotalNumberOfMessages(), HttpContext.SelectedWorkspace(), filter.FromDate, filter.ToDate);
         }
 
         [HttpGet("getStatisticTotal/numberOfWords")]
+        [SelectedWorkspace]
         public ActionResult<StatisticTotal> GetStatisticTotalNumberOfWords([FromQuery] Filter filter)
         {
-            return GetStatisticTotal(statisticFuncsService.TotalNumberOfWords(), filter.FromDate, filter.ToDate);
+            return GetStatisticTotal(statisticFuncsService.TotalNumberOfWords(), HttpContext.SelectedWorkspace(), filter.FromDate, filter.ToDate);
         }
 
         [HttpGet("getStatisticTotal/numberOfCharacters")]
+        [SelectedWorkspace]
         public ActionResult<StatisticTotal> GetStatisticTotalNumberOfCharacters([FromQuery] Filter filter)
         {
-            return GetStatisticTotal(statisticFuncsService.TotalNumberOfCharacters(), filter.FromDate, filter.ToDate);
+            return GetStatisticTotal(statisticFuncsService.TotalNumberOfCharacters(), HttpContext.SelectedWorkspace(), filter.FromDate, filter.ToDate);
         }
 
         [HttpGet("getStatisticTotal/numberOfMedia")]
+        [SelectedWorkspace]
         public ActionResult<StatisticTotal> GetStatisticTotalNumberOfMedia([FromQuery] Filter filter)
         {
-            return GetStatisticTotal(statisticFuncsService.TotalNumberOfMedia(), filter.FromDate, filter.ToDate);
+            return GetStatisticTotal(statisticFuncsService.TotalNumberOfMedia(), HttpContext.SelectedWorkspace(), filter.FromDate, filter.ToDate);
         }
 
         [HttpGet("getStatisticTotal/numberOfEmojis")]
+        [SelectedWorkspace]
         public ActionResult<StatisticTotal> GetStatisticTotalNumberOfEmojis([FromQuery] Filter filter)
         {
-            return GetStatisticTotal(statisticFuncsService.TotalNumberOfEmojis(), filter.FromDate, filter.ToDate);
+            return GetStatisticTotal(statisticFuncsService.TotalNumberOfEmojis(), HttpContext.SelectedWorkspace(), filter.FromDate, filter.ToDate);
         }
 
         [HttpGet("getStatistic/numberOfMessages")]
+        [SelectedWorkspace]
         public ActionResult<Statistic> GetStatisticNumberOfMessages([FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfMessages(), filter);
+            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfMessages(), HttpContext.SelectedWorkspace(), filter);
 
             return result;
         }
 
         [HttpGet("getStatistic/numberOfWords")]
+        [SelectedWorkspace]
         public ActionResult<Statistic> GetStatisticNumberOfWords([FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfWords(), filter);
+            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfWords(), HttpContext.SelectedWorkspace(), filter);
 
             return result;
         }
 
         [HttpGet("getStatistic/numberOfCharacters")]
+        [SelectedWorkspace]
         public ActionResult<Statistic> GetStatisticNumberOfCharacters([FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfCharacters(), filter);
+            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfCharacters(), HttpContext.SelectedWorkspace(), filter);
 
             return result;
         }
 
         [HttpGet("getStatistic/numberOfMedia")]
+        [SelectedWorkspace]
         public ActionResult<Statistic> GetStatisticNumberOfMedia([FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfMedia(), filter);
+            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfMedia(), HttpContext.SelectedWorkspace(), filter);
 
             return result;
         }
 
         [HttpGet("getStatistic/numberOfEmojis")]
+        [SelectedWorkspace]
         public ActionResult<Statistic> GetStatisticNumberOfEmojis([FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfEmojis(), filter);
+            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfEmojis(), HttpContext.SelectedWorkspace(), filter);
 
             return result;
         }
 
         [HttpGet("getStatistic/numberOfEmoji/{emojiCodePoints}")]
+        [SelectedWorkspace]
         public Statistic GetStatisticSingleEmoji(string emojiCodePoints, [FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfEmoji(emojiCodePoints), filter);
+            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfEmoji(emojiCodePoints), HttpContext.SelectedWorkspace(), filter);
 
             return result;
         }
 
         [HttpGet("getStatistic/custom/{id}")]
+        [SelectedWorkspace]
         public ActionResult<Statistic> GetCustomStatistic(int id, [FromQuery] Filter filter)
         {
-            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfCustom(id), filter);
+            var customStatistic = customStatisticService.GetCustomStatistic(id, HttpContext.SelectedWorkspace());
+            if (customStatistic == null)
+                return NotFound();
+
+            var result = statisticService.GetStatistic(statisticFuncsService.TotalNumberOfCustom(customStatistic), HttpContext.SelectedWorkspace(), filter);
 
             return result;
         }
 
         [HttpGet("getStatisticTotal/custom/{id}")]
-        public StatisticTotal GetCustomStatisticTotal(int id, [FromQuery] Filter filter)
+        [SelectedWorkspace]
+        public ActionResult<StatisticTotal> GetCustomStatisticTotal(int id, [FromQuery] Filter filter)
         {
-            return GetStatisticTotal(statisticFuncsService.TotalNumberOfCustom(id), filter.FromDate, filter.ToDate);
+            var customStatistic = customStatisticService.GetCustomStatistic(id, HttpContext.SelectedWorkspace());
+            if (customStatistic == null)
+                return NotFound();
+
+            return GetStatisticTotal(statisticFuncsService.TotalNumberOfCustom(customStatistic), HttpContext.SelectedWorkspace(), filter.FromDate, filter.ToDate);
         }
 
         [HttpGet("getCustomStatistics")]
-        public List<CustomStatistic> GetCustomStatistics()
+        [SelectedWorkspace]
+        public List<CustomStatisticDTO> GetCustomStatistics()
         {
-            return customStatisticService.GetCustomStatistics();
+            return customStatisticService
+                .GetCustomStatistics(HttpContext.SelectedWorkspace())
+                .Select(o => o.GetDTO())
+                .ToList();
         }
 
         [HttpGet("getCustomStatistic/{id}")]
-        public CustomStatistic GetCustomStatistics(int id)
+        [SelectedWorkspace]
+        public ActionResult<CustomStatisticDTO> GetCustomStatistics(int id)
         {
-            return customStatisticService.GetCustomStatistic(id);
+            var r = customStatisticService.GetCustomStatistic(id, HttpContext.SelectedWorkspace());
+            if (r == null)
+                return NotFound();
+
+            return r.GetDTO();
         }
 
         [HttpPost("saveCustomStatistic")]
-        public CustomStatistic SaveCustomStatistics([FromBody] CustomStatistic customStatistic)
+        [SelectedWorkspace]
+        public ActionResult<CustomStatisticDTO> SaveCustomStatistics([FromBody] CustomStatisticDTO customStatistic)
         {
-            var result = customStatisticService.SaveCustomStatistic(customStatistic);
-            statisticCacheService.ClearCacheFor(result.Name);
-            return result;
+            var result = customStatisticService.SaveCustomStatistic(customStatistic, HttpContext.SelectedWorkspace());
+            if (result == null)
+                return NotFound();
+
+            statisticCacheService.ClearCacheFor(result.Name, HttpContext.SelectedWorkspace());
+
+            return result.GetDTO();
         }
     }
 }

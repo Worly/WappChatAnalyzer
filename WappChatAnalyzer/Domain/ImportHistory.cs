@@ -1,4 +1,5 @@
 ﻿using System;
+using WappChatAnalyzer.DTOs;
 
 namespace WappChatAnalyzer.Domain
 {
@@ -17,5 +18,20 @@ namespace WappChatAnalyzer.Domain
 
         public int WorkspaceId { get; set; }
         public Workspace Workspace { get; set; }
+
+        public ImportHistoryDTO GetDTO()
+        {
+            return new ImportHistoryDTO()
+            {
+                Id = Id,
+                ImportDateTime = ImportDateTime,
+                FirstMessageDateTime = FirstMessageDateTime,
+                LastMessageDateTime = LastMessageDateTime,
+                MessageCount = MessageCount,
+                FromMessageId = FromMessageId,
+                ToMessageId = ToMessageId,
+                Overlap = Overlap
+            };
+        }
     }
 }

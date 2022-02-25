@@ -8,6 +8,7 @@ using WappChatAnalyzer.Auth;
 using WappChatAnalyzer.Domain;
 using WappChatAnalyzer.DTOs;
 using WappChatAnalyzer.Services;
+using WappChatAnalyzer.Services.Workspaces;
 
 namespace WappChatAnalyzer.Controllers
 {
@@ -26,7 +27,8 @@ namespace WappChatAnalyzer.Controllers
         }
 
         [HttpPost("uploadChatExport")]
-        public IActionResult UploadChatExport(IFormFile file)
+        [SelectedWorkspace]
+        public ActionResult<int> UploadChatExport(IFormFile file)
         {
             if (file == null)
                 return BadRequest("file is null");
@@ -38,28 +40,34 @@ namespace WappChatAnalyzer.Controllers
                     lines.Add(reader.ReadLine());
             }
 
-            var senders = messageService.GetAllSenders();
+            var senders = messageService.GetAllSenders(HttpContext.SelectedWorkspace());
             var messages = MessageUtils.ParseMessages(lines.ToArray(), senders);
 
-            int importedMessagesCount = messageService.ImportMessages(messages, out Message firstImportedMessage);
-            statisticCacheService.ClearCacheAfter(firstImportedMessage.NormalizedSentDate);
+            int importedMessagesCount = messageService.ImportMessages(HttpContext.SelectedWorkspace(), messages, out Message firstImportedMessage);
+            statisticCacheService.ClearCacheAfter(firstImportedMessage.NormalizedSentDate, HttpContext.SelectedWorkspace());
 
             return Ok(importedMessagesCount);
         }
 
         [HttpGet("getImportHistory")]
-        public List<ImportHistory> GetImportHistories()
+        [SelectedWorkspace]
+        public List<ImportHistoryDTO> GetImportHistories()
         {
-            return messageService.GetImportHistory();
+            return messageService
+                .GetImportHistory(HttpContext.SelectedWorkspace())
+                .Select(o => o.GetDTO())
+                .ToList();
         }
 
         [HttpGet("getLastMessageId")]
+        [SelectedWorkspace]
         public int GetLastMessageId()
         {
-            return messageService.GetAllMessages().OrderBy(o => o.Id).LastOrDefault().Id;
+            return messageService.GetAllMessages(HttpContext.SelectedWorkspace()).OrderBy(o => o.Id).LastOrDefault().Id;
         }
 
         [HttpGet("getMessages")]
+        [SelectedWorkspace]
         public List<MessageDTO> GetMessages(int fromId, int toId)
         {
             if (fromId > toId)
@@ -69,52 +77,42 @@ namespace WappChatAnalyzer.Controllers
                 toId = temp;
             }
 
-            return messageService.GetMessages(fromId, toId).Select(o => new MessageDTO()
-            {
-                Id = o.Id,
-                Sender = SenderDTO.From(o.Sender),
-                SentDateTime = o.SentDateTime,
-                Text = o.Text,
-                IsMedia = o.IsMedia
-            }).ToList();
+            return messageService
+                .GetMessages(HttpContext.SelectedWorkspace(), fromId, toId)
+                .Select(o => o.GetDTO())
+                .ToList();
         }
 
         [HttpGet("getFirstMessageOfDayBefore")]
+        [SelectedWorkspace]
         public MessageDTO GetFirstMessageOfDayBefore(DateTime dateTime)
         {
-            var message = this.messageService.GetFirstMessageOfDayBefore(dateTime);
+            var message = this.messageService.GetFirstMessageOfDayBefore(HttpContext.SelectedWorkspace(), dateTime);
             if (message == null)
                 return null;
-            return new MessageDTO()
-            {
-                Id = message.Id,
-                Sender = SenderDTO.From(message.Sender),
-                IsMedia = message.IsMedia,
-                SentDateTime = message.SentDateTime,
-                Text = message.Text
-            };
+
+            return message.GetDTO();
         }
 
         [HttpGet("getFirstMessageOfDayAfter")]
+        [SelectedWorkspace]
         public MessageDTO GetFirstMessageOfDayAfter(DateTime dateTime)
         {
-            var message = this.messageService.GetFirstMessageOfDayAfter(dateTime);
+            var message = this.messageService.GetFirstMessageOfDayAfter(HttpContext.SelectedWorkspace(), dateTime);
             if (message == null)
                 return null;
-            return new MessageDTO()
-            {
-                Id = message.Id,
-                Sender = SenderDTO.From(message.Sender),
-                IsMedia = message.IsMedia,
-                SentDateTime = message.SentDateTime,
-                Text = message.Text
-            };
+
+            return message.GetDTO();
         }
 
         [HttpGet("getAllSenders")]
+        [SelectedWorkspace]
         public List<SenderDTO> GetAllSenders()
         {
-            return this.messageService.GetAllSenders().Select(o => SenderDTO.From(o)).ToList();
+            return this.messageService
+                .GetAllSenders(HttpContext.SelectedWorkspace())
+                .Select(o => o.GetDTO())
+                .ToList();
         }
     }
 }

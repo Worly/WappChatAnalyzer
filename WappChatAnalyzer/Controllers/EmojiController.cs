@@ -9,6 +9,7 @@ using WappChatAnalyzer.Auth;
 using WappChatAnalyzer.Domain;
 using WappChatAnalyzer.DTOs;
 using WappChatAnalyzer.Services;
+using WappChatAnalyzer.Services.Workspaces;
 
 namespace WappChatAnalyzer.Controllers
 {
@@ -19,13 +20,11 @@ namespace WappChatAnalyzer.Controllers
     {
         private IEmojiService emojiService;
         private IMessageService messageService;
-        private IStatisticService statisticService;
 
         public EmojiController(IEmojiService emojiService, IMessageService messageService, IStatisticService statisticService)
         {
             this.emojiService = emojiService;
             this.messageService = messageService;
-            this.statisticService = statisticService;
         }
 
         [HttpGet("getEmoji")]
@@ -41,9 +40,10 @@ namespace WappChatAnalyzer.Controllers
         }
 
         [HttpGet("getEmojiInfoTotal")]
+        [SelectedWorkspace]
         public EmojiInfoTotal GetEmojiInfoTotal([FromQuery] Filter filter)
         {
-            var messages = messageService.GetAllMessages().FilterDateRange(filter.FromDate, filter.ToDate).ToList();
+            var messages = messageService.GetAllMessages(HttpContext.SelectedWorkspace()).FilterDateRange(filter.FromDate, filter.ToDate).ToList();
 
             var result = new Dictionary<string, Dictionary<int, int>>();
 
@@ -89,7 +89,7 @@ namespace WappChatAnalyzer.Controllers
                 }
             }
 
-            var senders = messageService.GetAllSenders();
+            var senders = messageService.GetAllSenders(HttpContext.SelectedWorkspace());
 
             return new EmojiInfoTotal()
             {
@@ -97,7 +97,7 @@ namespace WappChatAnalyzer.Controllers
                 {
                     Total = o.Value.Sum(i => i.Value),
                     EmojiCodePoints = o.Key,
-                    Senders = senders.ToDictionary(o => o.Id, o => SenderDTO.From(o)),
+                    Senders = senders.ToDictionary(o => o.Id, o => o.GetDTO()),
                     BySenders = o.Value
                 }).ToList()
             };

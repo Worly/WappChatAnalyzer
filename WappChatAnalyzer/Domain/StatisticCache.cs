@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace WappChatAnalyzer.Domain
 {
-    [Index("StatisticName", "ForDate", IsUnique = true, Name = "IX_Name_Date")]
+    [Index("StatisticName", "ForDate", "WorkspaceId", IsUnique = true, Name = "IX_Name_Date_Workspace")]
     public class StatisticCache
     {
         public int Id { get; set; }

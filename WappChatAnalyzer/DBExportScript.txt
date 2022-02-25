@@ -1,3 +1,0 @@
-# export
-
-"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqldump.exe" --user=root --password=#MozeSve123 --host=localhost --protocol=tcp --port=3306 --default-character-set=utf8mb4 --single-transaction=TRUE --routines --events "wappchatanalyzer" -r "C:\Users\Tino\Documents\dumps\WappChatAnalyzer.sql"

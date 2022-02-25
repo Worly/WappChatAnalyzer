@@ -13,7 +13,7 @@ namespace WappChatAnalyzer.Services
 {
     public interface IStatisticService
     {
-        public Statistic GetStatistic(StatisticFunc statisticFunc, Filter filter);
+        public Statistic GetStatistic(StatisticFunc statisticFunc, int workspaceId, Filter filter);
     }
 
     public class StatisticService : IStatisticService
@@ -29,16 +29,16 @@ namespace WappChatAnalyzer.Services
             this.statisticFuncsService = statisticFuncsService;
         }
 
-        public Statistic GetStatistic(StatisticFunc statisticFunc, Filter filter)
+        public Statistic GetStatistic(StatisticFunc statisticFunc, int workspaceId, Filter filter)
         {
             if (filter.GroupingPeriod == null)
                 filter.GroupingPeriod = "date";
             if (filter.Per == null)
                 filter.Per = "none";
 
-            var senders = messageService.GetAllSenders();
+            var senders = messageService.GetAllSenders(workspaceId);
 
-            var statistic = Get(statisticFunc, senders, filter.FromDate, filter.ToDate, filter.GroupingPeriod);
+            var statistic = Get(statisticFunc, workspaceId, senders, filter.FromDate, filter.ToDate, filter.GroupingPeriod);
 
             if (filter.Per != "none")
             {
@@ -46,13 +46,13 @@ namespace WappChatAnalyzer.Services
                 switch (filter.Per)
                 {
                     case "message":
-                        perStatistic = this.Get(statisticFuncsService.TotalNumberOfMessages(), senders, filter.FromDate, filter.ToDate, filter.GroupingPeriod);
+                        perStatistic = this.Get(statisticFuncsService.TotalNumberOfMessages(), workspaceId, senders, filter.FromDate, filter.ToDate, filter.GroupingPeriod);
                         break;
                     case "word":
-                        perStatistic = this.Get(statisticFuncsService.TotalNumberOfWords(), senders, filter.FromDate, filter.ToDate, filter.GroupingPeriod);
+                        perStatistic = this.Get(statisticFuncsService.TotalNumberOfWords(), workspaceId, senders, filter.FromDate, filter.ToDate, filter.GroupingPeriod);
                         break;
                     case "character":
-                        perStatistic = this.Get(statisticFuncsService.TotalNumberOfCharacters(), senders, filter.FromDate, filter.ToDate, filter.GroupingPeriod);
+                        perStatistic = this.Get(statisticFuncsService.TotalNumberOfCharacters(), workspaceId, senders, filter.FromDate, filter.ToDate, filter.GroupingPeriod);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException("Per cannot be: " + filter.Per);
@@ -106,14 +106,14 @@ namespace WappChatAnalyzer.Services
             return statistic;
         }
 
-        private Statistic Get(StatisticFunc statisticFunc, List<Sender> senders, DateTime? fromDate, DateTime? toDate, string groupingPeriod)
+        private Statistic Get(StatisticFunc statisticFunc, int workspaceId, List<Sender> senders, DateTime? fromDate, DateTime? toDate, string groupingPeriod)
         {
             List<DateTime> timePeriods;
             Dictionary<int, List<float>> valuesBySendersOnTimePeriods;
 
             if (groupingPeriod == "timeOfDay" || groupingPeriod == "hour")
             {
-                var filteredMessages = messageService.GetAllMessages().FilterDateRange(fromDate, toDate).ToList();
+                var filteredMessages = messageService.GetAllMessages(workspaceId).FilterDateRange(fromDate, toDate).ToList();
 
 
                 Func<Message, DateTime> groupingSelector = null;
@@ -145,7 +145,7 @@ namespace WappChatAnalyzer.Services
             }
             else
             {
-                var caches = statisticCacheService.GetStatisticCaches(statisticFunc, fromDate, toDate);
+                var caches = statisticCacheService.GetStatisticCaches(statisticFunc, workspaceId, fromDate, toDate);
 
                 Func<StatisticCacheDTO, DateTime> groupingSelector = null;
                 switch (groupingPeriod)
@@ -201,7 +201,7 @@ namespace WappChatAnalyzer.Services
                     GroupingPeriod = groupingPeriod,
                     Per = "none"
                 },
-                Senders = senders.ToDictionary(s => s.Id, s => SenderDTO.From(s)),
+                Senders = senders.ToDictionary(s => s.Id, s => s.GetDTO()),
                 TotalBySenders = totalBySenders,
                 TimePeriods = timePeriods,
                 ValuesBySendersOnTimePeriods = valuesBySendersOnTimePeriods,

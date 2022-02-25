@@ -16,18 +16,16 @@ namespace WappChatAnalyzer.Services
         StatisticFunc TotalNumberOfMedia();
         StatisticFunc TotalNumberOfEmojis();
         StatisticFunc TotalNumberOfEmoji(string emojiCodePoints);
-        StatisticFunc TotalNumberOfCustom(int customStatisticId);
+        StatisticFunc TotalNumberOfCustom(CustomStatistic customStatistic);
     }
 
     public class StatisticFuncsService : IStatisticFuncsService
     {
         private IEmojiService emojiService;
-        private ICustomStatisticService customStatisticService;
 
-        public StatisticFuncsService(IEmojiService emojiService, ICustomStatisticService customStatisticService)
+        public StatisticFuncsService(IEmojiService emojiService)
         {
             this.emojiService = emojiService;
-            this.customStatisticService = customStatisticService;
         }
 
         public StatisticFunc TotalNumberOfMessages()
@@ -96,10 +94,8 @@ namespace WappChatAnalyzer.Services
             };
         }
 
-        public StatisticFunc TotalNumberOfCustom(int customStatisticId)
+        public StatisticFunc TotalNumberOfCustom(CustomStatistic customStatistic)
         {
-            var customStatistic = customStatisticService.GetCustomStatistic(customStatisticId);
-
             var regex = new Regex(customStatistic.Regex, RegexOptions.IgnoreCase);
 
             return new StatisticFunc()

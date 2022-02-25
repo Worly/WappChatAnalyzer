@@ -21,16 +21,5 @@ namespace WappChatAnalyzer.DTOs
         {
             return Id.GetHashCode();
         }
-
-        public static SenderDTO From(Sender sender)
-        {
-            if (sender == null)
-                return null;
-            return new SenderDTO()
-            {
-                Id = sender.Id,
-                Name = sender.Name
-            };
-        }
     }
 }

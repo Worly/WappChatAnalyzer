@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using WappChatAnalyzer.DTOs;
 using WappChatAnalyzer.Services;
 
 namespace WappChatAnalyzer.Domain
@@ -33,6 +34,18 @@ namespace WappChatAnalyzer.Domain
         {
             modelBuilder.Entity<Message>()
                 .HasKey(o => new { o.Id, o.WorkspaceId });
+        }
+
+        public MessageDTO GetDTO()
+        {
+            return new MessageDTO()
+            {
+                Id = Id,
+                Sender = Sender?.GetDTO(),
+                SentDateTime = SentDateTime,
+                Text = Text,
+                IsMedia = IsMedia
+            };
         }
     }
 
@@ -93,52 +106,60 @@ namespace WappChatAnalyzer.Domain
 
         private static bool TryParseMessageStart(string line, out DateTime sentDateTime, out string sender, out string message, out bool isMedia)
         {
-            sentDateTime = DateTime.UtcNow;
-            sender = null;
-            message = line;
-            isMedia = false;
+            try
+            {
 
-            if (line.Length < 20)
-                return false;
+                sentDateTime = DateTime.UtcNow;
+                sender = null;
+                message = line;
+                isMedia = false;
 
-            var isDate =
-                line[0].IsNumber() &&
-                line[1].IsNumber() &&
-                line[2] == '/' &&
-                line[3].IsNumber() &&
-                line[4].IsNumber() &&
-                line[5] == '/' &&
-                line[6].IsNumber() &&
-                line[7].IsNumber() &&
-                line[8].IsNumber() &&
-                line[9].IsNumber();
+                if (line.Length < 20)
+                    return false;
 
-            var isTime =
-                line[12].IsNumber() &&
-                line[13].IsNumber() &&
-                line[14] == ':' &&
-                line[15].IsNumber() &&
-                line[16].IsNumber();
+                var isDate =
+                    line[0].IsNumber() &&
+                    line[1].IsNumber() &&
+                    line[2] == '/' &&
+                    line[3].IsNumber() &&
+                    line[4].IsNumber() &&
+                    line[5] == '/' &&
+                    line[6].IsNumber() &&
+                    line[7].IsNumber() &&
+                    line[8].IsNumber() &&
+                    line[9].IsNumber();
 
-            var hasDash = line[18] == '-';
+                var isTime =
+                    line[12].IsNumber() &&
+                    line[13].IsNumber() &&
+                    line[14] == ':' &&
+                    line[15].IsNumber() &&
+                    line[16].IsNumber();
 
-            if (!isDate || !isTime || !hasDash)
-                return false;
+                var hasDash = line[18] == '-';
 
-            sentDateTime = new DateTime(
-                int.Parse(line.Substring(6, 4)),
-                int.Parse(line.Substring(3, 2)),
-                int.Parse(line.Substring(0, 2)),
-                int.Parse(line.Substring(12, 2)),
-                int.Parse(line.Substring(15, 2)),
-                0);
+                if (!isDate || !isTime || !hasDash)
+                    return false;
 
-            var messageStart = line.IndexOf(':', 20) + 1;
-            sender = line.Substring(20, messageStart - 20 - 1);
+                sentDateTime = new DateTime(
+                    int.Parse(line.Substring(6, 4)),
+                    int.Parse(line.Substring(3, 2)),
+                    int.Parse(line.Substring(0, 2)),
+                    int.Parse(line.Substring(12, 2)),
+                    int.Parse(line.Substring(15, 2)),
+                    0);
 
-            message = line.Substring(messageStart + 1);
+                var messageStart = line.IndexOf(':', 20) + 1;
+                sender = line.Substring(20, messageStart - 20 - 1);
 
-            isMedia = message == "<Media omitted>";
+                message = line.Substring(messageStart + 1);
+
+                isMedia = message == "<Media omitted>";
+            }
+            catch(Exception e)
+            {
+                throw new Exception("Error on message line: " + line, e);
+            }
 
             return true;
         }

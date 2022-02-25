@@ -12,9 +12,9 @@ namespace WappChatAnalyzer.Services
 {
     public interface IStatisticCacheService
     {
-        List<StatisticCacheDTO> GetStatisticCaches(StatisticFunc statisticFunc, DateTime? from, DateTime? to);
-        void ClearCacheAfter(DateTime afterInclusive);
-        void ClearCacheFor(string statisticName);
+        List<StatisticCacheDTO> GetStatisticCaches(StatisticFunc statisticFunc, int workspaceId, DateTime? from, DateTime? to);
+        void ClearCacheAfter(DateTime afterInclusive, int workspaceId);
+        void ClearCacheFor(string statisticName, int workspaceId);
     }
 
     public class StatisticCacheService : IStatisticCacheService
@@ -28,9 +28,9 @@ namespace WappChatAnalyzer.Services
             this.messageService = messageService;
         }
 
-        public List<StatisticCacheDTO> GetStatisticCaches(StatisticFunc statisticFunc, DateTime? from, DateTime? to)
+        public List<StatisticCacheDTO> GetStatisticCaches(StatisticFunc statisticFunc, int workspaceId, DateTime? from, DateTime? to)
         {
-            var allMessages = messageService.GetAllMessages().OrderBy(o => o.NormalizedSentDate).Decompile();
+            var allMessages = messageService.GetAllMessages(workspaceId).OrderBy(o => o.Id).Decompile();
 
             DateTime firstMessageDate;
             DateTime lastMessageDate;
@@ -43,8 +43,10 @@ namespace WappChatAnalyzer.Services
 
                 firstMessageDate = firstMessage.NormalizedSentDate;
             }
-            else
+            else if (allMessages.Any())
                 firstMessageDate = allMessages.FirstOrDefault().NormalizedSentDate;
+            else
+                return new List<StatisticCacheDTO>();
 
             if (to != null)
             {
@@ -62,16 +64,17 @@ namespace WappChatAnalyzer.Services
 
             var caches = mainDbContext.StatisticCaches
                 .Include(o => o.ForSenders)
+                .Where(o => o.WorkspaceId == workspaceId)
                 .Where(o => o.StatisticName == statisticFunc.Name)
                 .Where(o => o.ForDate >= firstMessageDate && o.ForDate <= lastMessageDate).ToList();
 
-            var senders = messageService.GetAllSenders();
-            
+            var senders = messageService.GetAllSenders(workspaceId);
+
             var days = Math.Round((lastMessageDate - firstMessageDate).TotalDays) + 1;
 
             if (caches.Count < days)
             {
-                var messages = messageService.GetAllMessages().FilterDateRange(firstMessageDate, lastMessageDate).ToList();
+                var messages = messageService.GetAllMessages(workspaceId).FilterDateRange(firstMessageDate, lastMessageDate).ToList();
                 for (int i = 0; i < days; i++)
                 {
                     var date = firstMessageDate.AddDays(i);
@@ -82,6 +85,7 @@ namespace WappChatAnalyzer.Services
                         {
                             StatisticName = statisticFunc.Name,
                             ForDate = date,
+                            WorkspaceId = workspaceId,
                             ForSenders = senders.Select(sender => new StatisticCacheForSender()
                             {
                                 SenderId = sender.Id,
@@ -114,15 +118,23 @@ namespace WappChatAnalyzer.Services
             return result;
         }
 
-        public void ClearCacheAfter(DateTime afterInclusive)
+        public void ClearCacheAfter(DateTime afterInclusive, int workspaceId)
         {
-            mainDbContext.StatisticCaches.RemoveRange(mainDbContext.StatisticCaches.Where(o => o.ForDate >= afterInclusive));
+            mainDbContext.StatisticCaches
+                .RemoveRange(mainDbContext.StatisticCaches
+                    .Where(o => o.WorkspaceId == workspaceId)
+                    .Where(o => o.ForDate >= afterInclusive)
+                );
             mainDbContext.SaveChanges();
         }
 
-        public void ClearCacheFor(string statisticName)
+        public void ClearCacheFor(string statisticName, int workspaceId)
         {
-            mainDbContext.StatisticCaches.RemoveRange(mainDbContext.StatisticCaches.Where(o => o.StatisticName == statisticName));
+            mainDbContext.StatisticCaches
+                .RemoveRange(mainDbContext.StatisticCaches
+                    .Where(o => o.WorkspaceId == workspaceId)
+                    .Where(o => o.StatisticName == statisticName)
+                );
             mainDbContext.SaveChanges();
         }
     }

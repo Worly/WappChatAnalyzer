@@ -1,4 +1,6 @@
-﻿namespace WappChatAnalyzer.Domain
+﻿using WappChatAnalyzer.DTOs;
+
+namespace WappChatAnalyzer.Domain
 {
     public class Sender
     {
@@ -7,5 +9,14 @@
 
         public int WorkspaceId { get; set; }
         public Workspace Workspace { get; set; }
+
+        public SenderDTO GetDTO()
+        {
+            return new SenderDTO()
+            {
+                Id = Id,
+                Name = Name
+            };
+        }
     }
 }
