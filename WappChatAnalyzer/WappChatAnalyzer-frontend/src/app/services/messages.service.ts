@@ -40,7 +40,7 @@ export class MessagesService {
     public getFirstMessageOfDayBefore(date: Date): Observable<Message> {
         return <Observable<Message>>this.http.get(appConfig.apiUrl + "messages/getFirstMessageOfDayBefore", {
             params: <any>{
-                "dateTime": dateFormat(date, "yyyy-mm-dd")
+                "date": dateFormat(date, "yyyy-mm-dd")
             }
         });
     }
@@ -48,7 +48,7 @@ export class MessagesService {
     public getFirstMessageOfDayAfter(date: Date): Observable<Message> {
         return <Observable<Message>>this.http.get(appConfig.apiUrl + "messages/getFirstMessageOfDayAfter", {
             params: <any>{
-                "dateTime": dateFormat(date, "yyyy-mm-dd")
+                "date": dateFormat(date, "yyyy-mm-dd")
             }
         });
     }

@@ -106,7 +106,7 @@ namespace WappChatAnalyzer.Services
             return statistic;
         }
 
-        private Statistic Get(StatisticFunc statisticFunc, int workspaceId, List<Sender> senders, DateTime? fromDate, DateTime? toDate, string groupingPeriod)
+        private Statistic Get(StatisticFunc statisticFunc, int workspaceId, List<Sender> senders, DateOnly? fromDate, DateOnly? toDate, string groupingPeriod)
         {
             List<DateTime> timePeriods;
             Dictionary<int, List<float>> valuesBySendersOnTimePeriods;
@@ -120,10 +120,10 @@ namespace WappChatAnalyzer.Services
                 switch (groupingPeriod)
                 {
                     case "timeOfDay":
-                        groupingSelector = o => new DateTime(2021, 1, 1, o.SentDateTime.Hour, 0, 0);
+                        groupingSelector = o => new DateTime(2021, 1, 1, o.SentTime.Hour, 0, 0);
                         break;
                     case "hour":
-                        groupingSelector = o => new DateTime(o.SentDateTime.Year, o.SentDateTime.Month, o.SentDateTime.Day, o.SentDateTime.Hour, 0, 0);
+                        groupingSelector = o => new DateTime(o.SentDate.Year, o.SentDate.Month, o.SentDate.Day, o.SentTime.Hour, 0, 0);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException("Grouping period cannot be: " + groupingPeriod);
@@ -151,10 +151,10 @@ namespace WappChatAnalyzer.Services
                 switch (groupingPeriod)
                 {
                     case "date":
-                        groupingSelector = o => o.ForDate;
+                        groupingSelector = o => o.ForDate.ToDateTime(new TimeOnly(0, 0));
                         break;
                     case "week":
-                        groupingSelector = o => o.ForDate.AddDays(-(((int)o.ForDate.DayOfWeek + 6) % 7));
+                        groupingSelector = o => o.ForDate.AddDays(-(((int)o.ForDate.DayOfWeek + 6) % 7)).ToDateTime(new TimeOnly(0, 0));
                         break;
                     case "month":
                         groupingSelector = o => new DateTime(o.ForDate.Year, o.ForDate.Month, 1);

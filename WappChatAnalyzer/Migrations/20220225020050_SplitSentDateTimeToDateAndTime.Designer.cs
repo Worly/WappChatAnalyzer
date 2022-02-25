@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WappChatAnalyzer.Domain;
 
@@ -10,9 +11,10 @@ using WappChatAnalyzer.Domain;
 namespace WappChatAnalyzer.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220225020050_SplitSentDateTimeToDateAndTime")]
+    partial class SplitSentDateTimeToDateAndTime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,8 +50,8 @@ namespace WappChatAnalyzer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Emoji")
                         .HasColumnType("longtext");
@@ -137,16 +139,14 @@ namespace WappChatAnalyzer.Migrations
                     b.Property<bool>("IsMedia")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateOnly>("NormalizedSentDate")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("date")
-                        .HasComputedColumnSql("CASE WHEN EXTRACT(hour FROM SentTime) < 7 THEN DATE_ADD(SentDate, INTERVAL -1 day) ELSE SentDate END", true);
-
                     b.Property<int>("SenderId")
                         .HasColumnType("int");
 
                     b.Property<DateOnly>("SentDate")
                         .HasColumnType("date");
+
+                    b.Property<DateTime>("SentDateTime")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<TimeOnly>("SentTime")
                         .HasColumnType("time(6)");
@@ -156,9 +156,9 @@ namespace WappChatAnalyzer.Migrations
 
                     b.HasKey("Id", "WorkspaceId");
 
-                    b.HasIndex("NormalizedSentDate");
-
                     b.HasIndex("SenderId");
+
+                    b.HasIndex("SentDateTime");
 
                     b.HasIndex("WorkspaceId");
 
@@ -192,8 +192,8 @@ namespace WappChatAnalyzer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("ForDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("ForDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("StatisticName")
                         .HasColumnType("varchar(255)");

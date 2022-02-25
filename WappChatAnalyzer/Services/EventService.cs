@@ -10,8 +10,8 @@ namespace WappChatAnalyzer.Services
 {
     public interface IEventService
     {
-        List<Event> GetEvents(int workspaceId, int[] notSelectedGroups, string searchTerm, DateTime? fromDate, DateTime? toDate, int? skip, int? take);
-        int GetEventCount(int workspaceId, int[] notSelectedGroups, string searchTerm, DateTime? fromDate, DateTime? toDate);
+        List<Event> GetEvents(int workspaceId, int[] notSelectedGroups, string searchTerm, DateOnly? fromDate, DateOnly? toDate, int? skip, int? take);
+        int GetEventCount(int workspaceId, int[] notSelectedGroups, string searchTerm, DateOnly? fromDate, DateOnly? toDate);
         List<EventGroupDTO> GetEventGroups();
         Event GetEvent(int id, int workspaceId);
         Event SaveEvent(EventDTO eventDTO, int workspaceId);
@@ -28,20 +28,20 @@ namespace WappChatAnalyzer.Services
             this.mainDbContext = mainDbContext;
         }
 
-        public List<Event> GetEvents(int workspaceId, int[] notSelectedGroups, string searchTerm, DateTime? fromDate, DateTime? toDate, int? skip, int? take)
+        public List<Event> GetEvents(int workspaceId, int[] notSelectedGroups, string searchTerm, DateOnly? fromDate, DateOnly? toDate, int? skip, int? take)
         {
             IQueryable<Event> query = mainDbContext.Events
                 .Where(o => o.WorkspaceId == workspaceId)
                 .Include(o => o.EventGroup)
-                .OrderByDescending(o => o.DateTime)
+                .OrderByDescending(o => o.Date)
                 .ThenBy(o => o.Id);
 
             query = query.Where(o => !notSelectedGroups.Contains(o.EventGroupId));
 
             if (fromDate != null)
-                query = query.Where(o => o.DateTime.Date >= fromDate.Value.Date);
+                query = query.Where(o => o.Date >= fromDate.Value);
             if (toDate != null)
-                query = query.Where(o => o.DateTime.Date <= toDate.Value.Date);
+                query = query.Where(o => o.Date <= toDate.Value);
 
             if (searchTerm != null && searchTerm != "")
             {
@@ -57,16 +57,16 @@ namespace WappChatAnalyzer.Services
             return query.ToList();
         }
 
-        public int GetEventCount(int workspaceId, int[] notSelectedGroups, string searchTerm, DateTime? fromDate, DateTime? toDate)
+        public int GetEventCount(int workspaceId, int[] notSelectedGroups, string searchTerm, DateOnly? fromDate, DateOnly? toDate)
         {
             IQueryable<Event> query = mainDbContext.Events.Where(o => o.WorkspaceId == workspaceId);
 
             query = query.Where(o => !notSelectedGroups.Contains(o.EventGroupId));
 
             if (fromDate != null)
-                query = query.Where(o => o.DateTime.Date >= fromDate.Value.Date);
+                query = query.Where(o => o.Date >= fromDate.Value);
             if (toDate != null)
-                query = query.Where(o => o.DateTime.Date <= toDate.Value.Date);
+                query = query.Where(o => o.Date <= toDate.Value);
 
             if (searchTerm != null && searchTerm != "")
             {
@@ -110,12 +110,12 @@ namespace WappChatAnalyzer.Services
             ev.Name = eventDTO.Name;
             ev.Emoji = eventDTO.Emoji;
             ev.EventGroupId = eventDTO.EventGroup.Id;
-            ev.DateTime = DateTime.Parse(eventDTO.Date);
+            ev.Date = DateOnly.Parse(eventDTO.Date);
             ev.Order = eventDTO.Order;
 
             if (ev.Order > oldOrder)
             {
-                foreach(var evnt in mainDbContext.Events.Where(o => o.WorkspaceId == workspaceId).Where(o => o.DateTime == ev.DateTime && o.Order > oldOrder && o.Order <= ev.Order))
+                foreach(var evnt in mainDbContext.Events.Where(o => o.WorkspaceId == workspaceId).Where(o => o.Date == ev.Date && o.Order > oldOrder && o.Order <= ev.Order))
                 {
                     if (evnt.Id == ev.Id)
                         continue;
@@ -125,7 +125,7 @@ namespace WappChatAnalyzer.Services
             }
             else if (ev.Order < oldOrder)
             {
-                foreach (var evnt in mainDbContext.Events.Where(o => o.WorkspaceId == workspaceId).Where(o => o.DateTime == ev.DateTime && o.Order >= ev.Order && o.Order < oldOrder))
+                foreach (var evnt in mainDbContext.Events.Where(o => o.WorkspaceId == workspaceId).Where(o => o.Date == ev.Date && o.Order >= ev.Order && o.Order < oldOrder))
                 {
                     if (evnt.Id == ev.Id)
                         continue;
@@ -148,7 +148,7 @@ namespace WappChatAnalyzer.Services
             var newEvent = new Event()
             {
                 Emoji = eventDTO.Emoji,
-                DateTime = DateTime.Parse(eventDTO.Date),
+                Date = DateOnly.Parse(eventDTO.Date),
                 EventGroup = eventGroup,
                 Name = eventDTO.Name,
                 WorkspaceId = workspaceId
@@ -156,7 +156,7 @@ namespace WappChatAnalyzer.Services
 
             var orders = mainDbContext.Events
                 .Where(o => o.WorkspaceId == workspaceId)
-                .Where(o => o.DateTime == newEvent.DateTime)
+                .Where(o => o.Date == newEvent.Date)
                 .Select(o => o.Order)
                 .ToList();
             newEvent.Order = orders.Count == 0 ? 1 : orders.Max() + 1;
@@ -176,7 +176,7 @@ namespace WappChatAnalyzer.Services
             if (ev == null)
                 return false;
 
-            foreach (var evnt in mainDbContext.Events.Where(o => o.WorkspaceId == workspaceId).Where(o => o.DateTime == ev.DateTime && o.Order > ev.Order))
+            foreach (var evnt in mainDbContext.Events.Where(o => o.WorkspaceId == workspaceId).Where(o => o.Date == ev.Date && o.Order > ev.Order))
                 evnt.Order--;
 
             mainDbContext.Events.Remove(ev);

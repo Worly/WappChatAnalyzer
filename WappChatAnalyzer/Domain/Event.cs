@@ -6,7 +6,7 @@ namespace WappChatAnalyzer.Domain
     public class Event
     {
         public int Id { get; set; }
-        public DateTime DateTime { get; set; }
+        public DateOnly Date { get; set; }
         public int Order { get; set; }
         public string Name { get; set; }
         public string Emoji { get; set; }
@@ -22,7 +22,7 @@ namespace WappChatAnalyzer.Domain
             {
                 Id = Id,
                 Name = Name,
-                Date = DateTime.ToString("yyyy-MM-dd"),
+                Date = Date.ToString("yyyy-MM-dd"),
                 Order = Order,
                 Emoji = Emoji,
                 EventGroup = new EventGroupDTO()
@@ -39,7 +39,7 @@ namespace WappChatAnalyzer.Domain
             {
                 Id = Id,
                 Name = Name,
-                Date = DateTime.ToString("yyyy-MM-dd"),
+                Date = Date.ToString("yyyy-MM-dd"),
                 Order = Order,
                 Emoji = Emoji,
                 GroupName = EventGroup.Name

@@ -10,17 +10,18 @@ using WappChatAnalyzer.Services;
 
 namespace WappChatAnalyzer.Domain
 {
-    [Index(nameof(SentDateTime))]
+    [Index(nameof(SentDate), nameof(SentTime))]
+    [Index(nameof(NormalizedSentDate))]
     public class Message
     {
-        public static readonly int NORMALIZED_HOURS = -7;
+        public static readonly int NORMALIZED_HOURS = 7;
+
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
-        public DateTime SentDateTime { get; set; }
-        [Computed]
-        [NotMapped]
-        public DateTime NormalizedSentDate { get => SentDateTime.AddHours(NORMALIZED_HOURS).Date; }
+        public DateOnly SentDate { get; set; }
+        public TimeOnly SentTime { get; set; }
+        public DateOnly NormalizedSentDate { get; }
         public int SenderId { get; set; }
         public Sender Sender { get; set; }
         public string Text { get; set; }
@@ -34,6 +35,10 @@ namespace WappChatAnalyzer.Domain
         {
             modelBuilder.Entity<Message>()
                 .HasKey(o => new { o.Id, o.WorkspaceId });
+
+            modelBuilder.Entity<Message>()
+                .Property(o => o.NormalizedSentDate)
+                .HasComputedColumnSql("CASE WHEN EXTRACT(hour FROM SentTime) < 7 THEN DATE_ADD(SentDate, INTERVAL -1 day) ELSE SentDate END", true);
         }
 
         public MessageDTO GetDTO()
@@ -42,7 +47,7 @@ namespace WappChatAnalyzer.Domain
             {
                 Id = Id,
                 Sender = Sender?.GetDTO(),
-                SentDateTime = SentDateTime,
+                SentDateTime = SentDate.ToDateTime(SentTime),
                 Text = Text,
                 IsMedia = IsMedia
             };
@@ -51,7 +56,7 @@ namespace WappChatAnalyzer.Domain
 
     public static class MessageExtensions
     {
-        public static IQueryable<Message> Filter(this IQueryable<Message> messages, Sender fromSender = null, DateTime? onDate = null)
+        public static IQueryable<Message> Filter(this IQueryable<Message> messages, Sender fromSender = null, DateOnly? onDate = null)
         {
             if (fromSender != null)
                 messages = messages.Where(o => o.SenderId == fromSender.Id);
@@ -62,13 +67,13 @@ namespace WappChatAnalyzer.Domain
             return messages;
         }
 
-        public static IQueryable<Message> FilterDateRange(this IQueryable<Message> messages, DateTime? fromDate, DateTime? toDate)
+        public static IQueryable<Message> FilterDateRange(this IQueryable<Message> messages, DateOnly? fromDate, DateOnly? toDate)
         {
             if (fromDate != null)
-                messages = messages.Where(o => o.NormalizedSentDate >= fromDate.Value.Date).Decompile();
+                messages = messages.Where(o => o.NormalizedSentDate >= fromDate.Value).Decompile();
 
             if (toDate != null)
-                messages = messages.Where(o => o.NormalizedSentDate <= toDate.Value.Date).Decompile();
+                messages = messages.Where(o => o.NormalizedSentDate <= toDate.Value).Decompile();
 
             return messages;
         }
@@ -84,14 +89,15 @@ namespace WappChatAnalyzer.Domain
 
             foreach (var line in lines)
             {
-                if (TryParseMessageStart(line, out DateTime sentDateTime, out string sender, out string message, out bool isMedia))
+                if (TryParseMessageStart(line, out DateOnly sentDate, out TimeOnly sentTime, out string sender, out string message, out bool isMedia))
                 {
                     var senderObj = senders.FirstOrDefault(o => o.Name == sender);
                     if (senderObj == null)
                         senders.Add(senderObj = new Sender() { Name = sender });
                     messages.Add(currentMessage = new Message()
                     {
-                        SentDateTime = sentDateTime,
+                        SentDate = sentDate,
+                        SentTime = sentTime,
                         Sender = senderObj,
                         Text = message,
                         IsMedia = isMedia
@@ -104,12 +110,12 @@ namespace WappChatAnalyzer.Domain
             return messages;
         }
 
-        private static bool TryParseMessageStart(string line, out DateTime sentDateTime, out string sender, out string message, out bool isMedia)
+        private static bool TryParseMessageStart(string line, out DateOnly sentDate, out TimeOnly sentTime, out string sender, out string message, out bool isMedia)
         {
             try
             {
-
-                sentDateTime = DateTime.UtcNow;
+                sentDate = DateOnly.FromDateTime(DateTime.UtcNow);
+                sentTime = TimeOnly.FromDateTime(DateTime.UtcNow);
                 sender = null;
                 message = line;
                 isMedia = false;
@@ -141,10 +147,12 @@ namespace WappChatAnalyzer.Domain
                 if (!isDate || !isTime || !hasDash)
                     return false;
 
-                sentDateTime = new DateTime(
+                sentDate = new DateOnly(
                     int.Parse(line.Substring(6, 4)),
                     int.Parse(line.Substring(3, 2)),
-                    int.Parse(line.Substring(0, 2)),
+                    int.Parse(line.Substring(0, 2)));
+
+                sentTime = new TimeOnly(
                     int.Parse(line.Substring(12, 2)),
                     int.Parse(line.Substring(15, 2)),
                     0);
@@ -156,7 +164,7 @@ namespace WappChatAnalyzer.Domain
 
                 isMedia = message == "<Media omitted>";
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new Exception("Error on message line: " + line, e);
             }

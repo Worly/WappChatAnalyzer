@@ -12,8 +12,8 @@ namespace WappChatAnalyzer.Services
 {
     public interface IStatisticCacheService
     {
-        List<StatisticCacheDTO> GetStatisticCaches(StatisticFunc statisticFunc, int workspaceId, DateTime? from, DateTime? to);
-        void ClearCacheAfter(DateTime afterInclusive, int workspaceId);
+        List<StatisticCacheDTO> GetStatisticCaches(StatisticFunc statisticFunc, int workspaceId, DateOnly? from, DateOnly? to);
+        void ClearCacheAfter(DateOnly afterInclusive, int workspaceId);
         void ClearCacheFor(string statisticName, int workspaceId);
     }
 
@@ -28,12 +28,12 @@ namespace WappChatAnalyzer.Services
             this.messageService = messageService;
         }
 
-        public List<StatisticCacheDTO> GetStatisticCaches(StatisticFunc statisticFunc, int workspaceId, DateTime? from, DateTime? to)
+        public List<StatisticCacheDTO> GetStatisticCaches(StatisticFunc statisticFunc, int workspaceId, DateOnly? from, DateOnly? to)
         {
             var allMessages = messageService.GetAllMessages(workspaceId).OrderBy(o => o.Id).Decompile();
 
-            DateTime firstMessageDate;
-            DateTime lastMessageDate;
+            DateOnly firstMessageDate;
+            DateOnly lastMessageDate;
 
             if (from != null)
             {
@@ -70,7 +70,7 @@ namespace WappChatAnalyzer.Services
 
             var senders = messageService.GetAllSenders(workspaceId);
 
-            var days = Math.Round((lastMessageDate - firstMessageDate).TotalDays) + 1;
+            var days = lastMessageDate.DayNumber - firstMessageDate.DayNumber + 1;
 
             if (caches.Count < days)
             {
@@ -118,7 +118,7 @@ namespace WappChatAnalyzer.Services
             return result;
         }
 
-        public void ClearCacheAfter(DateTime afterInclusive, int workspaceId)
+        public void ClearCacheAfter(DateOnly afterInclusive, int workspaceId)
         {
             mainDbContext.StatisticCaches
                 .RemoveRange(mainDbContext.StatisticCaches

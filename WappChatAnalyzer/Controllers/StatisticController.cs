@@ -30,7 +30,7 @@ namespace WappChatAnalyzer.Controllers
             this.statisticCacheService = statisticCacheService;
         }
 
-        private StatisticTotal GetStatisticTotal(StatisticFunc statisticFunc, int workspaceId, DateTime? from, DateTime? to)
+        private StatisticTotal GetStatisticTotal(StatisticFunc statisticFunc, int workspaceId, DateOnly? from, DateOnly? to)
         {
             var caches = statisticCacheService.GetStatisticCaches(statisticFunc, workspaceId, from, to);
             var senders = messageService.GetAllSenders(workspaceId);

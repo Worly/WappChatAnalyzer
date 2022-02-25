@@ -10,7 +10,7 @@ namespace WappChatAnalyzer.DTOs
     {
         public int Id { get; set; }
         public string StatisticName { get; set; }
-        public DateTime ForDate { get; set; }
+        public DateOnly ForDate { get; set; }
         public Dictionary<int, int> TotalsForSenders { get; set; }
     }
 }

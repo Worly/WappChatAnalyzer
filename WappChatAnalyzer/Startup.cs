@@ -38,7 +38,9 @@ namespace WappChatAnalyzer
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<ICustomStatisticService, CustomStatisticService>();
 
-            services.AddControllers();
+            services
+                .AddControllers(o => o.UseDateOnlyTimeOnlyStringConverters())
+                .AddJsonOptions(o => o.UseDateOnlyTimeOnlyStringConverters());
 
             services.AddSpaStaticFiles(configuration =>
             {

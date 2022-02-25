@@ -9,7 +9,7 @@ namespace WappChatAnalyzer.Domain
     {
         public int Id { get; set; }
         public string StatisticName { get; set; }
-        public DateTime ForDate { get; set; }
+        public DateOnly ForDate { get; set; }
 
         public int WorkspaceId { get; set; }
         public Workspace Workspace { get; set; }

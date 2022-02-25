@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WappChatAnalyzer.Domain;
 
@@ -10,9 +11,10 @@ using WappChatAnalyzer.Domain;
 namespace WappChatAnalyzer.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220225223622_FixNormalizedSentDate")]
+    partial class FixNormalizedSentDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -140,7 +142,7 @@ namespace WappChatAnalyzer.Migrations
                     b.Property<DateOnly>("NormalizedSentDate")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("date")
-                        .HasComputedColumnSql("CASE WHEN EXTRACT(hour FROM SentTime) < 7 THEN DATE_ADD(SentDate, INTERVAL -1 day) ELSE SentDate END", true);
+                        .HasComputedColumnSql("CASE WHEN EXTRACT(hour FROM SentTime) < 7 THEN DATE_ADD(SentDate, INTERVAL -1 day) ELSE SentDate", true);
 
                     b.Property<int>("SenderId")
                         .HasColumnType("int");
@@ -155,8 +157,6 @@ namespace WappChatAnalyzer.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("Id", "WorkspaceId");
-
-                    b.HasIndex("NormalizedSentDate");
 
                     b.HasIndex("SenderId");
 

@@ -14,8 +14,8 @@ namespace WappChatAnalyzer.Services
         int ImportMessages(int workspaceId, List<Message> messages, out Message firstImportedMessage);
         List<ImportHistory> GetImportHistory(int workspaceId);
         List<Message> GetMessages(int workspaceId, int fromId, int toId);
-        Message GetFirstMessageOfDayBefore(int workspaceId, DateTime dateTime);
-        Message GetFirstMessageOfDayAfter(int workspaceId, DateTime dateTime);
+        Message GetFirstMessageOfDayBefore(int workspaceId, DateOnly date);
+        Message GetFirstMessageOfDayAfter(int workspaceId, DateOnly date);
     }
 
     public class MessageService : IMessageService
@@ -54,7 +54,7 @@ namespace WappChatAnalyzer.Services
 
             var nextMessageId = lastMessage != null ? lastMessage.Id + 1 : 1;
 
-            Func<Message, Message, bool> messagesEquals = (Message f, Message s) => f.SentDateTime == s.SentDateTime && f.Sender == s.Sender && f.Text == s.Text;
+            Func<Message, Message, bool> messagesEquals = (Message f, Message s) => f.SentDate == s.SentDate && f.SentTime == s.SentTime && f.Sender == s.Sender && f.Text == s.Text;
 
             if (lastMessage == null)
             {
@@ -65,11 +65,14 @@ namespace WappChatAnalyzer.Services
 
                 firstImportedMessage = messages.FirstOrDefault();
 
+                var fMessage = messages.First();
+                var lMessage = messages.Last();
+
                 context.ImportHistories.Add(new ImportHistory()
                 {
                     ImportDateTime = DateTime.Now,
-                    FirstMessageDateTime = messages.First().SentDateTime,
-                    LastMessageDateTime = messages.Last().SentDateTime,
+                    FirstMessageDateTime = fMessage.SentDate.ToDateTime(fMessage.SentTime),
+                    LastMessageDateTime = lMessage.SentDate.ToDateTime(lMessage.SentTime),
                     MessageCount = messages.Count,
                     FromMessageId = 1,
                     ToMessageId = messages.Count,
@@ -83,7 +86,7 @@ namespace WappChatAnalyzer.Services
             }
             else
             {
-                var messagesToFetch = messages.Where(o => o.SentDateTime == lastMessage.SentDateTime).Count();
+                var messagesToFetch = messages.Where(o => o.SentDate == lastMessage.SentDate && o.SentTime == lastMessage.SentTime).Count();
                 var messagesInDatabase = context.Messages.Where(o => o.WorkspaceId == workspaceId).OrderByDescending(o => o.Id).Take(messagesToFetch).ToList();
 
                 var newMessagesStartIndex = -1;
@@ -119,11 +122,14 @@ namespace WappChatAnalyzer.Services
 
                 context.Messages.AddRange(messages.Skip(newMessagesStartIndex));
 
+                var fMessage = messages.First();
+                var lMessage = messages.Last();
+
                 context.ImportHistories.Add(new ImportHistory()
                 {
                     ImportDateTime = DateTime.Now,
-                    FirstMessageDateTime = messages.First().SentDateTime,
-                    LastMessageDateTime = messages.Last().SentDateTime,
+                    FirstMessageDateTime = fMessage.SentDate.ToDateTime(fMessage.SentTime),
+                    LastMessageDateTime = lMessage.SentDate.ToDateTime(lMessage.SentTime),
                     MessageCount = messages.Count,
                     FromMessageId = nextMessageId,
                     ToMessageId = nextMessageId + (messages.Count - 1 - newMessagesStartIndex),
@@ -154,23 +160,25 @@ namespace WappChatAnalyzer.Services
                 .ToList();
         }
 
-        public Message GetFirstMessageOfDayBefore(int workspaceId, DateTime dateTime)
+        public Message GetFirstMessageOfDayBefore(int workspaceId, DateOnly date)
         {
             return context.Messages
                 .Where(o => o.WorkspaceId == workspaceId)
-                .Where(o => o.SentDateTime < dateTime)
-                .OrderByDescending(o => o.SentDateTime.Date)
-                .ThenBy(o => o.SentDateTime.TimeOfDay)
+                .Where(o => o.SentDate < date)
+                .OrderByDescending(o => o.SentDate)
+                .ThenBy(o => o.SentTime)
                 .ThenBy(o => o.Id)
                 .FirstOrDefault();
         }
 
-        public Message GetFirstMessageOfDayAfter(int workspaceId, DateTime dateTime)
+        public Message GetFirstMessageOfDayAfter(int workspaceId, DateOnly date)
         {
             return context.Messages
                 .Where(o => o.WorkspaceId == workspaceId)
-                .OrderBy(o => o.Id)
-                .Where(o => o.SentDateTime >= dateTime)
+                .OrderBy(o => o.SentDate)
+                .ThenBy(o => o.SentTime)
+                .ThenBy(o => o.Id)
+                .Where(o => o.SentDate >= date)
                 .FirstOrDefault();
         }
     }

@@ -85,9 +85,9 @@ namespace WappChatAnalyzer.Controllers
 
         [HttpGet("getFirstMessageOfDayBefore")]
         [SelectedWorkspace]
-        public MessageDTO GetFirstMessageOfDayBefore(DateTime dateTime)
+        public MessageDTO GetFirstMessageOfDayBefore(DateOnly date)
         {
-            var message = this.messageService.GetFirstMessageOfDayBefore(HttpContext.SelectedWorkspace(), dateTime);
+            var message = this.messageService.GetFirstMessageOfDayBefore(HttpContext.SelectedWorkspace(), date);
             if (message == null)
                 return null;
 
@@ -96,9 +96,9 @@ namespace WappChatAnalyzer.Controllers
 
         [HttpGet("getFirstMessageOfDayAfter")]
         [SelectedWorkspace]
-        public MessageDTO GetFirstMessageOfDayAfter(DateTime dateTime)
+        public MessageDTO GetFirstMessageOfDayAfter(DateOnly date)
         {
-            var message = this.messageService.GetFirstMessageOfDayAfter(HttpContext.SelectedWorkspace(), dateTime);
+            var message = this.messageService.GetFirstMessageOfDayAfter(HttpContext.SelectedWorkspace(), date);
             if (message == null)
                 return null;
 
