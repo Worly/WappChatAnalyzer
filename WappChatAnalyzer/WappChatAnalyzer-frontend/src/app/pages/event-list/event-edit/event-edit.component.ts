@@ -56,7 +56,7 @@ export class EventEditComponent implements OnInit {
       date.setDate(date.getDate() - 1);
 
       e.date = dateFormat(date, "yyyy-mm-dd");
-      
+
       this.loadedEvent(e);
     }
 
@@ -80,6 +80,11 @@ export class EventEditComponent implements OnInit {
   }
 
   onPropertyChange(propertyName: string, value: any) {
+
+    //DIRTY FIX
+    if (propertyName == "date")
+      value = dateFormat(value, "yyyy-mm-dd");
+
     this.isDirty = true;
     this.newEvent[propertyName] = value;
   }
