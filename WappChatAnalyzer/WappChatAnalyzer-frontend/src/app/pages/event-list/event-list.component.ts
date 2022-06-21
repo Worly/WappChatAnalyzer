@@ -1,6 +1,6 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { EventService } from '../../services/event.service';
-import { EventInfo } from "../../dtos/event";
+import { EventInfo, EventTemplate } from "../../dtos/event";
 import { groupBy } from "../../utils";
 import * as dateFormat from "dateformat";
 import { Router } from '@angular/router';
@@ -10,17 +10,19 @@ import { Subscription, Unsubscribable } from 'rxjs';
 @Component({
   selector: 'app-event-list',
   templateUrl: './event-list.component.html',
-  styleUrls: ['./event-list.component.css']
+  styleUrls: ['./event-list.component.scss']
 })
 export class EventListComponent implements OnInit, OnDestroy {
 
   events: { [Key: string]: EventInfo[] };
+  eventTemplates: EventTemplate[] = [];
 
   skip = 0;
   take = 10;
 
   editingEventInfo: EventInfo = null;
   addingNew: boolean = false;
+  selectedTemplate: EventTemplate = null;
 
   count: number;
 
@@ -33,6 +35,8 @@ export class EventListComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.filterService.eventSearchTermChanged.subscribe(() => this.load()));
     this.subscriptions.push(this.filterService.subscribeToFilterChanged([FilterType.DATE_RANGE, FilterType.GROUPING_PERIOD], () => this.load()));
     this.load();
+
+    this.eventService.getEventTemplates().subscribe(templates => this.eventTemplates = templates);
   }
 
   ngOnDestroy() {
@@ -163,5 +167,24 @@ export class EventListComponent implements OnInit, OnDestroy {
 
   onNewClick() {
     this.addingNew = true;
+    this.selectedTemplate = null;
+  }
+
+  onNewWithTemplateClick(template: EventTemplate) {
+    this.addingNew = true;
+    this.selectedTemplate = template;
+  }
+
+  getTemplateDisplay(template: EventTemplate): string {
+    var result = "";
+    if (template.emoji != null)
+      result += template.emoji + " ";
+
+    if (template.name != null)
+      result += template.name;
+    else if (template.eventGroupId != null)
+      result += template.eventGroupName;
+
+    return result;
   }
 }

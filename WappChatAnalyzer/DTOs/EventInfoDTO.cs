@@ -26,6 +26,41 @@ namespace WappChatAnalyzer.DTOs
         public EventGroupDTO EventGroup { get; set; }
     }
 
+    public class EventTemplateDTO
+    {
+        public string Name { get; set; }
+        public string Emoji { get; set; }
+        public int? EventGroupId { get; set; }
+        /// <summary>
+        /// This field is only informational
+        /// </summary>
+        public string EventGroupName { get; set; }
+
+        public int GetComplexity()
+        {
+            int c = 0;
+            if (Name != null) c++;
+            if (Emoji != null) c++;
+            if (EventGroupId != null) c++;
+
+            return c;
+        }
+
+        public bool IsContainedIn(EventTemplateDTO other)
+        {
+            if (this.Name != null && this.Name != other.Name)
+                return false;
+
+            if (this.Emoji != null && this.Emoji != other.Emoji)
+                return false;
+
+            if (this.EventGroupId != null && this.EventGroupId != other.EventGroupId)
+                return false;
+
+            return true;
+        }
+    }
+
     public class EventGroupDTO
     {
         public int Id { get; set; }

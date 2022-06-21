@@ -8,12 +8,18 @@
             <app-date-range-filter></app-date-range-filter>
         </div>
 
-        <app-button *ngIf="!addingNew" text="Add new" icon="plus" look="outlined" borderStyle="dashed" color="success"
-            alignContent="center" width="100%" (onClick)="onNewClick()"></app-button>
+        <div *ngIf="!addingNew" class="add-new-buttons-container">
+            <app-button text="Add new" icon="plus" look="outlined" borderStyle="dashed" color="success"
+                alignContent="center" (onClick)="onNewClick()"></app-button>
+
+            <app-button *ngFor="let template of eventTemplates.slice(0, 4)" [text]="getTemplateDisplay(template)"
+                look="outlined" borderStyle="dashed" color="success" alignContent="center" (onClick)="onNewWithTemplateClick(template)"></app-button>
+        </div>
+
 
         <div *ngIf="addingNew" class="w-card item-wrapper">
             <div class="item">
-                <app-event-edit style="width: 100%;" [isNew]="true" (onDone)="onNewDone($event)"></app-event-edit>
+                <app-event-edit style="width: 100%;" [template]="selectedTemplate" [isNew]="true" (onDone)="onNewDone($event)"></app-event-edit>
             </div>
         </div>
     </div>

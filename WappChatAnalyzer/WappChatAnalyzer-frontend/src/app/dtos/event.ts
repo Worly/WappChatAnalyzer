@@ -16,6 +16,13 @@ export class Event {
     public eventGroup: EventGroup;
 }
 
+export class EventTemplate {
+    public name: string;
+    public emoji: string;
+    public eventGroupId: number;
+    public eventGroupName: string;
+}
+
 export class EventGroup {
     public id: number;
     public name: string;

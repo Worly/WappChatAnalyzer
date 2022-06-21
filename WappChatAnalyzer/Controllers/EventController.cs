@@ -84,5 +84,12 @@ namespace WappChatAnalyzer.Controllers
 
             return Ok();
         }
+
+        [HttpGet("getTemplates")]
+        [SelectedWorkspace]
+        public ActionResult<List<EventTemplateDTO>> GetTemplates()
+        {
+            return eventService.GetTemplates(HttpContext.SelectedWorkspace());
+        }
     }
 }

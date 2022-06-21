@@ -17,6 +17,7 @@ namespace WappChatAnalyzer.Services
         Event SaveEvent(EventDTO eventDTO, int workspaceId);
         Event AddEvent(EventDTO eventDTO, int workspaceId);
         bool DeleteEvent(int id, int workspaceId);
+        List<EventTemplateDTO> GetTemplates(int workspaceId);
     }
 
     public class EventService : IEventService
@@ -115,7 +116,7 @@ namespace WappChatAnalyzer.Services
 
             if (ev.Order > oldOrder)
             {
-                foreach(var evnt in mainDbContext.Events.Where(o => o.WorkspaceId == workspaceId).Where(o => o.Date == ev.Date && o.Order > oldOrder && o.Order <= ev.Order))
+                foreach (var evnt in mainDbContext.Events.Where(o => o.WorkspaceId == workspaceId).Where(o => o.Date == ev.Date && o.Order > oldOrder && o.Order <= ev.Order))
                 {
                     if (evnt.Id == ev.Id)
                         continue;
@@ -183,6 +184,57 @@ namespace WappChatAnalyzer.Services
             mainDbContext.SaveChanges();
 
             return true;
+        }
+
+        public List<EventTemplateDTO> GetTemplates(int workspaceId)
+        {
+            var lastEvents = mainDbContext.Events
+                .Where(o => o.WorkspaceId == workspaceId)
+                .Include(o => o.EventGroup)
+                .OrderByDescending(o => o.Date)
+                .ThenBy(o => o.Id)
+                .Take(10)
+                .Select(o => o.GetDTO())
+                .ToList();
+
+            var resultsMulti = new List<(EventTemplateDTO dto, int count)>();
+
+            foreach (var group in lastEvents.GroupBy(o => o.Name))
+                resultsMulti.Add((new EventTemplateDTO() { Name = group.Key }, group.Count()));
+
+            foreach (var group in lastEvents.GroupBy(o => o.Emoji))
+                resultsMulti.Add((new EventTemplateDTO() { Emoji = group.Key }, group.Count()));
+
+            foreach (var group in lastEvents.GroupBy(o => o.EventGroup.Id))
+                resultsMulti.Add((new EventTemplateDTO() { EventGroupId = group.Key, EventGroupName = group.First().EventGroup.Name }, group.Count()));
+
+            foreach (var group in lastEvents.GroupBy(o => (o.Name, o.Emoji)))
+                resultsMulti.Add((new EventTemplateDTO() { Name = group.Key.Name, Emoji = group.Key.Emoji }, group.Count()));
+
+            foreach (var group in lastEvents.GroupBy(o => (o.Name, o.EventGroup.Id)))
+                resultsMulti.Add((new EventTemplateDTO() { Name = group.Key.Name, EventGroupId = group.Key.Id, EventGroupName = group.First().EventGroup.Name }, group.Count()));
+
+            foreach (var group in lastEvents.GroupBy(o => (o.Emoji, o.EventGroup.Id)))
+                resultsMulti.Add((new EventTemplateDTO() { Emoji = group.Key.Emoji, EventGroupId = group.Key.Id, EventGroupName = group.First().EventGroup.Name }, group.Count()));
+
+            foreach (var group in lastEvents.GroupBy(o => (o.Name, o.Emoji, o.EventGroup.Id)))
+                resultsMulti.Add((new EventTemplateDTO() { Name = group.Key.Name, Emoji = group.Key.Emoji, EventGroupId = group.Key.Id, EventGroupName = group.First().EventGroup.Name }, group.Count()));
+
+            var results = resultsMulti.OrderByDescending(o => o.count * o.dto.GetComplexity()).ThenByDescending(o => o.dto.GetComplexity()).Select(o => o.dto).ToList();
+
+            for (int i = 0; i < results.Count; i++)
+            {
+                for (int j = i + 1; j < results.Count; j++)
+                {
+                    if (results[j].IsContainedIn(results[i]))
+                    {
+                        results.RemoveAt(j);
+                        j--;
+                    }
+                }
+            }
+
+            return results;
         }
     }
 }

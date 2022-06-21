@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { appConfig } from '../app.config';
-import { EventInfo, Event, EventGroup } from "../dtos/event";
+import { EventInfo, Event, EventGroup, EventTemplate } from "../dtos/event";
 import { FilterService } from './filter.service';
 import * as dateFormat from "dateformat";
 
@@ -61,5 +61,9 @@ export class EventService {
 
   deleteEvent(eventId: number): Observable<any> {
     return this.http.delete(appConfig.apiUrl + "event/deleteEvent/" + eventId);
+  }
+
+  getEventTemplates(): Observable<EventTemplate[]> {
+    return this.http.get<EventTemplate[]>(appConfig.apiUrl + "event/getTemplates");
   }
 }

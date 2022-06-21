@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EventService } from 'src/app/services/event.service';
-import { Event, EventGroup, EventInfo } from "../../../dtos/event";
+import { Event, EventGroup, EventInfo, EventTemplate } from "../../../dtos/event";
 import { EmojiButton } from "@joeattardi/emoji-button";
 import * as dateFormat from "dateformat";
 
@@ -21,6 +21,9 @@ export class EventEditComponent implements OnInit {
 
   @Input()
   isNew: boolean;
+
+  @Input()
+  template: EventTemplate;
 
   originalEvent: Event;
   event: Event;
@@ -57,7 +60,21 @@ export class EventEditComponent implements OnInit {
 
       e.date = dateFormat(date, "yyyy-mm-dd");
 
+      if (this.template != null) {
+        e.emoji = this.template.emoji;
+        e.name = this.template.name;
+        if (this.template.eventGroupId != null) {
+          var eventGroup = new EventGroup();
+          eventGroup.id = this.template.eventGroupId;
+          eventGroup.name = this.template.eventGroupName;
+          e.eventGroup = eventGroup;
+        }
+      }
+
       this.loadedEvent(e);
+
+      if (this.template != null)
+        this.isDirty = true;
     }
 
     this.emojiButton.on("emoji", selection => {

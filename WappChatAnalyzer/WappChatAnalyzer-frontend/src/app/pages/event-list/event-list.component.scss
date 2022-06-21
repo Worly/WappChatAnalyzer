@@ -24,8 +24,19 @@
     margin-bottom: 30px;
 }
 
-.filters>*:first-child {
+.filters > *:first-child {
     flex-grow: 1;
+}
+
+.add-new-buttons-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    & > app-button {
+        flex-grow: 1;
+    }
 }
 
 .blankSpace {
