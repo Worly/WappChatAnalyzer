@@ -38,7 +38,7 @@ namespace WappChatAnalyzer.Domain
 
             modelBuilder.Entity<Message>()
                 .Property(o => o.NormalizedSentDate)
-                .HasComputedColumnSql("CASE WHEN EXTRACT(hour FROM SentTime) < 7 THEN DATE_ADD(SentDate, INTERVAL -1 day) ELSE SentDate END", true);
+                .HasComputedColumnSql("CASE WHEN EXTRACT(hour FROM \"SentTime\") < 7 THEN \"SentDate\" - INTERVAL '1 day' ELSE \"SentDate\" END", true);
         }
 
         public MessageDTO GetDTO()

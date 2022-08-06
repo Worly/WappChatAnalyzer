@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WappChatAnalyzer.Domain;
 
 #nullable disable
@@ -17,23 +18,27 @@ namespace WappChatAnalyzer.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.2")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("WappChatAnalyzer.Domain.CustomStatistic", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .HasMaxLength(60)
-                        .HasColumnType("varchar(60)");
+                        .HasColumnType("character varying(60)");
 
                     b.Property<string>("Regex")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("WorkspaceId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -46,25 +51,27 @@ namespace WappChatAnalyzer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
                     b.Property<string>("Emoji")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("EventGroupId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("Order")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("WorkspaceId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -79,10 +86,12 @@ namespace WappChatAnalyzer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -93,31 +102,33 @@ namespace WappChatAnalyzer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("FirstMessageDateTime")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("FromMessageId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("ImportDateTime")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("LastMessageDateTime")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("MessageCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Overlap")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("ToMessageId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("WorkspaceId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -129,30 +140,30 @@ namespace WappChatAnalyzer.Migrations
             modelBuilder.Entity("WappChatAnalyzer.Domain.Message", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("WorkspaceId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsMedia")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<DateOnly>("NormalizedSentDate")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("date")
-                        .HasComputedColumnSql("CASE WHEN EXTRACT(hour FROM SentTime) < 7 THEN DATE_ADD(SentDate, INTERVAL -1 day) ELSE SentDate END", true);
+                        .HasComputedColumnSql("CASE WHEN EXTRACT(hour FROM \"SentTime\") < 7 THEN \"SentDate\" - INTERVAL '1 day' ELSE \"SentDate\" END", true);
 
                     b.Property<int>("SenderId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateOnly>("SentDate")
                         .HasColumnType("date");
 
                     b.Property<TimeOnly>("SentTime")
-                        .HasColumnType("time(6)");
+                        .HasColumnType("time without time zone");
 
                     b.Property<string>("Text")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("Id", "WorkspaceId");
 
@@ -171,13 +182,15 @@ namespace WappChatAnalyzer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("WorkspaceId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -190,16 +203,18 @@ namespace WappChatAnalyzer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateOnly>("ForDate")
                         .HasColumnType("date");
 
                     b.Property<string>("StatisticName")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("text");
 
                     b.Property<int>("WorkspaceId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -215,16 +230,18 @@ namespace WappChatAnalyzer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("SenderId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("StatisticCacheId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Total")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -239,22 +256,24 @@ namespace WappChatAnalyzer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Email")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<byte[]>("Salt")
-                        .HasColumnType("longblob");
+                        .HasColumnType("bytea");
 
                     b.Property<int?>("SelectedWorkspaceId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Username")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -265,13 +284,15 @@ namespace WappChatAnalyzer.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("OwnerId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

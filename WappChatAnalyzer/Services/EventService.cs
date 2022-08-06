@@ -47,7 +47,7 @@ namespace WappChatAnalyzer.Services
             if (searchTerm != null && searchTerm != "")
             {
                 var search = searchTerm.Split(' ').Aggregate((f, s) => f + "* " + s) + "*";
-                query = query.Where(o => EF.Functions.Match(o.Name, search, MySqlMatchSearchMode.Boolean));
+                query = query.Where(o => EF.Functions.ToTsVector(o.Name).Matches(search));
             }
 
             if (skip != null)
@@ -72,7 +72,7 @@ namespace WappChatAnalyzer.Services
             if (searchTerm != null && searchTerm != "")
             {
                 var search = searchTerm.Split(' ').Aggregate((f, s) => f + "* " + s) + "*";
-                query = query.Where(o => EF.Functions.Match(o.Name, search, MySqlMatchSearchMode.Boolean));
+                query = query.Where(o => EF.Functions.ToTsVector(o.Name).Matches(search));
             }
 
             return query.Count();

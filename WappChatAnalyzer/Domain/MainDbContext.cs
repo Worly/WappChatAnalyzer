@@ -18,11 +18,11 @@ namespace WappChatAnalyzer.Domain
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connectionString = "server=127.0.0.1;database=WappChatAnalyzer;user=root;password=#MozeSve123";
+            var connectionString = "Server=127.0.0.1;Port=5433;Database=WappChatAnalyzer;Userid=WappChatAnalyzerUser;Password=Mg4gDb9mhWr8HRd92pBT";
             optionsBuilder
                 .UseLoggerFactory(LoggerFactory.Create(b => b.AddConsole()))
                 .EnableSensitiveDataLogging()
-                .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                .UseNpgsql(connectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
