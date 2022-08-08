@@ -16,13 +16,16 @@ namespace WappChatAnalyzer.Domain
         public DbSet<CustomStatistic> CustomStatistics { get; set; }
         public DbSet<StatisticCache> StatisticCaches { get; set; }
 
+        public MainDbContext(DbContextOptions<MainDbContext> options) : base(options)
+        {
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connectionString = "Server=127.0.0.1;Port=5433;Database=WappChatAnalyzer;Userid=WappChatAnalyzerUser;Password=Mg4gDb9mhWr8HRd92pBT";
             optionsBuilder
                 .UseLoggerFactory(LoggerFactory.Create(b => b.AddConsole()))
                 .EnableSensitiveDataLogging()
-                .UseNpgsql(connectionString);
+                .UseNpgsql();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

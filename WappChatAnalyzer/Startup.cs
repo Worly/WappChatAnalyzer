@@ -8,22 +8,47 @@ using System;
 using WappChatAnalyzer.Services;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using WappChatAnalyzer.Services.Workspaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace WappChatAnalyzer
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            WebHostEnvironment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment WebHostEnvironment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<MainDbContext>();
+            services.AddDbContext<MainDbContext>(options =>
+            {
+                var connectionString = Configuration.GetConnectionString("Main");
+                if (WebHostEnvironment.IsProduction() && Environment.GetEnvironmentVariable("POSTGRES_HOSTNAME") != null)
+                {
+                    var hostname = Environment.GetEnvironmentVariable("POSTGRES_HOSTNAME");
+                    var port = Environment.GetEnvironmentVariable("POSTGRES_PORT");
+                    if (port == null)
+                        throw new ArgumentNullException("POSTGRES_PORT");
+
+                    var user = Environment.GetEnvironmentVariable("POSTGRES_USER");
+                    if (user == null)
+                        throw new ArgumentNullException("POSTGRES_USER");
+
+                    var password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
+                    if (password == null)
+                        throw new ArgumentNullException("POSTGRES_PASSWORD");
+
+                    connectionString = $"Server={hostname};Port={port};Database=Appy;Userid={user};Password={password}";
+                }
+
+                options.UseNpgsql(connectionString);
+            });
 
             //services.AddSingleton<IMessageService, LocalMessageService>();
             services.AddSingleton<IJwtService, JwtService>();
