@@ -46,8 +46,8 @@ namespace WappChatAnalyzer.Services
 
             if (searchTerm != null && searchTerm != "")
             {
-                var search = searchTerm.Split(' ').Aggregate((f, s) => f + "* " + s) + "*";
-                query = query.Where(o => EF.Functions.ToTsVector(o.Name).Matches(search));
+                var search = searchTerm.Trim(' ', '&', '*', ':').Split(' ').Aggregate((f, s) => f + "&" + s) + ":*";
+                query = query.Where(o => EF.Functions.ToTsVector(o.Name).Matches(EF.Functions.ToTsQuery(search)));
             }
 
             if (skip != null)
@@ -71,8 +71,8 @@ namespace WappChatAnalyzer.Services
 
             if (searchTerm != null && searchTerm != "")
             {
-                var search = searchTerm.Split(' ').Aggregate((f, s) => f + "* " + s) + "*";
-                query = query.Where(o => EF.Functions.ToTsVector(o.Name).Matches(search));
+                var search = searchTerm.Trim(' ', '&', '*', ':').Split(' ').Aggregate((f, s) => f + "&" + s) + ":*";
+                query = query.Where(o => EF.Functions.ToTsVector(o.Name).Matches(EF.Functions.ToTsQuery(search)));
             }
 
             return query.Count();
