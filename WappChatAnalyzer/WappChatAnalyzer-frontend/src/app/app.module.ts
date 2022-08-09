@@ -56,6 +56,8 @@ import { DialogComponent } from './components/dialog/dialog.component';
 import { WorkspaceEditComponent } from './pages/workspaces/single-workspace/workspace-edit/workspace-edit.component';
 import { SelectedWorkspaceComponent } from './components/selected-workspace/selected-workspace.component';
 import { WorkspaceInterceptor } from './services/workspaces/workspace-interceptor.service';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 
 
@@ -108,7 +110,13 @@ import { WorkspaceInterceptor } from './services/workspaces/workspace-intercepto
     MatDatepickerModule,
     MatNativeDateModule,
     ToppyModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    })
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: CustomReuseStrategy },
