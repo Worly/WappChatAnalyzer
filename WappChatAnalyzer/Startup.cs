@@ -44,7 +44,7 @@ namespace WappChatAnalyzer
                     if (password == null)
                         throw new ArgumentNullException("POSTGRES_PASSWORD");
 
-                    connectionString = $"Server={hostname};Port={port};Database=Appy;Userid={user};Password={password}";
+                    connectionString = $"Server={hostname};Port={port};Database=WappChatAnalyzer;Userid={user};Password={password}";
                 }
 
                 options.UseNpgsql(connectionString);
