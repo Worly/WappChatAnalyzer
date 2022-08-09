@@ -8,7 +8,7 @@
         </app-event-group-picker>
     </div>
     <div class="name">
-        <div class="underlined" contenteditable="true" (input)="onPropertyChange('name', $event.target.innerText)">
+        <div class="underlined" contenteditable="true" (input)="onPropertyChange('name', $any($event.target).innerText)">
             {{event.name}}</div>
     </div>
     <div class="order">
