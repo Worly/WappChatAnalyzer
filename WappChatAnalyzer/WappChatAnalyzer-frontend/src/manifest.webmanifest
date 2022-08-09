@@ -1,7 +1,7 @@
 {
   "name": "WappChatAnalyzer",
-  "short_name": "WappChatAnalyzer",
-  "theme_color": "#D05353",
+  "short_name": "Wappy",
+  "theme_color": "#d05353",
   "background_color": "#fff7f4",
   "display": "standalone",
   "scope": "./",
