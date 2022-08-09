@@ -9,7 +9,9 @@
 @include mat.core();
 
 $mat-my: (
+  100: #16b9c5,
   500: #16b9c5,
+  700: #16b9c5,
   contrast: (
     50: rgba(black, 0.87),
     100: rgba(black, 0.87),
