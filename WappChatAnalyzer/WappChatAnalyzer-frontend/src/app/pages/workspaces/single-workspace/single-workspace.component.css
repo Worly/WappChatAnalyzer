@@ -2,15 +2,16 @@
     padding: 20px 30px;
     max-width: 600px;
     display: flex;
+    align-items: center;
 }
 
 .workspace-name {
-    font-size: 1.8em;
+    font-size: 1.3rem;
     font-weight: bold;
 }
 
 .delete-dialog-text {
-    font-size: 1.3rem;
+    font-size: 1rem;
     max-width: 700px;
 }
 

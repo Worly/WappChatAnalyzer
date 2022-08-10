@@ -13,6 +13,7 @@ import { Sender } from '../../dtos/sender';
 })
 export class ChatComponent implements OnInit, AfterViewInit {
   readonly LOAD_COUNT = 30;
+  readonly MAX_NUMBER_OF_MESSAGES = 120;
 
   @ViewChild("chat")
   chat: ElementRef;
@@ -51,11 +52,6 @@ export class ChatComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.setChatHeight();
-  }
-
-  private setChatHeight() {
-    this.chat.nativeElement.style.height = (window.innerHeight - 150) + "px";
   }
 
   private getDistanceFromTop(message: Message): number {
@@ -141,7 +137,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
         var distanceFromTop = this.getDistanceFromTop(firstMessage);
 
       this.messages.unshift(...newMessages);
-      if (this.messages.length > 500) {
+      if (this.messages.length > this.MAX_NUMBER_OF_MESSAGES) {
         this.messages.splice(this.messages.length - this.LOAD_COUNT, this.LOAD_COUNT);
         this.nothingToLoadMoreLater = false;
       }
@@ -157,7 +153,7 @@ export class ChatComponent implements OnInit, AfterViewInit {
         var distanceFromBottom = this.getDistanceFromBottom(lastMessage);
 
       this.messages.push(...newMessages);
-      if (this.messages.length > 500) {
+      if (this.messages.length > this.MAX_NUMBER_OF_MESSAGES) {
         this.messages.splice(0, this.LOAD_COUNT);
         this.nothingToLoadMoreEarlier = false;
       }
@@ -187,11 +183,6 @@ export class ChatComponent implements OnInit, AfterViewInit {
       this.loadMoreEarlier();
     if (this.chat.nativeElement.scrollTop + this.chat.nativeElement.offsetHeight >= this.chat.nativeElement.scrollHeight)
       this.loadMoreLater();
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onWindowResize(event) {
-    this.setChatHeight();
   }
 
   isNotLastInGroup(index: number): boolean {
