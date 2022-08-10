@@ -3,7 +3,7 @@
     --message-out: #056162;
     --font-color: rgba(241, 241, 242, 0.95);
     --time-color: rgba(241, 241, 242, 0.63);
-    --background-image: url('/assets/chat-background-dark.png');
+    --background-image: url("/assets/chat-background-dark.png");
 }
 
 /* * {
@@ -22,34 +22,35 @@
     flex: 0 0 auto;
     background-image: var(--background-image);
     background-repeat: repeat;
-    height: 800px;
+    height: 100%;
     width: 100%;
     overflow-y: scroll;
 }
 
 .splitScreenContainer {
+    display: grid;
     width: 100%;
-    display: flex;
-    flex-flow: row;
-}
-
-.splitScreenContainer>div {
-    flex: 1 1 0px;
-    width: 50%;
+    height: 100%;
+    grid-template-rows: 100%;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 10px 0px;
 }
 
 @media screen and (max-width: 992px) {
     .splitScreenContainer {
-        flex-flow: column-reverse;
+        grid-template-rows: max-content minmax(1px, 1fr);
+        grid-template-columns: 100%;
     }
-    .splitScreenContainer>div {
-        flex: 1 1 0px;
-        width: 100%;
+
+    .splitScreenContainer > div:nth-child(1) {
+        order: 2;
     }
 }
 
 .chat span {
-    font-family: "Segoe UI", "Helvetica Neue", Helvetica, "Lucida Grande", Arial, Ubuntu, Cantarell, "Fira Sans", sans-serif !important;
+    font-family: "Segoe UI", "Helvetica Neue", Helvetica, "Lucida Grande", Arial, Ubuntu, Cantarell, "Fira Sans",
+        sans-serif !important;
 }
 
 .message-container.message-not-last-in-group {
@@ -95,7 +96,7 @@
 }
 
 .shadow {
-    box-shadow: 0 1px .5px rgba(0, 0, 0, .13);
+    box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
 }
 
 .message-background {
@@ -114,7 +115,7 @@
 
 .text {
     position: relative;
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
     white-space: pre-wrap;
 }
 
@@ -144,7 +145,8 @@
     vertical-align: top;
 }
 
-.message-in .tail-container, .tail-override-left .tail-container {
+.message-in .tail-container,
+.tail-override-left .tail-container {
     left: -8px;
 }
 
@@ -169,7 +171,8 @@
     background-color: var(--message-in);
 }
 
-.message-out .tail-container, .tail-override-right .tail-container {
+.message-out .tail-container,
+.tail-override-right .tail-container {
     right: -8px;
 }
 
@@ -217,7 +220,7 @@ svg {
     width: 100%;
     height: 100%;
     background-color: black;
-    opacity: .1;
+    opacity: 0.1;
 }
 
 .button:not(.disabled):active::before {
@@ -228,13 +231,17 @@ svg {
     width: 100%;
     height: 100%;
     background-color: black;
-    opacity: .2;
+    opacity: 0.2;
 }
 
 .date {
     flex-grow: 8;
     width: 250px;
     text-align: center;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .left {
@@ -242,7 +249,7 @@ svg {
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
     color: rgb(80, 80, 80);
-    height: 45px;
+    height: 40px;
     text-align: center;
 }
 
@@ -251,7 +258,7 @@ svg {
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
     color: rgb(80, 80, 80);
-    height: 45px;
+    height: 40px;
     text-align: center;
 }
 
