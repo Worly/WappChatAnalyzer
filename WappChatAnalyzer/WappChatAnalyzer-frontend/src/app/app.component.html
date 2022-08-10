@@ -5,9 +5,9 @@
       <a class="navbar-brand" href="home">WhatsApp chat analyzer</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
         aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+        <fa-icon [icon]="['fas', 'bars']" [style.color]="'white'"></fa-icon>
       </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
+      <div #navbar class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item" *ngIf="authService.isLoggedIn() && workspaceService.getSelected()">
             <a [routerLink]="'/home'" class="nav-link" [routerLinkActive]="'active'" href="#">Home</a>
@@ -38,7 +38,7 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
-        <div class="mt-5">
+        <div class="mt-1">
           <router-outlet></router-outlet>
         </div>
       </div>

@@ -11,8 +11,9 @@
         <div class="underlined" contenteditable="true" (input)="onPropertyChange('name', $any($event.target).innerText)">
             {{event.name}}</div>
     </div>
+    <div class="line-break"></div>
     <div class="order">
-        <div *ngIf="!isNew">
+        <div *ngIf="!isNew" class="order-container">
             <span class="orderButton no-select" (click)="decreaseOrder()">▲</span>
             {{newEvent.order}}
             <span class="orderButton no-select" (click)="increaseOrder()">▼</span>
@@ -22,8 +23,7 @@
         <div (click)="datePicker.open()">
             {{event.date | date: 'dd/MM/yyyy'}}
         </div>
-        <input [matDatepicker]="datePicker" [(ngModel)]="event.date" (ngModelChange)="onPropertyChange('date', $event)"
-            style="height: 0px; visibility: hidden; position: absolute;">
+        <input [matDatepicker]="datePicker" [(ngModel)]="event.date" (ngModelChange)="onPropertyChange('date', $event)">
         <mat-datepicker #datePicker></mat-datepicker>
     </div>
 </div>

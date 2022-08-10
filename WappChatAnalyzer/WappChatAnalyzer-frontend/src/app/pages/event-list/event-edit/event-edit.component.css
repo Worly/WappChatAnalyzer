@@ -1,16 +1,18 @@
 .item {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    flex-wrap: nowrap;
+    gap: 5px;
 }
 
 .emoji {
-    width: 80px;
     cursor: pointer;
+    min-width: 55px;
+    flex: 0 0;
 }
 
-.emoji>div {
-    font-size: 2.5rem;
+.emoji > div {
+    font-size: 1.8rem;
     text-align: center;
     width: min-content;
     border: 2px dashed black;
@@ -22,11 +24,11 @@
     padding: 0px 3px;
 }
 
-.emoji>.empty {
-    font-size: 2.5rem;
+.emoji > .empty {
+    font-size: 1.8rem;
     text-align: center;
-    width: 64px;
-    height: 64px;
+    width: 50px;
+    height: 50px;
     border: 2px dashed black;
     border-radius: 5px;
     margin-left: auto;
@@ -37,19 +39,45 @@
 }
 
 .groupName {
-    width: 180px;
+    min-width: 100px;
+    flex: 0 0;
 }
 
-.name>div {
-    font-size: 1.5rem;
+.name {
+    flex: 1 1;
+}
+
+.name > div {
+    font-size: 1rem;
     font-weight: bold;
     min-width: 100px;
 }
 
+.line-break {
+    width: 0;
+}
+
+@media screen and (max-width: 550px) {
+    .line-break {
+        width: 100%;
+    }
+
+    .groupName {
+        min-width: 60px;
+    }
+}
+
 .order {
-    margin-left: auto;
-    min-width: 150px;
     text-align: center;
+
+    margin-left: auto;
+    min-width: 75px;
+    flex: 0 0;
+}
+
+.order-container {
+    display: flex;
+    gap: 10px;
 }
 
 .orderButton {
@@ -67,12 +95,18 @@
 
 .eventDate {
     cursor: pointer;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    min-width: 110px;
+    flex: 0 0;
 }
 
-.eventDate>div {
+.eventDate > div {
     color: black;
     width: min-content;
-    margin: auto;
     white-space: nowrap;
     border-bottom: 2px dashed black;
     outline: none;
@@ -82,16 +116,25 @@
     padding-bottom: 3px;
 }
 
+.eventDate > input {
+    visibility: hidden;
+    position: relative;
+
+    height: 0;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border-width: 0;
+}
+
 .underlined {
-    width: min-content;
+    max-width: 100%;
+    width: fit-content;
     margin: auto;
-    white-space: nowrap;
     border-bottom: 2px dashed black;
     outline: none;
     margin-left: -3px;
-    padding-left: 3px;
     margin-right: -10px;
-    padding-right: 10px;
     margin-bottom: -5px;
     padding-bottom: 3px;
 }

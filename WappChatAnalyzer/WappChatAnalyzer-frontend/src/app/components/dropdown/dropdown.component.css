@@ -22,3 +22,7 @@
 app-button {
     white-space: nowrap;
 }
+
+:host::ng-deep app-button.main-button > div {
+   padding-right: 8px !important;
+}

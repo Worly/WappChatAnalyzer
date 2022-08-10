@@ -192,7 +192,7 @@ svg {
     width: 100%;
     max-width: 400px;
     margin: 0 auto;
-    font-size: 1.4rem;
+    font-size: 1rem;
     margin-bottom: 10px;
 }
 
@@ -266,13 +266,13 @@ svg {
 }
 
 .sender-container {
-    font-size: 1.4rem;
+    font-size: 1rem;
     margin: 0 auto;
     width: max-content;
     margin-bottom: 10px;
 }
 
-:host>>>.emoji {
+:host::ng-deep .emoji {
     height: 21px;
     vertical-align: top;
     image-rendering: -webkit-optimize-contrast;
