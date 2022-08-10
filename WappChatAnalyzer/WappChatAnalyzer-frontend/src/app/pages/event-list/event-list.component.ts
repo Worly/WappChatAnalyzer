@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { EventService } from '../../services/event.service';
 import { EventInfo, EventTemplate } from "../../dtos/event";
 import { groupBy } from "../../utils";
@@ -13,6 +13,8 @@ import { Subscription, Unsubscribable } from 'rxjs';
   styleUrls: ['./event-list.component.scss']
 })
 export class EventListComponent implements OnInit, OnDestroy {
+
+  @ViewChild("topCard") topCard: ElementRef<HTMLElement>;
 
   events: { [Key: string]: EventInfo[] };
   eventTemplates: EventTemplate[] = [];

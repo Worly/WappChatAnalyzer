@@ -1,7 +1,7 @@
 <div>
     <div class="title">Events</div>
 
-    <div class="stickyTop">
+    <div #topCard class="stickyTop">
         <div class="filters">
             <app-event-search></app-event-search>
             <app-event-group-filter></app-event-group-filter>
@@ -29,12 +29,13 @@
     <div class="result-count">Results: {{count}}</div>
 
     <div *ngFor="let day of events | keyvalue | orderBy: 'key' : true">
-        <div class="date" [ngClass]="{'top170': !addingNew, 'top290': addingNew}">{{formatDate(day.key, true)}}</div>
+        <div class="date">{{formatDate(day.key, true)}}</div>
         <div *ngFor="let item of day.value | orderBy: 'order'" class="w-card item-wrapper">
             <div *ngIf="editingEventInfo != item" class="item w-clickable">
                 <div class="emoji">{{item.emoji}}</div>
                 <div class="groupName">{{item.groupName}}</div>
                 <div class="name">{{item.name}}</div>
+                <div class="line-break"></div>
                 <div class="order">{{item.order}}</div>
                 <div class="eventDate">{{formatDate(item.date, false)}}</div>
                 <div class="w-overlay" (click)="onClick(item)"></div>

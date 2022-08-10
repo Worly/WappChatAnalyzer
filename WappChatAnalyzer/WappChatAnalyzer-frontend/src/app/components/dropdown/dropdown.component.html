@@ -1,5 +1,5 @@
 <div class="my-container">
-    <app-button [text]="value == null ? 'Select...' : display(value)" look="outlined" borderWidth="1px"
+    <app-button class="main-button" [text]="value == null ? 'Select...' : display(value)" look="outlined" borderWidth="1px"
         [icon]="pickerVisible ? 'caret-up' : 'caret-down'" iconPlacement="right" alignContent="center"
         (onClick)="togglePicker()">
     </app-button>

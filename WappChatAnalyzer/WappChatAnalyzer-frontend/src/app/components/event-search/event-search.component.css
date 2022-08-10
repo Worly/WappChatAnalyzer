@@ -1,6 +1,6 @@
 .myWrapper {
     position: relative;
-    font-size: 1.3rem;
+    font-size: 1rem;
     width: 100%;
 }
 
@@ -14,7 +14,7 @@
     display: inline-block;
     line-height: 20px;
     right: 15px;
-    top: 10px;
+    top: 7px;
     cursor: pointer;
     color: rgb(160, 160, 160);
 }
