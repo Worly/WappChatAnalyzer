@@ -11,6 +11,7 @@ import { StatisticDisplayCustomComponent } from './pages/statistic-display-custo
 import { StatisticDisplayEmojisComponent } from './pages/statistic-display-emojis/statistic-display-emojis.component';
 import { StatisticDisplaySingleEmojiComponent } from './pages/statistic-display-single-emoji/statistic-display-single-emoji.component';
 import { StatisticDisplayComponent } from './pages/statistic-display/statistic-display.component';
+import { VerifyComponent } from './pages/verify/verify.component';
 import { WorkspacesComponent } from './pages/workspaces/workspaces.component';
 import { LoggedInGuard, NotLoggedInGuard } from './services/auth/auth.guard';
 import { SelectedWorkspaceGuard } from './services/workspaces/workspace.guard';
@@ -97,6 +98,10 @@ const routes: Routes = [
     path: "chat",
     component: ChatComponent,
     canActivate: [LoggedInGuard, SelectedWorkspaceGuard]
+  },
+  { 
+    path: "verify",
+    component: VerifyComponent
   },
   {
     path: "error",

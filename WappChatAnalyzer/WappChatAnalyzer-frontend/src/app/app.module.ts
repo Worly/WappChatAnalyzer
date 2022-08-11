@@ -58,6 +58,7 @@ import { SelectedWorkspaceComponent } from './components/selected-workspace/sele
 import { WorkspaceInterceptor } from './services/workspaces/workspace-interceptor.service';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { VerifyComponent } from './pages/verify/verify.component';
 
 
 
@@ -98,7 +99,8 @@ import { environment } from '../environments/environment';
     ElementRefDirective,
     DialogComponent,
     WorkspaceEditComponent,
-    SelectedWorkspaceComponent
+    SelectedWorkspaceComponent,
+    VerifyComponent
   ],
   imports: [
     BrowserModule,

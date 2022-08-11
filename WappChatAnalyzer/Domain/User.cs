@@ -11,6 +11,8 @@ namespace WappChatAnalyzer.Domain
         public string PasswordHash { get; set; }
         public byte[] Salt { get; set; }
 
+        public bool VerifiedEmail { get; set; }
+
         public int? SelectedWorkspaceId { get; set; }
 
         public ICollection<Workspace> Workspaces { get; set; }

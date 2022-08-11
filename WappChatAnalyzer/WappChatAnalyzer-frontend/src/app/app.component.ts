@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
     this.router.events.subscribe(e => {
       if (e instanceof NavigationEnd)
         this.closeNavbar();
-    })
+    });
   }
 
   public logOut(): void {

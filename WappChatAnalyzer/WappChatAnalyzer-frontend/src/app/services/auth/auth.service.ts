@@ -1,8 +1,7 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable, OnInit } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
-import { tap } from "rxjs/operators";
 import { appConfig } from "src/app/app.config";
 import jwt_decode from "jwt-decode";
 import { WorkspaceService } from "../workspaces/workspace.service";
@@ -39,7 +38,7 @@ export class AuthService {
                     this.setToken(o.token).subscribe({
                         next: () => s.next(),
                         error: o => {
-                            this.logOut();
+                            this.logOut(false);
                             s.error(o)
                         }
                     });
@@ -60,7 +59,7 @@ export class AuthService {
                     this.setToken(o.token).subscribe({
                         next: () => s.next(),
                         error: o => {
-                            this.logOut();
+                            this.logOut(false);
                             s.error(o)
                         }
                     });
@@ -70,9 +69,19 @@ export class AuthService {
         });
     }
 
+    public verifyEmail(token: string): Observable<void> {
+        return this.httpClient.post<void>(appConfig.apiUrl + "user/verifyEmail", null, {
+            params: { token: token }
+        });
+    }
+
+    public requestVerificationEmail(): Observable<void> {
+        return this.httpClient.post<void>(appConfig.apiUrl + "user/requestVerificationEmail", null);
+    }
+
     private setToken(token: string): Observable<void> {
         if (token == null) {
-            this.logOut();
+            this.logOut(false);
             return null;
         }
 
@@ -90,11 +99,13 @@ export class AuthService {
         return this.token != null;
     }
 
-    public logOut(): void {
+    public logOut(navigateToLogin: boolean = true): void {
         this.token = null;
         localStorage.removeItem(this.TOKEN_KEY);
         this.workspaceService.clear();
-        this.router.navigate(["login"]);
+
+        if (navigateToLogin)
+            this.router.navigate(["login"]);
     }
 
     public getUsername(): string {
@@ -103,5 +114,13 @@ export class AuthService {
 
         var decoded = <any>jwt_decode(this.token);
         return decoded.username;
+    }
+
+    public getVerifiedEmail(): boolean {
+        if (!this.isLoggedIn())
+            return null;
+
+        var decoded = <any>jwt_decode(this.token);
+        return decoded.verifiedEmail;
     }
 }
