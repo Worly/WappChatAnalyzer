@@ -19,9 +19,9 @@ namespace WappChatAnalyzer.Services
     {
         private string jwtSecret;
 
-        public JwtService(IConfiguration configuration)
+        public JwtService(IConfigurationService configurationService)
         {
-            this.jwtSecret = configuration.GetValue<string>("JWT:Secret");
+            this.jwtSecret = configurationService.Get<string>("JwtSecret");
         }
 
         public bool ValidateToken(string token, out JwtSecurityToken jwtToken)
