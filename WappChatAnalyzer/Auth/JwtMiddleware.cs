@@ -30,7 +30,7 @@ namespace WappChatAnalyzer.Auth
         private void AttachUserToContext(HttpContext context, IUserService userService, string token)
         {
             if (jwtService.ValidateToken(token, out JwtSecurityToken jwtToken)) {
-                if (jwtToken.Claims.First(x => x.Type == "type")?.Value != "login")
+                if (jwtToken.Claims.FirstOrDefault(x => x.Type == "type")?.Value != "login")
                     return;
 
                 var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
