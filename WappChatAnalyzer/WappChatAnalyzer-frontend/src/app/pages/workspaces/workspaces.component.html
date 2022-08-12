@@ -1,12 +1,22 @@
 <div class="title">Workspaces</div>
 
-
 <div class="workspaces-container">
     <app-button width="100%" text="New workspace" icon="plus" color="success" look="outlined" borderStyle="dashed"
         alignContent="center" (onClick)="workspaceEdit.startAddNew()"></app-button>
 
     <app-single-workspace *ngFor="let workspace of workspaceService.myWorkspaces" [workspace]="workspace">
     </app-single-workspace>
+</div>
+
+<hr>
+
+<div class="title">Shared with me</div>
+
+<div class="workspaces-container">
+    <app-single-workspace *ngFor="let workspace of workspaceService.sharedWorkspaces" [workspace]="workspace" [showControls]="false">
+    </app-single-workspace>
+    <app-verify-email *ngIf="workspaceService.sharedWorkspaces == null" action="access workspaces shared with you"></app-verify-email>
+    <div *ngIf="workspaceService.sharedWorkspaces?.length == 0" class="no-shared">There are no workspaces shared with you.</div>
 </div>
 
 <app-workspace-edit #workspaceEdit></app-workspace-edit>

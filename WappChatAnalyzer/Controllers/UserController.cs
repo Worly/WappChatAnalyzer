@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WappChatAnalyzer.Auth;
 using WappChatAnalyzer.DTOs;
 using WappChatAnalyzer.Services;
 
@@ -35,6 +36,28 @@ namespace WappChatAnalyzer.Controllers
                 return BadRequest(new ErrorBuilder().Add(nameof(dto.Email), "EmailTaken"));
 
             return Ok(response);
+        }
+
+        [HttpPost("verifyEmail")]
+        public IActionResult VerifyEmail([FromQuery] string token)
+        {
+            var ok = userService.VerifyEmail(token);
+            if (ok)
+                return Ok();
+            else
+                return BadRequest();
+        }
+
+        [Authorize]
+        [HttpPost("requestVerificationEmail")]
+        public IActionResult RequestVerificationEmail()
+        {
+            var user = HttpContext.CurrentUser();
+            if (user.VerifiedEmail)
+                return BadRequest();
+
+            userService.SendVerificationEmail(user);
+            return Ok();
         }
     }
 }

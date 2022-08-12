@@ -1,4 +1,5 @@
-﻿using WappChatAnalyzer.DTOs;
+﻿using System.Collections.Generic;
+using WappChatAnalyzer.DTOs;
 
 namespace WappChatAnalyzer.Domain
 {
@@ -8,6 +9,8 @@ namespace WappChatAnalyzer.Domain
         public string Name { get; set; }
         public int OwnerId { get; set; }
         public User Owner { get; set; }
+
+        public ICollection<WorkspaceShare> WorkspaceShares { get; set; }
 
         public WorkspaceDTO GetDTO()
         {

@@ -56,7 +56,7 @@ export class EventEditComponent implements OnInit {
       var e = new Event();
 
       let date = new Date();
-      date.setDate(date.getDate() - 1);
+      //date.setDate(date.getDate() - 1);
 
       e.date = dateFormat(date, "yyyy-mm-dd");
 

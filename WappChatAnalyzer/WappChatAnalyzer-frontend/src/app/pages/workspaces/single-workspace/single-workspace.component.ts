@@ -13,8 +13,8 @@ export class SingleWorkspaceComponent implements OnInit {
 
   @ViewChild("deleteDialog") deleteDialog: DialogComponent;
 
-  @Input()
-  public workspace: Workspace;
+  @Input() public workspace: Workspace;
+  @Input() public showControls: boolean = true;
 
   public deleteName: string;
   public isDeleting: boolean;

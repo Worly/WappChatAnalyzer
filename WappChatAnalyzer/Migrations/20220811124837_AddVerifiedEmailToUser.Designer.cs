@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WappChatAnalyzer.Domain;
@@ -11,9 +12,10 @@ using WappChatAnalyzer.Domain;
 namespace WappChatAnalyzer.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220811124837_AddVerifiedEmailToUser")]
+    partial class AddVerifiedEmailToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -304,27 +306,6 @@ namespace WappChatAnalyzer.Migrations
                     b.ToTable("Workspaces");
                 });
 
-            modelBuilder.Entity("WappChatAnalyzer.Domain.WorkspaceShare", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("SharedUserEmail")
-                        .HasColumnType("text");
-
-                    b.Property<int>("WorkspaceId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WorkspaceId");
-
-                    b.ToTable("WorkspaceShares");
-                });
-
             modelBuilder.Entity("WappChatAnalyzer.Domain.CustomStatistic", b =>
                 {
                     b.HasOne("WappChatAnalyzer.Domain.Workspace", "Workspace")
@@ -435,17 +416,6 @@ namespace WappChatAnalyzer.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("WappChatAnalyzer.Domain.WorkspaceShare", b =>
-                {
-                    b.HasOne("WappChatAnalyzer.Domain.Workspace", "Workspace")
-                        .WithMany("WorkspaceShares")
-                        .HasForeignKey("WorkspaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Workspace");
-                });
-
             modelBuilder.Entity("WappChatAnalyzer.Domain.StatisticCache", b =>
                 {
                     b.Navigation("ForSenders");
@@ -454,11 +424,6 @@ namespace WappChatAnalyzer.Migrations
             modelBuilder.Entity("WappChatAnalyzer.Domain.User", b =>
                 {
                     b.Navigation("Workspaces");
-                });
-
-            modelBuilder.Entity("WappChatAnalyzer.Domain.Workspace", b =>
-                {
-                    b.Navigation("WorkspaceShares");
                 });
 #pragma warning restore 612, 618
         }

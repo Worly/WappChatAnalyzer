@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using WappChatAnalyzer.Auth;
@@ -23,7 +24,10 @@ namespace WappChatAnalyzer.Services.Workspaces
                 return;
             }
 
-            if (!context.HttpContext.CurrentUser().Workspaces.Any(w => w.Id == (int)context.HttpContext.Items["WorkspaceId"]))
+            var workspaceService = context.HttpContext.RequestServices.GetService<IWorkspaceService>();
+            var user = context.HttpContext.CurrentUser();
+
+            if (workspaceService.GetById(user.Id, (int)context.HttpContext.Items["WorkspaceId"], includeShared: user.VerifiedEmail) == null)
             {
                 context.Result = new JsonResult(new { message = "Wrong workspaceId" }) { StatusCode = StatusCodes.Status404NotFound };
                 return;

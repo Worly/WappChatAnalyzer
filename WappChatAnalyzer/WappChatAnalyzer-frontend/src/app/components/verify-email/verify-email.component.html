@@ -1,0 +1,7 @@
+<div class="not-verified">
+    You need to verify your email to {{action}}. To verify it, open the link sent to your email.
+    <br><br>
+    If you don't see the email, check your spam folder or request a new one.
+</div>
+<app-button class="request-button" [text]="getText()" color="success" [isLoading]="isLoading" [disabled]="isDisabled()"
+    (onClick)="requestVerifyEmail()"></app-button>

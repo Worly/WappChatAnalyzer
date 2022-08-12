@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WappChatAnalyzer.Auth;
 using WappChatAnalyzer.DTOs;
+using WappChatAnalyzer.Guards;
 using WappChatAnalyzer.Services;
 
 namespace WappChatAnalyzer.Controllers
@@ -49,6 +50,15 @@ namespace WappChatAnalyzer.Controllers
             return Ok(result.Select(o => o.GetDTO()));
         }
 
+        [HttpGet("getShared")]
+        [EmailVerified]
+        public ActionResult<List<WorkspaceDTO>> GetShared()
+        {
+            var result = this.workspaceService.GetShared(HttpContext.CurrentUser());
+
+            return Ok(result.Select(o => o.GetDTO()));
+        }
+
         [HttpDelete("delete/{id}")]
         [Authorize]
         public IActionResult Delete(int id)
@@ -63,7 +73,7 @@ namespace WappChatAnalyzer.Controllers
         [Authorize]
         public ActionResult SelectWorkspace([FromBody] int workspaceId)
         {
-            var workspace = workspaceService.GetById(HttpContext.CurrentUser().Id, workspaceId);
+            var workspace = workspaceService.GetById(HttpContext.CurrentUser().Id, workspaceId, includeShared: HttpContext.CurrentUser().VerifiedEmail);
             if (workspace == null)
                 return BadRequest();
 
@@ -76,6 +86,43 @@ namespace WappChatAnalyzer.Controllers
         public ActionResult<int?> GetSelectedWorkspace()
         {
             return Ok(workspaceService.GetSelectedWorkspace(HttpContext.CurrentUser().Id));
+        }
+
+        [HttpGet("getWorkspaceShares/{id}")]
+        [Authorize]
+        public ActionResult<List<WorkspaceShareDTO>> GetWorkspaceShares(int id)
+        {
+            var workspaceShares = workspaceService.GetWorkspaceShares(HttpContext.CurrentUser().Id, id);
+            if (workspaceShares == null)
+                return BadRequest();
+
+            return Ok(workspaceShares.Select(o => o.GetDTO()));
+        }
+
+        [HttpPost("shareWorkspace/{id}")]
+        [Authorize]
+        public ActionResult<List<WorkspaceShareDTO>> ShareWorkspace(int id, [FromBody] WorkspaceShareDTO share)
+        {
+            workspaceService.ShareWorkspace(HttpContext.CurrentUser(), id, share.SharedUserEmail);
+
+            var workspaceShares = workspaceService.GetWorkspaceShares(HttpContext.CurrentUser().Id, id);
+            if (workspaceShares == null)
+                return BadRequest();
+
+            return Ok(workspaceShares.Select(o => o.GetDTO()));
+        }
+
+        [HttpPost("unshareWorkspace/{id}")]
+        [Authorize]
+        public ActionResult<List<WorkspaceShareDTO>> UnshareWorkspace(int id, [FromBody] WorkspaceShareDTO share)
+        {
+            workspaceService.UnshareWorkspace(HttpContext.CurrentUser().Id, id, share.SharedUserEmail);
+
+            var workspaceShares = workspaceService.GetWorkspaceShares(HttpContext.CurrentUser().Id, id);
+            if (workspaceShares == null)
+                return BadRequest();
+
+            return Ok(workspaceShares.Select(o => o.GetDTO()));
         }
     }
 }
