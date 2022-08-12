@@ -15,18 +15,24 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(httpRequest).pipe(
       catchError((e: HttpEvent<any>) => {
         if (e instanceof HttpErrorResponse) {
-          if (e.status != 400 && e.status != 401)
-          {
-            this.router.navigate(["error"], {
-              state: {
-                error: {
-                  status: e.status,
-                  statusText: e.statusText,
-                  message: e.message
-                }
+          if (e.status == 400) // ignore bad requests
+            return throwError(e);
+
+          if (e.status == 401) // ignore unauthorized
+            return throwError(e);
+
+          if (e.status == 403 && e.error.message == "Email not verified") // ignore emailNotVerified
+            return throwError(e);
+
+          this.router.navigate(["error"], {
+            state: {
+              error: {
+                status: e.status,
+                statusText: e.statusText,
+                message: e.message
               }
-            });
-          }
+            }
+          });
         }
         return throwError(e);
       })

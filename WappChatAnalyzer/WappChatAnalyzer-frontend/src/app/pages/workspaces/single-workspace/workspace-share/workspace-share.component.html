@@ -1,0 +1,25 @@
+<app-dialog>
+    <div class="title">Share workspace - {{workspace?.name}}</div>
+
+    <div class="sub-title">Already shared with:</div>
+    <app-loading *ngIf="isLoading"></app-loading>
+    <div *ngFor="let s of shares" class="single-share">
+        <div class="single-share-email">
+            {{s.sharedUserEmail}}
+        </div>
+        <app-button #button icon="trash" look="solid" color="danger" [isCircle]="false" (onClick)="unshare(button, s)"></app-button>
+    </div>
+    <div *ngIf="!isLoading && shares.length == 0">This workspace is not yet shared with anyone</div>
+
+    <hr>
+
+    <div class="sub-title">Share with a user:</div>
+    <div class="input-container">
+        <div class="label">{{"User's email"}}</div>
+        <input class="w-input" type="text" [placeholder]="'User\'s email'" [(ngModel)]="usersEmail">
+        <div class="validation-message">{{ validationErrors['usersEmail'] }}</div>
+    </div>
+
+    <app-button [isLoading]="isLoadingShare" [disabled]="isLoadingShare" text="Share" look="solid" color="success"
+        (onClick)="share()"></app-button>
+</app-dialog>

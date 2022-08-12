@@ -1,7 +1,8 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { forkJoin, Observable } from "rxjs";
-import { map, tap } from "rxjs/operators";
+import { forkJoin, Observable, of, throwError } from "rxjs";
+import { catchError, map, tap } from "rxjs/operators";
+import { WorkspaceShare } from "src/app/dtos/workspaceShare";
 import { appConfig } from "../../app.config";
 import { Workspace } from "../../dtos/workspace";
 
@@ -9,27 +10,45 @@ import { Workspace } from "../../dtos/workspace";
 export class WorkspaceService {
 
     public myWorkspaces: Workspace[];
+    public sharedWorkspaces: Workspace[] | null;
     private selectedWorkspaceId: number;
 
     constructor(private http: HttpClient) { }
 
     public loadMy(): Observable<Workspace[]> {
         var getMy = this.http.get<Workspace[]>(appConfig.apiUrl + "workspace/getMy");
+        var getShared = this.http.get<Workspace[] | null>(appConfig.apiUrl + "workspace/getShared").pipe(catchError((e: HttpErrorResponse) => {
+            if (e.status == 403 && e.error.message == "Email not verified")
+                return of(null);
+            else
+                return throwError(e);
+        }));
         var getSelected = this.http.get<number>(appConfig.apiUrl + "workspace/getSelectedWorkspace");
 
-        return forkJoin([getMy, getSelected])
-            .pipe(map(([workspaces, selectedId]) => {
-                this.myWorkspaces = workspaces;
+        return forkJoin([getMy, getShared, getSelected])
+            .pipe(map(([myWorkspaces, sharedWorkspaces, selectedId]) => {
+                this.myWorkspaces = myWorkspaces;
+                this.sharedWorkspaces = sharedWorkspaces;
                 this.selectedWorkspaceId = selectedId;
-                return workspaces;
+                return myWorkspaces;
             }));
+    }
+
+    public reloadShared() {
+        this.http.get<Workspace[]>(appConfig.apiUrl + "workspace/getShared").subscribe(w => {
+            this.sharedWorkspaces = w;
+        });
     }
 
     public getSelected(): Workspace {
         if (this.selectedWorkspaceId == null || this.myWorkspaces == null)
             return null;
 
-        return this.myWorkspaces.find(o => o.id == this.selectedWorkspaceId);
+        let workspace = this.myWorkspaces.find(o => o.id == this.selectedWorkspaceId);
+        if (workspace == null && this.sharedWorkspaces != null)
+            workspace = this.sharedWorkspaces.find(o => o.id == this.selectedWorkspaceId)
+            
+        return workspace;
     }
 
     public selectWorkspace(workspace: Workspace): Observable<void> {
@@ -64,6 +83,22 @@ export class WorkspaceService {
             var oldWorkspace = this.myWorkspaces.find(o => o.id == w.id);
             oldWorkspace.name = w.name;
         }));
+    }
+
+    public getWorkspaceShares(workspaceId: number): Observable<WorkspaceShare[]> {
+        return this.http.get<WorkspaceShare[]>(appConfig.apiUrl + "workspace/getWorkspaceShares/" + workspaceId);
+    }
+
+    public shareWorkspace(workspaceId: number, usersEmail: string): Observable<WorkspaceShare[]> {
+        return this.http.post<WorkspaceShare[]>(appConfig.apiUrl + "workspace/shareWorkspace/" + workspaceId, {
+            sharedUserEmail: usersEmail
+        });
+    }
+
+    public unshareWorkspace(workspaceId: number, usersEmail: string): Observable<WorkspaceShare[]> {
+        return this.http.post<WorkspaceShare[]>(appConfig.apiUrl + "workspace/unshareWorkspace/" + workspaceId, {
+            sharedUserEmail: usersEmail
+        });
     }
 
     public clear() {

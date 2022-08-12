@@ -31,21 +31,13 @@ namespace WappChatAnalyzer.Services
         private IMailService mailService;
         private string appLink;
 
-        public UserService(MainDbContext mainDbContext, IJwtService jwtService, IMailService mailService, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+        public UserService(MainDbContext mainDbContext, IJwtService jwtService, IMailService mailService, IConfigurationService configurationService)
         {
             this.context = mainDbContext;
             this.jwtService = jwtService;
             this.mailService = mailService;
 
-            var appLink = configuration.GetValue<string>("AppLink");
-
-            if (webHostEnvironment.IsProduction() && Environment.GetEnvironmentVariable("APP_LINK") != null)
-                appLink = Environment.GetEnvironmentVariable("APP_LINK");
-
-            if (appLink == null)
-                throw new ArgumentException("Missing configuration", "AppLink");
-
-            this.appLink = appLink;
+            this.appLink = configurationService.Get<string>("AppLink");
         }
 
         public LogInResponseDTO Authenticate(LogInDTO model)

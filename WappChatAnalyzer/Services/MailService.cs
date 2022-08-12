@@ -20,45 +20,9 @@ namespace WappChatAnalyzer.Services
     public class MailService : IMailService
     {
         private readonly MailSettings _mailSettings;
-        public MailService(IWebHostEnvironment webHostEnvironment, IConfiguration configuration)
+        public MailService(IConfigurationService configurationService)
         {
-            var mailSettings = configuration.GetSection("MailSettings").Get<MailSettings>();
-            if (webHostEnvironment.IsProduction() && Environment.GetEnvironmentVariable("MAIL_MAIL") != null)
-            {
-                var mail = Environment.GetEnvironmentVariable("MAIL_MAIL");
-                var displayName = Environment.GetEnvironmentVariable("MAIL_DISPLAY_NAME");
-                if (displayName == null)
-                    throw new ArgumentNullException("MAIL_DISPLAY_NAME");
-
-                var password = Environment.GetEnvironmentVariable("MAIL_PASSWORD");
-                if (password == null)
-                    throw new ArgumentNullException("MAIL_PASSWORD");
-
-                var host = Environment.GetEnvironmentVariable("MAIL_HOST");
-                if (host == null)
-                    throw new ArgumentNullException("MAIL_HOST");
-
-                var port = Environment.GetEnvironmentVariable("MAIL_PORT");
-                if (port == null)
-                    throw new ArgumentNullException("MAIL_PORT");
-
-                if (!int.TryParse(port, out int portInt))
-                    throw new ArgumentException("Invalid format", "MAIL_PORT");
-
-                mailSettings = new MailSettings()
-                {
-                    Mail = mail,
-                    DisplayName = displayName,
-                    Password = password,
-                    Host = host,
-                    Port = portInt
-                };
-            }
-
-            if (mailSettings == null)
-                throw new ArgumentException("Missing configuration", "MailSettings");
-
-            this._mailSettings = mailSettings;
+            this._mailSettings = configurationService.Get<MailSettings>("MailSettings");
         }
 
         public async Task SendEmailAsync(MailRequest mail)

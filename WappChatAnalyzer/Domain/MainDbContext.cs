@@ -8,6 +8,7 @@ namespace WappChatAnalyzer.Domain
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Workspace> Workspaces { get; set; }
+        public DbSet<WorkspaceShare> WorkspaceShares { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<EventGroup> EventGroups { get; set; }
         public DbSet<Sender> Senders { get; set; }

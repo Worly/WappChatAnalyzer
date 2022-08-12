@@ -59,6 +59,8 @@ import { WorkspaceInterceptor } from './services/workspaces/workspace-intercepto
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { VerifyComponent } from './pages/verify/verify.component';
+import { WorkspaceShareComponent } from './pages/workspaces/single-workspace/workspace-share/workspace-share.component';
+import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 
 
 
@@ -100,7 +102,9 @@ import { VerifyComponent } from './pages/verify/verify.component';
     DialogComponent,
     WorkspaceEditComponent,
     SelectedWorkspaceComponent,
-    VerifyComponent
+    VerifyComponent,
+    WorkspaceShareComponent,
+    VerifyEmailComponent
   ],
   imports: [
     BrowserModule,
