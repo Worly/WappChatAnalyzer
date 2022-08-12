@@ -33,22 +33,34 @@ namespace WappChatAnalyzer.Services
 
         public T GetFromEnv<T>(string section)
         {
-            var result = Activator.CreateInstance<T>();
-
-            section = CamelCaseToUpperSnakeCase(section);
-
-            foreach (var prop in typeof(T).GetProperties())
+            if (typeof(T).IsPrimitive)
             {
-                var name = section + "_" + CamelCaseToUpperSnakeCase(prop.Name);
-
-                var value = Environment.GetEnvironmentVariable(name);
+                var value = Environment.GetEnvironmentVariable(section);
                 if (value == null)
-                    throw new ArgumentNullException(name);
+                    throw new ArgumentNullException(section);
 
-                prop.SetValue(result, TypeDescriptor.GetConverter(prop.PropertyType).ConvertFromString(value));
+                return (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(value);
+            }
+            else
+            {
+                var result = Activator.CreateInstance<T>();
+
+                section = CamelCaseToUpperSnakeCase(section);
+
+                foreach (var prop in typeof(T).GetProperties())
+                {
+                    var name = section + "_" + CamelCaseToUpperSnakeCase(prop.Name);
+
+                    var value = Environment.GetEnvironmentVariable(name);
+                    if (value == null)
+                        throw new ArgumentNullException(name);
+
+                    prop.SetValue(result, TypeDescriptor.GetConverter(prop.PropertyType).ConvertFromString(value));
+                }
+
+                return result;
             }
 
-            return result;
         }
 
         public T GetFromAppSettings<T>(string section)
