@@ -33,6 +33,16 @@ namespace WappChatAnalyzer.Services
 
         public T GetFromEnv<T>(string section)
         {
+            section = CamelCaseToUpperSnakeCase(section);
+
+            if (typeof(T) == typeof(string))
+            {
+                var value = Environment.GetEnvironmentVariable(section);
+                if (value == null)
+                    throw new ArgumentNullException(section);
+
+                return (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(value);
+            }
             if (typeof(T).IsPrimitive)
             {
                 var value = Environment.GetEnvironmentVariable(section);
@@ -44,8 +54,6 @@ namespace WappChatAnalyzer.Services
             else
             {
                 var result = Activator.CreateInstance<T>();
-
-                section = CamelCaseToUpperSnakeCase(section);
 
                 foreach (var prop in typeof(T).GetProperties())
                 {
