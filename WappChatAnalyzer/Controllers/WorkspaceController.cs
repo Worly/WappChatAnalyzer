@@ -73,7 +73,7 @@ namespace WappChatAnalyzer.Controllers
         [Authorize]
         public ActionResult SelectWorkspace([FromBody] int workspaceId)
         {
-            var workspace = workspaceService.GetById(HttpContext.CurrentUser().Id, workspaceId, true);
+            var workspace = workspaceService.GetById(HttpContext.CurrentUser().Id, workspaceId, includeShared: HttpContext.CurrentUser().VerifiedEmail);
             if (workspace == null)
                 return BadRequest();
 

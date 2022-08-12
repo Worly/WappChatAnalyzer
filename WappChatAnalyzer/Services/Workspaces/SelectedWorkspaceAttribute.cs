@@ -25,8 +25,9 @@ namespace WappChatAnalyzer.Services.Workspaces
             }
 
             var workspaceService = context.HttpContext.RequestServices.GetService<IWorkspaceService>();
+            var user = context.HttpContext.CurrentUser();
 
-            if (workspaceService.GetById(context.HttpContext.CurrentUser().Id, (int)context.HttpContext.Items["WorkspaceId"], true) == null)
+            if (workspaceService.GetById(user.Id, (int)context.HttpContext.Items["WorkspaceId"], includeShared: user.VerifiedEmail) == null)
             {
                 context.Result = new JsonResult(new { message = "Wrong workspaceId" }) { StatusCode = StatusCodes.Status404NotFound };
                 return;
