@@ -1,15 +1,49 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { EventService } from 'src/app/services/event.service';
 import { Event, EventGroup, EventInfo, EventTemplate } from "../../../dtos/event";
-import { EmojiButton } from "@joeattardi/emoji-button";
 import * as dateFormat from "dateformat";
+import { createPopup, PopupPickerController } from "@picmo/popup-picker";
+import { fromEvent, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-event-edit',
   templateUrl: './event-edit.component.html',
   styleUrls: ['./event-edit.component.css']
 })
-export class EventEditComponent implements OnInit {
+export class EventEditComponent implements OnInit, OnDestroy {
+
+  private _emojiButton: ElementRef<HTMLElement>;
+  @ViewChild("emojiButton", { read: ElementRef }) set emojiButton(b: ElementRef<HTMLElement>) {
+    if (b == this._emojiButton)
+      return;
+
+    if (this._emojiButton != null && this.emojiPopup != null) {
+      this.emojiPopup.destroy();
+      this.emojiPopup = null;
+    }
+
+    this._emojiButton = b;
+
+    if (b != null) {
+      this.emojiPopup = createPopup({
+        animate: true,
+        emojiSize: "min(8vw, 50px)"
+      }, {
+        referenceElement: b.nativeElement,
+        hideOnEmojiSelect: true,
+        hideOnClickOutside: true,
+        hideOnEscape: true,
+        showCloseButton: false,
+        position: "auto",
+        className: "emoji-picker"
+      });
+
+      this.emojiPopup.addEventListener("emoji:select", selection => {
+        this.event.emoji = selection.emoji;
+        this.onPropertyChange("emoji", selection.emoji);
+      });
+    }
+  }
 
   @Input()
   set id(value: number) {
@@ -42,14 +76,21 @@ export class EventEditComponent implements OnInit {
     closeOnSelectDelay: 0
   };
 
-  emojiButton: EmojiButton = new EmojiButton({
-    emojiSize: "40px",
-    styleProperties: {
-      "--category-button-active-color": "#D05353"
-    }
-  });
+  emojiPopup: PopupPickerController;
 
-  constructor(private eventService: EventService) { }
+  private subs: Subscription[] = [];
+
+  constructor(private eventService: EventService) {
+    history.pushState(null, null, window.location.href);
+    this.subs.push(fromEvent(window, 'popstate').subscribe(e => {
+      if (this.emojiPopup?.isOpen) {
+        history.pushState(null, null, window.location.href);
+        this.emojiPopup.close();
+      }
+      else
+        history.back();
+    }));
+  }
 
   ngOnInit(): void {
     if (this.isNew) {
@@ -76,11 +117,12 @@ export class EventEditComponent implements OnInit {
       if (this.template != null)
         this.isDirty = true;
     }
+  }
 
-    this.emojiButton.on("emoji", selection => {
-      this.event.emoji = selection.emoji;
-      this.onPropertyChange("emoji", selection.emoji);
-    });
+  ngOnDestroy(): void {
+    this.emojiPopup.destroy();
+
+    this.subs.forEach(s => s.unsubscribe());
   }
 
   loadedEvent(event: Event) {
@@ -97,7 +139,6 @@ export class EventEditComponent implements OnInit {
   }
 
   onPropertyChange(propertyName: string, value: any) {
-
     //DIRTY FIX
     if (propertyName == "date")
       value = dateFormat(value, "yyyy-mm-dd");
@@ -106,8 +147,9 @@ export class EventEditComponent implements OnInit {
     this.newEvent[propertyName] = value;
   }
 
-  onEmojiClick(event) {
-    this.emojiButton.togglePicker(event.srcElement);
+  onEmojiClick(event: MouseEvent) {
+    event.stopImmediatePropagation();
+    this.emojiPopup.toggle();
   }
 
   onSaveClick() {

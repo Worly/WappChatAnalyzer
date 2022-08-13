@@ -1,5 +1,5 @@
 <div *ngIf="event != null" class="item">
-    <div class="emoji" (click)="onEmojiClick($event)">
+    <div #emojiButton class="emoji" (click)="onEmojiClick($event)">
         <div *ngIf="event.emoji != null">{{event.emoji}}</div>
         <div class="empty" *ngIf="event.emoji == null"></div>
     </div>
