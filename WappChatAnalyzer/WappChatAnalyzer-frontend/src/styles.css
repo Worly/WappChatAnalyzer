@@ -22,14 +22,14 @@
                                     supported by Chrome, Edge, Opera and Firefox */
 }
 
-.emoji-picker__emoji,
-.emoji-picker__preview-emoji {
-  font-family: "Segoe UI Emoji", "Segoe UI Symbol", "Segoe UI", "Apple Color Emoji", "Twemoji Mozilla",
-    "Noto Color Emoji", "EmojiOne Color", "Android Emoji" !important;
+.emoji-picker {
+  z-index: 10000;
 }
 
-.emoji-picker__wrapper {
-  z-index: 1000;
+.emoji-picker button[class^="Emoji_emoji"] > span {
+  font-family: "Segoe UI Emoji", "Segoe UI Symbol", "Segoe UI", "Apple Color Emoji", "Twemoji Mozilla",
+    "Noto Color Emoji", "EmojiOne Color", "Android Emoji" !important;
+  line-height: 1;
 }
 
 html,
