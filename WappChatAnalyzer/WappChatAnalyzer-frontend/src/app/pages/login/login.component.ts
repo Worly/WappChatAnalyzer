@@ -70,7 +70,7 @@ export class LoginComponent implements OnInit {
           if (this.workspaceService.getSelected() == null)
             this.router.navigate(["workspaces"]);
           else
-            this.router.navigate(["home"]);
+            this.router.navigate(["events"]);
         },
         error: e => {
           this.isLoading = false;

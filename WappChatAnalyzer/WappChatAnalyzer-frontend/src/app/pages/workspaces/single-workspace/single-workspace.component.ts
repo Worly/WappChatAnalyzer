@@ -27,7 +27,7 @@ export class SingleWorkspaceComponent implements OnInit {
   }
 
   selectWorkspace() {
-    this.workspaceService.selectWorkspace(this.workspace).subscribe(o => this.router.navigate(["home"]));
+    this.workspaceService.selectWorkspace(this.workspace).subscribe(o => this.router.navigate(["events"]));
   }
 
   openDeleteDialog() {
