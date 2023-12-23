@@ -83,7 +83,7 @@ export class WorkspaceEditComponent implements OnInit {
               this.isLoading = false;
               this.dialog.close();
 
-              this.router.navigate(["home"])
+              this.router.navigate(["events"])
             },
             error: () => {
               this.isLoading = false;

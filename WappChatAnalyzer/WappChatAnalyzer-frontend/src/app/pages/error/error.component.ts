@@ -15,7 +15,7 @@ export class ErrorComponent {
     this.error = this.router.getCurrentNavigation().extras.state?.error;
 
     if (this.error == null)
-      this.router.navigate(["home"])
+      this.router.navigate(["events"])
 
     if (this.error.status == 0)
       this.error.status = 503;
